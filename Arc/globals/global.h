@@ -113,6 +113,8 @@ typedef struct particle {
   double dirVec[3];
   // The emission angle of the photon from the Exoplanet.
   double alpha;
+  // Is photon alive? 1 = true, 0 = false (dead).
+  int    life;
 } Particle;
 
 // Data structure, used to store all the semi-analysed data.

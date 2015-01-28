@@ -28,7 +28,7 @@
 // into relevant structure types.
 Planet input(Planet);
 void photonLoop(Particle photon[], Planet exo);
-
+void output(Particle photon[], Planet exo, Datasystem data);
 
 // Prints the title of ExOEx to the terminal.
 void printTitle(){

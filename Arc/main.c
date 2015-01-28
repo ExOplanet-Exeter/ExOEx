@@ -58,6 +58,7 @@ int main(){
   // type must be defined within the program, else you're reading
   // part of an array that isn't ever defined!
   Planet exo;
+  Datasystem data = {0};
   
   exo.layerType   = malloc(10 * sizeof(int));
   exo.layerKappa  = malloc(10 * sizeof(double));
@@ -69,7 +70,8 @@ int main(){
   exo = input(exo);
   Particle photon[exo.nPhot];
   photonLoop(photon, exo);
-     
+  output(photon, exo, data);
+
   //-- EXIT AND CLEANUP ------------------------------------------
   free(exo.layerType);
   free(exo.layerKappa);
