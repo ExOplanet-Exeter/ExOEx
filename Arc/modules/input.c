@@ -40,7 +40,6 @@ Planet fixLayerRadii(Planet exo){
   for (int i=0; i<exo.nLayers; i++){
     exo.layerRadius[i] = exo.layerRadius[i] * scaleFactor;
   }
-  printf("Radius = %lf\n",radius);
   return exo;
 }
 

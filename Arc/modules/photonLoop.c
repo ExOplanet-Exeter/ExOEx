@@ -44,8 +44,11 @@ involved with calculating the path of photons as the are emitted
 
 //-- LOCAL HEADERS ---------------------------------------------
 #include "../globals/global.h"
-//#include "../globals/utilities.h"
-//#include "photonLoop.h"
+#include "../globals/utilities.h"
+#include "headers/photonLoop.h"
+
+
+//== FUNCTIONS IN PROGRESS =====================================
 
 
 //== PHOTON LOOP FUNCTION ======================================
@@ -56,5 +59,20 @@ void photonLoop(Particle photon[], Planet exo){
     printf(ACYAN "Photon Loop Running:\n" ARESET);
   }
 
+//-- DECLERATIONS ----------------------------------------------
+  double lambda;
+
+//-- PHOTON LOOP -----------------------------------------------
+  for (int n=0; n<exo.nPhot; n++){
+    photon[n] = initPhoton(photon[n], n);
+    photon[n] = stellarEmission(photon[n]);
+    photon[n] = mapToExoSurface(photon[n], exo);
+    // inject photon
+    photon[n] = getLayer(photon[n],exo);
+  }
+
+  if (DEBUG){
+    printf(AGREEN "Photon Loop Done.\n" ARESET);
+  }
   return;  
 }
