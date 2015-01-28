@@ -1,4 +1,4 @@
-/*==============================================================                
+/*==============================================================
 ----------------------------------------------------------------
  88
  ""                                           ,d
@@ -30,7 +30,62 @@
 #include "headers/input.h"
 
 
+//== FUNCTIONS IN PROGRESS =====================================
+// Sets up the layers of the exo Planet structure.
+Planet readStructure(Planet exo, Material atmosphere[], int nMat){
+  FILE *structure;
+  char word[MAX_WORD_LENGTH];
+  char comment[MAX_COMMENT_LENGTH];
+  int  workingLayer = 0;
 
+  structure = fopen("dependencies/structure.cfg","r");
+  if (structure == NULL){
+    printf(ARED "ERROR! Could not open structure.cfg!\n" ARESET);
+  }
+
+  if (DEBUG){
+    printf(ACYAN "Reading: structure.cfg\n" ARESET);
+  }
+
+  while (1){
+    fscanf(structure,"%s",word);
+    if (strcmp(word,"END") == 0){
+      break;
+    }
+    else if (strncmp(&word[0],"!",1) == 0){
+      fgets(comment,MAX_COMMENT_LENGTH,structure);
+    }
+
+    for (int i=0; i<nMat; i++){
+      if(strcmp(word,atmosphere[i].name) == 0){
+	exo.layerKappa[workingLayer]  = atmosphere[i].kappa;
+	exo.layerAlbedo[workingLayer] = atmosphere[i].albedo;
+	exo.layerType[workingLayer] = atmosphere[i].type;
+	fscanf(structure,"%lf",&exo.layerRadius[workingLayer]);
+	workingLayer++;
+      }
+    }
+  }
+
+  return exo;
+}
+
+// Prints out the complete data about the exoplanet that has
+// been constructed from the .cfg and .mat files.
+void printAllPlanetData(Planet exo){
+  printf(AMAGENTA "nPhot   = %i\n"
+	 "nLayers = %i\n"ARESET, exo.nPhot, exo.nLayers);
+  for (int i=0; i<exo.nLayers; i++){
+    printf(AMAGENTA "Layer %i)\n"
+	   "    type   = %i\n"
+	   "    radius = %lf\n"
+	   "    kappa  = %lf\n"
+	   "    albedo = %lf\n"ARESET,
+	   i, exo.layerType[i],exo.layerRadius[i],
+	   exo.layerKappa[i],exo.layerAlbedo[i]);
+  }
+  return;
+}
 
 
 //== INPUT FUNCTION ============================================
@@ -48,20 +103,11 @@ Planet input(Planet exo){
 
   // Reading functions.
   nMat = readMatList(nMat, atmosphere);
-  printMatList(nMat, atmosphere);
+  readIndividualMats(nMat, atmosphere);
+  exo = readConfig(exo, atmosphere);
+  exo = readStructure(exo, atmosphere, nMat);
 
-  /*  char fileName[MAX_WORD_LENGTH];
-  FILE *mat;
-
-  printf("Enter material file name to be opened: ");
-  scanf("%s",fileName);
-  printf("You chose: %s.mat\n",fileName);
-
-  mat = fopen(fileName,"r");
-  if (mat == NULL)
-    printf(ARED "ERROR! Could not locate %s.mat!\n" ARESET,fileName);
-
-  */
+  printAllPlanetData(exo);
 
   if (DEBUG)
     printf(AGREEN "Input Done.\n" ARESET);

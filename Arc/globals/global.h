@@ -45,6 +45,7 @@ a8"    `Y88  88  a8"     "8a  88P'    "8a  ""     `Y8  88
 #define DEFAULT_KAPPA   1.0
 // Defines used within 'input.c'
 #define MAX_NAME_LENGTH 64
+#define MAX_COMMENT_LENGTH 128
 // Defines used within 'photonLoop.c'
 #define STAR_DIST       10.0
 
@@ -93,9 +94,10 @@ typedef struct planet {
 // a type of material so that the material properties may then
 // be used to construct the planet.
 typedef struct material {
-  char   name[4];
+  char   name[MAX_NAME_LENGTH];
   double kappa;
   double albedo;
+  int    type;
 } Material;
 
 // particle structure. Will commonly be used for photons.
