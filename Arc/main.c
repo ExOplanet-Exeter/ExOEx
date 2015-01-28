@@ -67,7 +67,8 @@ int main(){
   //-- CORE MODULES ----------------------------------------------
   // Pass exo to 'input.c' for modifying by .cfg files.
   exo = input(exo);
-  
+  Particle photon[exo.nPhot];
+  photonLoop(photon, exo);
      
   //-- EXIT AND CLEANUP ------------------------------------------
   free(exo.layerType);
