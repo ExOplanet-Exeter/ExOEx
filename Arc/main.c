@@ -59,10 +59,10 @@ int main(){
   // part of an array that isn't ever defined!
   Planet exo;
   
-  exo.layerType   = malloc(exo.nLayers * sizeof(int));
-  exo.layerKappa  = malloc(exo.nLayers * sizeof(double));
-  exo.layerAlbedo = malloc(exo.nLayers * sizeof(double));
-  exo.layerRadius = malloc(exo.nLayers * sizeof(double));
+  exo.layerType   = malloc(10 * sizeof(int));
+  exo.layerKappa  = malloc(10 * sizeof(double));
+  exo.layerAlbedo = malloc(10 * sizeof(double));
+  exo.layerRadius = malloc(10 * sizeof(double));
       
   //-- CORE MODULES ----------------------------------------------
   // Pass exo to 'input.c' for modifying by .cfg files.
