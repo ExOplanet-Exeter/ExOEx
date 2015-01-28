@@ -27,8 +27,6 @@
 // Input function for reading from .cfg files and parseing data
 // into relevant structure types.
 Planet input(Planet);
-void photonLoop(Particle photon[], Planet exo);
-
 
 // Prints the title of ExOEx to the terminal.
 void printTitle(){

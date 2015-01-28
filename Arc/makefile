@@ -13,8 +13,8 @@ all:arc clean
 				#ADD THE OTHER .Os WHEN NEEDED!
 
 # Main build
-arc: main.o input.o
-	$(CC) $(CFLAGS) main.o input.o -o arc
+arc: main.o input.o photonLoop.o
+	$(CC) $(CFLAGS) main.o input.o photonLoop.o -o arc
 
 main.o: $(WKDIR)main.c
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
@@ -22,8 +22,8 @@ main.o: $(WKDIR)main.c
 input.o: $(WKDIR)modules/input.c
 	$(CC) $(CFLAGS) -c $(WKDIR)modules/input.c
 
-#photonLoop.o: $(WKDIR)modules/photonLoop.c $(WKDIR)globals/global.h
-	#$(CC) $(CFLAGS) -c $(WKDIR)modules/photonLoop.c
+photonLoop.o: $(WKDIR)modules/photonLoop.c
+	$(CC) $(CFLAGS) -c $(WKDIR)modules/photonLoop.c
 
 #output.o: $(WKDIR)modules/output.c $(WKDIR)globals/global.h
 	#$(CC) $(CFLAGS) -c $(WKDIR)modules/output.c
