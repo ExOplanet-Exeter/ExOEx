@@ -38,7 +38,7 @@
 // These local header files must be placed within the working
 // directory. They use "" containers.
 #include "globals/global.h"
-#include "modules/module.h"
+#include "modules/headers/module.h"
 
 
 //== MAIN FUNCTION =============================================
@@ -61,6 +61,7 @@ int main(){
   
   exo.layerType   = malloc(exo.nLayers * sizeof(int));
   exo.layerKappa  = malloc(exo.nLayers * sizeof(double));
+  exo.layerAlbedo = malloc(exo.nLayers * sizeof(double));
   exo.layerRadius = malloc(exo.nLayers * sizeof(double));
       
   //-- CORE MODULES ----------------------------------------------
@@ -71,6 +72,7 @@ int main(){
   //-- EXIT AND CLEANUP ------------------------------------------
   free(exo.layerType);
   free(exo.layerKappa);
+  free(exo.layerAlbedo);
   free(exo.layerRadius);
   if (DEBUG)
     printf(AGREEN "ExOEx Complete.\n" ARESET);

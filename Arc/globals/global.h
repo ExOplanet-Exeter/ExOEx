@@ -26,6 +26,8 @@ a8"    `Y88  88  a8"     "8a  88P'    "8a  ""     `Y8  88
 
 //== INCLUDES ==================================================
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 
 //== DEBUG CONTROL =============================================
@@ -41,6 +43,8 @@ a8"    `Y88  88  a8"     "8a  88P'    "8a  ""     `Y8  88
 #define DEFAULT_NPHOT   10000000
 #define DEFAULT_NLAYERS 1
 #define DEFAULT_KAPPA   1.0
+// Defines used within 'input.c'
+#define MAX_NAME_LENGTH 64
 // Defines used within 'photonLoop.c'
 #define STAR_DIST       10.0
 
@@ -79,14 +83,25 @@ typedef struct planet {
   int    *layerType;
   // Optical length of the layer material.
   double *layerKappa;
+  // Albedo of layer.
+  double *layerAlbedo;
   // Radial position of the layer (lower boundary).
   double *layerRadius;
 } Planet;
 
+// This is structure is designed to hold the information about
+// a type of material so that the material properties may then
+// be used to construct the planet.
+typedef struct material {
+  char   name[4];
+  double kappa;
+  double albedo;
+} Material;
+
 // particle structure. Will commonly be used for photons.
 typedef struct particle {
   // IDNum used for identifying specific photons.
-  int IDNum;
+  int    IDNum;
   // The three dimensional position of the photon.
   double pos[3];
   // The layer in which the photon currently sits in.
