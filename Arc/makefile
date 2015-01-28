@@ -16,10 +16,10 @@ all:arc clean
 arc: main.o input.o
 	$(CC) $(CFLAGS) main.o input.o -o arc
 
-main.o: $(WKDIR)main.c $(WKDIR)globals/global.h $(WKDIR)modules/module.h
+main.o: $(WKDIR)main.c
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
 
-input.o: $(WKDIR)modules/input.c $(WKDIR)globals/global.h
+input.o: $(WKDIR)modules/input.c
 	$(CC) $(CFLAGS) -c $(WKDIR)modules/input.c
 
 #photonLoop.o: $(WKDIR)modules/photonLoop.c $(WKDIR)globals/global.h

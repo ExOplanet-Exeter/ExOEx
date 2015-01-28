@@ -27,15 +27,43 @@
 //-- LOCAL HEADERS ---------------------------------------------
 // The directory path of '..' means move up one directory.
 #include "../globals/global.h"
+#include "headers/input.h"
+
+
+
 
 
 //== INPUT FUNCTION ============================================
 Planet input(Planet exo){
 
-  //-- ENTRY -----------------------------------------------------
+//-- ENTRY -----------------------------------------------------
   // Debug printing.
   if (DEBUG)
     printf(ACYAN "Input Running:\n" ARESET);
 
+//-- INITIALISATION --------------------------------------------
+  // Create structures for the known materials.
+  Material atmosphere[MAX_NUMBER_OF_MATERIALS];
+  int nMat = 0;
+
+  // Reading functions.
+  nMat = readMatList(nMat, atmosphere);
+  printMatList(nMat, atmosphere);
+
+  /*  char fileName[MAX_WORD_LENGTH];
+  FILE *mat;
+
+  printf("Enter material file name to be opened: ");
+  scanf("%s",fileName);
+  printf("You chose: %s.mat\n",fileName);
+
+  mat = fopen(fileName,"r");
+  if (mat == NULL)
+    printf(ARED "ERROR! Could not locate %s.mat!\n" ARESET,fileName);
+
+  */
+
+  if (DEBUG)
+    printf(AGREEN "Input Done.\n" ARESET);
   return exo;
 }
