@@ -8,14 +8,14 @@
  88      88      88  8b       d8  8b       88  88       88  88
  88      88      88  "8a,   ,a8"  "8a,   ,d88  "8a,   ,a88  88
  88      88      88   `"YbbdP"'    `"8bbdP"Y8   `"YbbdP'Y8  88
-                 88
-                 88
-                 88
- ,adPPYba,       88,dPPYba,
-a8P_____88       88P'    "8a
-8PP"""""""       88       88
-"8b,   ,aa  888  88       88
- `"Ybbd8"'  888  88       88
+                                                     88
+                                                     88
+                                                     88
+                                     ,adPPYba,       88,dPPYba,
+                                    a8P_____88       88P'    "8a
+                                    8PP"""""""       88       88
+                                    "8b,   ,aa  888  88       88
+                                     `"Ybbd8"'  888  88       88
 ----------------------------------------------------------------
  This header file contains the function prototypes for the core
                     modules used within Arc.
@@ -24,6 +24,9 @@ a8P_____88       88P'    "8a
 
 
 //== FUNCTION PROTOTYPES =======================================
+// Input function for reading from .cfg files and parseing data
+// into relevant structure types.
+Planet input(Planet);
 
 // Prints the title of ExOEx to the terminal.
 void printTitle(){

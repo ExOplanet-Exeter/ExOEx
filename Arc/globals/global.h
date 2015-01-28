@@ -1,11 +1,23 @@
 /*==============================================================
 ----------------------------------------------------------------
-  ██████╗ ██╗      ██████╗ ██████╗  █████╗ ██╗        ██╗  ██╗ 
- ██╔════╝ ██║     ██╔═══██╗██╔══██╗██╔══██╗██║        ██║  ██║
- ██║  ███╗██║     ██║   ██║██████╔╝███████║██║        ███████║
- ██║   ██║██║     ██║   ██║██╔══██╗██╔══██║██║        ██╔══██║
- ╚██████╔╝███████╗╚██████╔╝██████╔╝██║  ██║███████╗██╗██║  ██║
-  ╚═════╝ ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝
+             88               88                       88
+             88               88                       88
+             88               88                       88
+ ,adPPYb,d8  88   ,adPPYba,   88,dPPYba,   ,adPPYYba,  88
+a8"    `Y88  88  a8"     "8a  88P'    "8a  ""     `Y8  88
+8b       88  88  8b       d8  88       d8  ,adPPPPP88  88
+"8a,   ,d88  88  "8a,   ,a8"  88b,   ,a8"  88,    ,88  88
+ `"YbbdP"Y8  88   `"YbbdP"'   8Y"Ybbd8"'   `"8bbdP"Y8  88
+ aa,    ,88
+ "Y8bbdP"
+                                                     88
+                                                     88
+                                                     88
+                                                     88,dPPYba,
+                                                     88P'    "8a
+                                                     88       88
+                                                888  88       88
+                                                888  88       88
 ----------------------------------------------------------------
          Contains all the global variables used in Arc.
  Be careful when editing as it will cause global changes (duh!)
@@ -19,8 +31,6 @@
 //== DEBUG CONTROL =============================================
 // Turns debug output off/on with 0/1 respectively.
 #define DEBUG           1
-// The maximum number of layers an exoplanet may have.
-#define MAX_NLAYERS     10
 
 
 //== GLOBAL DEFINES ============================================
@@ -46,29 +56,43 @@ enum Dimensions {
 };
 
 enum ScatterTypes{
+  // Isotropic.
   ISO,
+  // Rayleigh.
   RAY,
+  // Mie (using Henyey-Greenstein approximation).
   MIE,
 };
 
 
 //== STRUCTURES ================================================
 // Planet structure setup (this is likely to be changed soon.
+// Arrays now declared as pointers which will then have memory
+// allocated for them in input.c. This is neater than having a
+// array of greater than needed size as a work arround.
 typedef struct planet {
+  // Total number of photons to be simulated for this planet.
   int    nPhot;
+  // Total number of layers making up the planet.
   int    nLayers;
-  int    layerType[MAX_NLAYERS];
-  double layerKappa[MAX_NLAYERS];
-  double layerRadius[MAX_NLAYERS];
+  // The scattering type of each layer (enumeration key).
+  int    *layerType;
+  // Optical length of the layer material.
+  double *layerKappa;
+  // Radial position of the layer (lower boundary).
+  double *layerRadius;
 } Planet;
 
 // particle structure. Will commonly be used for photons.
 typedef struct particle {
   // IDNum used for identifying specific photons.
   int IDNum;
-  // The current and old positions of the photon, respectively.
-  double curPos[3];
+  // The three dimensional position of the photon.
+  double pos[3];
+  // The layer in which the photon currently sits in.
   int    curLayer;
+  // The determined direction of scattering. Photon will next
+  // scatter at some point along this vector.
   double dirVec[3];
   // The emission angle of the photon from the Exoplanet.
   double alpha;

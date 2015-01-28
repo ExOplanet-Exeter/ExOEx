@@ -54,13 +54,24 @@ int main(){
   // Create a seed for the random number generation.
   srand(777);
   // Create exoplanet and data structure.
+  // WARNING! In the new format the array elements of the planet
+  // type must be defined within the program, else you're reading
+  // part of an array that isn't ever defined!
   Planet exo;
-  Datasystem data;
-    
+  
+  exo.layerType   = malloc(exo.nLayers * sizeof(int));
+  exo.layerKappa  = malloc(exo.nLayers * sizeof(double));
+  exo.layerRadius = malloc(exo.nLayers * sizeof(double));
+      
   //-- CORE MODULES ----------------------------------------------
-
-    
+  // Pass exo to 'input.c' for modifying by .cfg files.
+  exo = input(exo);
+  
+     
   //-- EXIT AND CLEANUP ------------------------------------------
+  free(exo.layerType);
+  free(exo.layerKappa);
+  free(exo.layerRadius);
   if (DEBUG)
     printf(AGREEN "ExOEx Complete.\n" ARESET);
   return 0;
