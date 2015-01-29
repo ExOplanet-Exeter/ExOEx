@@ -49,6 +49,62 @@ involved with calculating the path of photons as the are emitted
 
 
 //== FUNCTIONS IN PROGRESS =====================================
+// Calculates the emission angle (alpha) of a photon.
+double getAlpha(Particle photon){
+  double alpha;
+  alpha = acos(arcDot(photon.dirVec[X],photon.dirVec[Y],
+		      photon.dirVec[Z],0.0,0.0,1.0));
+  return alpha;
+}
+
+
+// Moves the photon to a new position along the direction vector
+// with a total displacement lambda.
+Particle move(Particle photon, Planet exo){
+  double lambda;
+  lambda = getLambda(photon, exo);
+  for (int i=0; i<3; i++){
+    photon.pos[i] = photon.pos[i] + (photon.dirVec[i] * lambda);
+  }
+  return photon;
+}
+
+
+// Create a direction vector for an isotropic scattering.
+Particle isoScatter(Particle photon){
+  double theta;
+  theta            = arcRand(0.0,2.0*PI);
+  photon.dirVec[X] = 2.0 * arcRand(0.0,1.0) - 1.0;
+  photon.dirVec[Y] = sqrt(1.0 - pow(photon.dirVec[X],2.0)) * 
+    cos(theta);
+  photon.dirVec[Z] = sqrt(1.0 - pow(photon.dirVec[X],2.0)) * 
+    sin(theta);
+  return photon;
+}
+
+// Gives the photon a chance to be absorbed and thus removed
+// from photon loop.
+int absorbeChance(Particle photon, Planet exo){
+  double a;
+  a = arcRand(0.0,1.0);
+  if (a < exo.layerAlbedo[photon.curLayer]){
+    return 0;
+  }
+  else{
+    return 1;
+  }
+}
+
+
+// 'Inject' the photon in along direction vector connecting star
+// and exoplanet, as photons are emitted normal to stellar 
+// surface.
+Particle injectPhoton(Particle photon, Planet exo){
+  photon.pos[Z] = photon.pos[Z] - getLambda(photon,exo);
+  photon = getLayer(photon, exo);
+  photon.life = absorbeChance(photon,exo);
+  return photon;
+}
 
 
 //== PHOTON LOOP FUNCTION ======================================
@@ -60,15 +116,19 @@ void photonLoop(Particle photon[], Planet exo){
   }
 
 //-- DECLERATIONS ----------------------------------------------
-  double lambda;
-
+  
 //-- PHOTON LOOP -----------------------------------------------
   for (int n=0; n<exo.nPhot; n++){
     photon[n] = initPhoton(photon[n], n);
     photon[n] = stellarEmission(photon[n]);
     photon[n] = mapToExoSurface(photon[n], exo);
-    // inject photon
-    photon[n] = getLayer(photon[n],exo);
+    photon[n] = injectPhoton(photon[n], exo);
+    while (getRho(photon[n]) <= 1.0 && photon[n].life == 0){
+      photon[n] = isoScatter(photon[n]);
+      photon[n] = move(photon[n], exo);
+      photon[n].life = absorbeChance(photon[n],exo);
+    }
+    photon[n].alpha = getAlpha(photon[n]);
   }
 
   if (DEBUG){

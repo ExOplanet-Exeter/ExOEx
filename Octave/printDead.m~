@@ -1,5 +1,5 @@
 clear all
-load ~/Desktop/ExOEx/Arc/data/position.dat
+load ~/Desktop/ExOEx/Arc/data/deadPosition.dat
 x = position(:,1);
 y = position(:,2);
 z = position(:,3);

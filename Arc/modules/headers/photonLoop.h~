@@ -34,16 +34,6 @@
 
 
 //== FUNCTION PROTOTYPES =======================================
-// Calculates the path length a photon will travel through the
-// exoplanet.
-double getLambda(Particle photon, Planet exo){
-    double lambda;
-    lambda = -log(arcRand(0.0,1.0)) /
-    exo.layerKappa[photon.curLayer];
-    return lambda;
-}
-
-
 // Determines the photons current distance from the exoplanet
 // core.
 double getRho(Particle photon){
@@ -89,6 +79,8 @@ Particle stellarEmission(Particle photon){
         photon.pos[Y] = arcRand(-1.0,1.0);
         rho = sqrt(pow(photon.pos[X],2.0)+pow(photon.pos[Y],2.0));
     }
+    // Photon moves normal to stellar surface.
+    photon.dirVec[Z] = 1.0;
     return photon;
 }
 

@@ -29,6 +29,7 @@ selected parts of the data into .dat files and graphical plots.
 //-- LOCAL HEADERS ---------------------------------------------
 #include "../globals/global.h"
 #include "headers/output.h"
+#include <math.h>
 
 
 //== OUTPUT FUNCTION ===========================================
@@ -41,18 +42,47 @@ void output(Particle photon[], Planet exo, Datasystem data){
   }
 
 //-- DECLERATIONS ----------------------------------------------
+  int totalDead = 0.0, angle;
+  double percentDead, lightcurveBin[180] = {0.0};
+
   // Create pointer for output file.
-  FILE *output;
-  output = fopen("data.dat","w");
+  FILE *position, *lightcurve, *deadPos;
+  position   = fopen("data/position.dat","w");
+  lightcurve = fopen("data/lightcurve.dat","w");
+  deadPos    = fopen("data/deadPosition.dat","w");
   
-  if (output == NULL){
-    printf(ARED "ERROR! Could not open data.dat!\n" ARESET);
+  if (position == NULL){
+    printf(ARED "ERROR! Could not open position.dat!\n" ARESET);
+  }
+  if (lightcurve == NULL){
+    printf(ARED "ERROR! Could not open lightcurve.dat!\n" ARESET);
+  }
+  if (deadPos == NULL){
+    printf(ARED "ERROR! Could not open deadPosition.dat!\n" ARESET);
   }
 
   for (int n=0; n<exo.nPhot; n++){
-    fprintf(output,"%lf %lf %lf\n",photon[n].pos[X],
-	    photon[n].pos[Y], photon[n].pos[Z]);
+    angle = photon[n].alpha*(180.0/PI) /1;
+    lightcurveBin[angle]++;
+    if (photon[n].life != 0){
+      totalDead++;
+      fprintf(deadPos,"%lf %lf %lf\n",photon[n].pos[X],
+	      photon[n].pos[Y], photon[n].pos[Z]);
+    }
+    if (photon[n].life == 0){
+      fprintf(position,"%lf %lf %lf\n",photon[n].pos[X],
+              photon[n].pos[Y], photon[n].pos[Z]);
+    }
   }
+
+  for (int i=0; i<180; i++){
+    lightcurveBin[i] = lightcurveBin[i] / sin((i*(PI/180.0))+0.5);
+    fprintf(lightcurve,"%i %lf\n",i,lightcurveBin[i]);
+  }
+
+  percentDead = (totalDead*100.0)/exo.nPhot;
+  printf("%i/%i photons dead. (%lf%%)\n",
+	 totalDead,exo.nPhot,percentDead);
 
   if (DEBUG){
     printf(AGREEN "Output Done.\n" ARESET);
