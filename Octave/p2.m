@@ -1,5 +1,5 @@
 clear all
-load ~/Desktop/ExOEx/Arc/data.dat
-x = data(:,1);
-y = data(:,2);
+load ~/Desktop/ExOEx/Arc/data/position.dat
+x = position(:,1);
+y = position(:,2);
 plot(x,y,'b.')
