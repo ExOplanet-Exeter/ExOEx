@@ -22,13 +22,29 @@
 ----------------------------------------------------------------
 ==============================================================*/
 
+
 //== INCLUDES ==================================================
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
 
 //== FUNCTION PROTOTYPES =======================================
+int arcProgress(int,int,int);
+double arcRand(double,double);
+double arcDot(double,double,double,double,double,double);
+
+
+//== COMPLETED FUNCTIONS =======================================
+int arcProgress(int current, int total, int cur){
+  int percent;
+  percent = (current * 100)/total;
+  percent = percent / 10;
+  percent = percent * 10;
+  if (percent != cur){
+    printf("%i%%\n",percent);
+  }
+  return percent;
+}
+
+
 double arcRand(double min, double max){
     double range = max - min;
     double div = RAND_MAX / range;

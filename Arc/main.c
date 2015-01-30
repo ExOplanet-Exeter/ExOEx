@@ -32,7 +32,6 @@
 //-- SYSTEM HEADERS --------------------------------------------
 // These will be found in system library files and do not need
 // to be included locally. They use <> containers.
-#include <stdlib.h>
 
 //-- LOCAL HEADERS ---------------------------------------------
 // These local header files must be placed within the working
@@ -41,7 +40,11 @@
 #include "modules/headers/module.h"
 
 
-//== MAIN FUNCTION =============================================
+//== FUNCTIONS IN PROGRESS =======================================
+// Move to correct header file when done please.
+
+
+//== MAIN FUNCTION ===============================================
 int main(){
 
   //-- ENTRY -----------------------------------------------------
@@ -57,13 +60,16 @@ int main(){
   // WARNING! In the new format the array elements of the planet
   // type must be defined within the program, else you're reading
   // part of an array that isn't ever defined!
+  int numberOfLayers;
   Planet exo;
-  Datasystem data = {0};
-  
-  exo.layerType   = malloc(10 * sizeof(int));
-  exo.layerKappa  = malloc(10 * sizeof(double));
-  exo.layerAlbedo = malloc(10 * sizeof(double));
-  exo.layerRadius = malloc(10 * sizeof(double));
+  Datasystem data = {0};  
+
+  numberOfLayers = grabNumberOfLayers();
+
+  exo.layerType   = malloc(numberOfLayers * sizeof(int));
+  exo.layerKappa  = malloc(numberOfLayers * sizeof(double));
+  exo.layerAlbedo = malloc(numberOfLayers * sizeof(double));
+  exo.layerRadius = malloc(numberOfLayers * sizeof(double));
       
   //-- CORE MODULES ----------------------------------------------
   // Pass exo to 'input.c' for modifying by .cfg files.
