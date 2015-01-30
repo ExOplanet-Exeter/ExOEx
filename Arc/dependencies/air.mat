@@ -1,6 +1,6 @@
 !These values are completely made up
-kappa 10.0
-albedo 0.99
+kappa 1.0
+albedo 0.2
 type 0
 pinecone 8.21 thisisCOmpletenoNsense!
 END

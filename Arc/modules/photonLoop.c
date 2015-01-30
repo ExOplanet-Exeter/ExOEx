@@ -102,7 +102,9 @@ int absorbeChance(Particle photon, Planet exo){
 Particle injectPhoton(Particle photon, Planet exo){
   photon.pos[Z] = photon.pos[Z] - getLambda(photon,exo);
   photon = getLayer(photon, exo);
-  photon.life = absorbeChance(photon,exo);
+  if(getRho(photon) <= 1.0){
+    photon.life = absorbeChance(photon,exo);
+  }
   return photon;
 }
 
@@ -126,7 +128,9 @@ void photonLoop(Particle photon[], Planet exo){
     while (getRho(photon[n]) <= 1.0 && photon[n].life == 0){
       photon[n] = isoScatter(photon[n]);
       photon[n] = move(photon[n], exo);
-      photon[n].life = absorbeChance(photon[n],exo);
+      if(getRho(photon[n]) <= 1.0){
+	photon[n].life = absorbeChance(photon[n],exo);
+      }
     }
     photon[n].alpha = getAlpha(photon[n]);
   }

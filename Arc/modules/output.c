@@ -76,7 +76,7 @@ void output(Particle photon[], Planet exo, Datasystem data){
   }
 
   for (int i=0; i<180; i++){
-    lightcurveBin[i] = lightcurveBin[i] / sin((i*(PI/180.0))+0.5);
+    lightcurveBin[i] = lightcurveBin[i] / sin(((i+0.5)*(PI/180.0)));
     fprintf(lightcurve,"%i %lf\n",i,lightcurveBin[i]);
   }
 

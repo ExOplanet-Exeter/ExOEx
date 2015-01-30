@@ -11,6 +11,5 @@ u = deadPosition(:,1);
 v = deadPosition(:,2);
 w = deadPosition(:,3);
 scatter3(u,v,w,'r');
-[a,b,c] = sphere(30);
-mesh(a,b,c)
+sphere(16)
 hold off
