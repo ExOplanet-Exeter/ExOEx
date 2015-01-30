@@ -52,7 +52,7 @@ int main(){
 
   //-- INITIALISATION --------------------------------------------
   // Create a seed for the random number generation.
-  srand(777);
+  srand(43297);
   // Create exoplanet and data structure.
   // WARNING! In the new format the array elements of the planet
   // type must be defined within the program, else you're reading
