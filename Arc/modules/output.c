@@ -23,13 +23,11 @@ selected parts of the data into .dat files and graphical plots.
 
 
 //== INCLUDES ==================================================
-//-- SYSTEM HEADERS --------------------------------------------
-// Allows use of math functions such as sine/cosine etc.
+//-- SYSTEM HEADERS --------------------------------------------
 
 //-- LOCAL HEADERS ---------------------------------------------
 #include "../globals/global.h"
 #include "headers/output.h"
-#include <math.h>
 
 
 //== OUTPUT FUNCTION ===========================================

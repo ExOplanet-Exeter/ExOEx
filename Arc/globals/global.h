@@ -25,9 +25,14 @@ b `"YbbdP"Y8  88   `"YbbdP"'   8Y"Ybbd8"'   `"8bbdP"Y8  88
 ==============================================================*/
 
 //== INCLUDES ==================================================
+// Printing and reading functions.
 #include <stdio.h>
+// Uses of the string type. Contains functions for string 
+// comparison etc.
 #include <string.h>
 #include <stdlib.h>
+// Contains useful mathmatical functions. Cos() for example.
+#include <math.h>
 
 
 //== DEBUG CONTROL =============================================
@@ -44,6 +49,8 @@ b `"YbbdP"Y8  88   `"YbbdP"'   8Y"Ybbd8"'   `"8bbdP"Y8  88
 #define DEFAULT_NLAYERS 1
 #define DEFAULT_KAPPA   1.0
 // Defines used within 'input.c'
+#define MAX_NUMBER_OF_MATERIALS 10
+#define MAX_WORD_LENGTH 64
 #define MAX_NAME_LENGTH 64
 #define MAX_COMMENT_LENGTH 128
 // Defines used within 'photonLoop.c'
@@ -123,6 +130,7 @@ typedef struct datasystem {
   int    lightcurve[180];
   double normalisedLightcurve[180];
 } Datasystem;
+
 
 //== TERMINAL OUTPUT COLOURS ===================================
 // These defines may be used for terminal colouring.

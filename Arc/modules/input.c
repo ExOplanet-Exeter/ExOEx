@@ -22,8 +22,7 @@
 
 //== INCLUDES ==================================================
 //-- SYSTEM HEADERS --------------------------------------------
-// Required for string comparison.
-#include <string.h>
+
 //-- LOCAL HEADERS ---------------------------------------------
 // The directory path of '..' means move up one directory.
 #include "../globals/global.h"
@@ -31,17 +30,6 @@
 
 
 //== FUNCTIONS IN PROGRESS =====================================
-// Checks the upper limit of exo radius and scales all the
-// radii values so that upper limit of planet radius is 1.0.
-Planet fixLayerRadii(Planet exo){
-  double radius, scaleFactor;
-  radius = exo.layerRadius[exo.nLayers-1];
-  scaleFactor = 1.0 / radius;
-  for (int i=0; i<exo.nLayers; i++){
-    exo.layerRadius[i] = exo.layerRadius[i] * scaleFactor;
-  }
-  return exo;
-}
 
 
 //== INPUT FUNCTION ============================================

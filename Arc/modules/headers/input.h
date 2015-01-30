@@ -24,11 +24,32 @@
 
 
 //== DEFINES ===================================================
-#define MAX_NUMBER_OF_MATERIALS 10
-#define MAX_WORD_LENGTH 64
 
 
 //== FUNCTION PROTOTYPES =======================================
+Planet readStructure(Planet,Material[],int);
+void printAllPlanetData(Planet);
+void printExoParameters(Planet);
+Planet readConfig(Planet,Material[]);
+void readIndividualMats(int,Material[]);
+int readMatList(int,Material[]);
+Planet fixLayerRadii(Planet);
+
+
+//== COMPLETED FUNCTIONS =======================================
+// Checks the upper limit of exo radius and scales all the
+// radii values so that upper limit of planet radius is 1.0.
+Planet fixLayerRadii(Planet exo){
+    double radius, scaleFactor;
+    radius = exo.layerRadius[exo.nLayers-1];
+    scaleFactor = 1.0 / radius;
+    for (int i=0; i<exo.nLayers; i++){
+        exo.layerRadius[i] = exo.layerRadius[i] * scaleFactor;
+    }
+    return exo;
+}
+
+
 // Sets up the layers of the exo Planet structure.
 Planet readStructure(Planet exo, Material atmosphere[], int nMat){
     FILE *structure;

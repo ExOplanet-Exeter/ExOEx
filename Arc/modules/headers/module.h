@@ -27,8 +27,36 @@
 // Input function for reading from .cfg files and parseing data
 // into relevant structure types.
 Planet input(Planet);
+// Main photonLoop function for core simulation calculations.
 void photonLoop(Particle photon[], Planet exo);
+// Output function for writing aspects of photon[] to data
+// files.
 void output(Particle photon[], Planet exo, Datasystem data);
+
+
+// Grabs the number of layers from config.cfg so that correctly
+// sied memory allocation may occure.
+int grabNumberOfLayers(){
+    int nLayers;
+    FILE *config;
+    char word[MAX_WORD_LENGTH];
+    config = fopen("dependencies/config.cfg","r");
+    if (config == NULL){
+        printf(ARED "ERROR! Could not open config.cfg!\n" ARESET);
+    }
+    while (1){
+        fscanf(config,"%s",word);
+        if (strcmp(word,"END") == 0){
+            break;
+        }
+        else if (strcmp(word,"nLayers") == 0){
+            return nLayers;
+        }
+    }
+    // Returns default value if no other found.
+    return 1000;
+}
+
 
 // Prints the title of ExOEx to the terminal.
 void printTitle(){
