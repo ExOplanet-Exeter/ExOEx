@@ -34,7 +34,7 @@ int readInt(char *fileName, char *paramName){
 	// Open file and check it has been opened successfully.
 	file = fopen(filePath,"r");
 	if (file == NULL)
-		printf(ARED "ERROR! Unable to open %s\n" ARESET,
+		printf("ERROR! Unable to open %s!\n",
 		fileName);
 	
 	// Reading loop
@@ -42,15 +42,13 @@ int readInt(char *fileName, char *paramName){
 		fscanf(file,"%s",word);
 		if (strcmp(word,"END") == 0){
 			if (readInt == INT_NULL){
-				printf(AYELLOW "Warning: %s not found.\n"
-				ARESET, paramName);
+				printf("Warning: %s not found.\n",
+				paramName);
 			}
 			break;
 		}
 		else if (strcmp(word,paramName) == 0){
 			fscanf(file,"%i",&readInt);
-			printf(AMAGENTA "%s = %i\n" ARESET,
-			paramName,readInt);
 		}
 	}
 	
