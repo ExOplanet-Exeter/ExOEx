@@ -22,7 +22,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-//#include "../globals/utilities.h"
 
 
 //── DEBUG CONTROL ────────────────────────────────────────────┤
@@ -32,10 +31,12 @@
 //── GLOBAL DEFINES ───────────────────────────────────────────┤
 // 1) Sudo NULL type for int.
 // 2) Mathmatical constant pi.
-// 3) Maximum word length when reading config files.
-// 4) Maximum comment length when reading config files.
+// 3) Maximum name length for a material.
+// 4) Maximum word length when reading config files.
+// 5) Maximum comment length when reading config files.
 #define INT_NULL			1234567890
 #define PI					3.14159265359
+#define MAX_NAME_LENGTH		16
 #define MAX_WORD_LENGTH		64
 #define MAX_COMMENT_LENGTH	128
 
@@ -53,10 +54,11 @@
 typedef struct planet{
 	int 	nPhot;
 	int 	nLayers;
+	char 	*lName[MAX_NAME_LENGTH];
 	int 	*lType;
 	double  *lKappa;
 	double 	*lAlbedo;
-	double 	*lRadius;
+	double	*lRadius;
 } Planet;
 
 //── ENUMERATIONS ─────────────────────────────────────────────┤

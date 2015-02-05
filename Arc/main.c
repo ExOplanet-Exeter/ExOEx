@@ -30,36 +30,37 @@
 
 //── MAIN ─────────────────────────────────────────────────────┤
 int main(){
-  
-  // Entry
-  printTitle();
-  if (DEBUG)
-    printf(ACYAN "ExOEx Running:\n" ARESET);
-
-  // Initialisation
-  srand(2434);
-
-  // Declerations
-  Planet exo;
-  int nLayers = readInt("config.cfg","nLayers");
-
-  // Memory allocation
-  exo.lType   = malloc(nLayers * sizeof *exo.lType);
-  exo.lKappa  = malloc(nLayers * sizeof *exo.lKappa);
-  exo.lAlbedo = malloc(nLayers * sizeof *exo.lAlbedo);
-  exo.lRadius = malloc(nLayers * sizeof *exo.lRadius);
-  
-  // Core modules
-  
-  // Clean up
-  free(exo.lType);
-  free(exo.lKappa);
-  free(exo.lAlbedo);
-  free(exo.lRadius);
-
-  // Exit
-  if (DEBUG)
-    printf(AGREEN "ExOEx Complete.\n\n" ARESET);
     
-  return 0;
+    // Entry
+    printTitle();
+    if (DEBUG)
+      printf("ExOEx Running:\n");
+
+    // Initialisation
+    srand(2434);
+
+    // Declerations
+    Planet exo;
+    exo.nLayers = readInt("config.cfg","nLayers");
+
+    // Memory allocation
+    exo.lType     = malloc(exo.nLayers * sizeof *exo.lType);
+    exo.lKappa    = malloc(exo.nLayers * sizeof *exo.lKappa);
+    exo.lAlbedo   = malloc(exo.nLayers * sizeof *exo.lAlbedo);
+    exo.lRadius   = malloc(exo.nLayers * sizeof *exo.lRadius);
+  
+    // Core modules
+    input(&exo);
+  
+    // Clean up
+    free(exo.lType);
+    free(exo.lKappa);
+    free(exo.lAlbedo);
+    free(exo.lRadius);
+
+    // Exit
+    if (DEBUG)
+      printf("ExOEx Complete.\n\n");
+    
+    return 0;
 }

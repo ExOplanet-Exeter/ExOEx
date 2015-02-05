@@ -13,14 +13,15 @@
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
 void printTitle();
+void input(Planet*);
 
 
 //── COMPLETED FUNCTIONS ──────────────────────────────────────┤
 // Prints the title of ExOEx to the terminal.
 void printTitle(){
-	printf(ABLUE ""
-	"╦═════════════════════════════════════╦═══════════════════"
-	"═════╦\n"
+	printf(""
+	"\n╦═════════════════════════════════════╦═════════════════"
+	"═══════╦\n"
     "║oooooooooooo               .oooooo.  ║oooooooooooo       "
     "     ║ \n"
 	"║`888'     `8              d8P'  `Y8b ║`888'     `8       "
@@ -37,6 +38,6 @@ void printTitle(){
 	" 888o║\n"
 	"╩═════════════════════════════════════╩═══════════════════"
 	"═════╩\n\n"
-	"" ARESET);
+	"");
 	return;
 }
