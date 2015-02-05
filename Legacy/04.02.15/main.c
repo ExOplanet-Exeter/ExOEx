@@ -64,14 +64,12 @@ int main(){
   Planet exo;
   Datasystem data = {0};  
 
-  int testArray[1000000];
-
   numberOfLayers = grabNumberOfLayers();
 
-  exo.layerType   = malloc(numberOfLayers * sizeof(int));
-  exo.layerKappa  = malloc(numberOfLayers * sizeof(double));
-  exo.layerAlbedo = malloc(numberOfLayers * sizeof(double));
-  exo.layerRadius = malloc(numberOfLayers * sizeof(double));
+  exo.layerType   = malloc(numberOfLayers * sizeof *exo.layerType);
+  exo.layerKappa  = malloc(numberOfLayers * sizeof *exo.layerKappa);
+  exo.layerAlbedo = malloc(numberOfLayers * sizeof *exo.layerAlbedo);
+  exo.layerRadius = malloc(numberOfLayers * sizeof *exo.layerRadius);
       
   //-- CORE MODULES ----------------------------------------------
   // Pass exo to 'input.c' for modifying by .cfg files.

@@ -1,20 +1,20 @@
-# Use the GNU C compiler
+# Use the GNU C compiler                                                                                                                    
 cc = gcc
 
-# Flags
+# Flags                                                                                                                                     
 CFLAGS = -g
 
-# Short for working directory
+# Short for working directory                                                                                                               
 $(shell basename $(WKDIR))
 
 all:arc clean
 
 
-				#ADD THE OTHER .Os WHEN NEEDED!
+                                #ADD THE OTHER .Os WHEN NEEDED!                                                                             
 
-# Main build
-arc: main.o input.o photonLoop.o output.o
-	$(CC) $(CFLAGS) main.o input.o photonLoop.o output.o -o arc
+# Main build                                                                                                                                
+arc: main.o
+	$(CC) $(CFLAGS) main.o -o arc
 
 main.o: $(WKDIR)main.c
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
@@ -29,7 +29,7 @@ output.o: $(WKDIR)modules/output.c
 	$(CC) $(CFLAGS) -c $(WKDIR)modules/output.c
 
 
-# Clean up
+# Clean up                                                                                                                                  
 .PHONY: clean
 
 clean:
