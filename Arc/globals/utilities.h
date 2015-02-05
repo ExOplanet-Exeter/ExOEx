@@ -1,58 +1,58 @@
-/*==============================================================
-----------------------------------------------------------------
-                      88  88  88           88
-               ,d     ""  88  ""    ,d     ""
-               88         88        88
-88       88  MM88MMM  88  88  88  MM88MMM  88   ,adPPYba,
-88       88    88     88  88  88    88     88  a8P_____88
-88       88    88     88  88  88    88     88  8PP"""""""
-"8a,   ,a88    88,    88  88  88    88,    88  "8b,   ,aa
- `"YbbdP'Y8    "Y888  88  88  88    "Y888  88   `"Ybbd8"'
-                                                     88
-                                                     88
-                                                     88
-                                     ,adPPYba,       88,dPPYba,
-                                     I8[    ""       88P'    "8a
-                                      `"Y8ba,        88       88
-                                     aa    ]8I  888  88       88
-                                     `"YbbdP"'  888  88       88
-----------------------------------------------------------------
-         Contains all the global variables used in Arc.
- Be careful when editing as it will cause global changes (duh!)
-----------------------------------------------------------------
-==============================================================*/
+/*═════════════════════════════════════════════════════════════╗
+├──────────────────────────────────────────────────────────────┤
+            _   _| |_(_) (_) |_(_) ___  ___  | |__  
+           | | | | __| | | | __| |/ _ \/ __| | '_ \ 
+           | |_| | |_| | | | |_| |  __/\__ \_| | | |
+            \__,_|\__|_|_|_|\__|_|\___||___(_)_| |_|
+├──────────────────────────────────────────────────────────────┤
+	Contains a variety of useful functions.
+├──────────────────────────────────────────────────────────────┤
+╚═════════════════════════════════════════════════════════════*/
 
 
-//== INCLUDES ==================================================
+//── FUNCTION PROTOTYPES ──────────────────────────────────────┤
+int readInt(char*,char*);
 
 
-//== FUNCTION PROTOTYPES =======================================
-int arcProgress(int,int,int);
-double arcRand(double,double);
-double arcDot(double,double,double,double,double,double);
-
-
-//== COMPLETED FUNCTIONS =======================================
-int arcProgress(int current, int total, int cur){
-  int percent;
-  percent = (current * 100)/total;
-  percent = percent / 10;
-  percent = percent * 10;
-  if (percent != cur){
-    printf("%i%%\n",percent);
-  }
-  return percent;
-}
-
-
-double arcRand(double min, double max){
-    double range = max - min;
-    double div = RAND_MAX / range;
-    return min + (rand() / div);
-}
-
-
-double arcDot(double Ax, double Ay, double Az, double Bx,
-	      double By, double Bz){
-    return (Ax*Bx)+(Ay*By)+(Az*Bz);
+//── COMPLETED FUNCTIONS ──────────────────────────────────────┤
+// Reads an integer value out of a file.
+// Requires file name and parameter name.
+int readInt(char *fileName, char *paramName){
+	
+	// Declerations
+	FILE *file;
+	char *path = "dependencies/";
+	char *filePath = malloc(strlen(path) + strlen(fileName));
+	char word[MAX_WORD_LENGTH];
+	char comment[MAX_COMMENT_LENGTH];
+	int  readInt = INT_NULL;
+	
+	// Concate for full file position.
+	strcpy(filePath, path);
+	strcat(filePath, fileName);
+	
+	// Open file and check it has been opened successfully.
+	file = fopen(filePath,"r");
+	if (file == NULL)
+		printf(ARED "ERROR! Unable to open %s\n" ARESET,
+		fileName);
+	
+	// Reading loop
+	while (1){
+		fscanf(file,"%s",word);
+		if (strcmp(word,"END") == 0){
+			if (readInt == INT_NULL){
+				printf(AYELLOW "Warning: %s not found.\n"
+				ARESET, paramName);
+			}
+			break;
+		}
+		else if (strcmp(word,paramName) == 0){
+			fscanf(file,"%i",&readInt);
+			printf(AMAGENTA "%s = %i\n" ARESET,
+			paramName,readInt);
+		}
+	}
+	
+	return readInt;
 }
