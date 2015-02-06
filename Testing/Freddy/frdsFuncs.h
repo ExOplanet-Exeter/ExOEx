@@ -23,7 +23,7 @@
 // Allows the use of everything found in Arc's global.h header.
 // If functions are moved into the Arc build then they must
 // comply with global.h, so it's useful to keep this in.
-#include "../../Arc/globals/global.h"
+#include "../../Arc/globals/headers/global.h"
 
 
 //== FUNCTIONS =================================================

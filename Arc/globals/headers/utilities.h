@@ -1,25 +1,25 @@
 /*═════════════════════════════════════════════════════════════╗
 ├──────────────────────────────────────────────────────────────┤
-			 _ __ ___   ___   __| |_   _| | ___  | |__  
-			| '_ ` _ \ / _ \ / _` | | | | |/ _ \ | '_ \ 
-			| | | | | | (_) | (_| | |_| | |  __/_| | | |
-			|_| |_| |_|\___/ \__,_|\__,_|_|\___(_)_| |_|
+          _   _| |_(_) (_) |_(_) ___  ___  | |__  
+         | | | | __| | | | __| |/ _ \/ __| | '_ \
+         | |_| | |_| | | | |_| |  __/\__ \_| | | |
+          \__,_|\__|_|_|_|\__|_|\___||___(_)_| |_|
 ├──────────────────────────────────────────────────────────────┤
-		This header file contains the function prototypes for the
-		core modules used within the ExOEx program.
+	Contains a variety of useful functions.
 ├──────────────────────────────────────────────────────────────┤
 ╚═════════════════════════════════════════════════════════════*/
 
 
 //── CONDITIONAL ──────────────────────────────────────────────┤
-#ifndef module
-#define module
+#ifndef utilities
+#define utilities
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
-void input(Planet*);
-void photonLoop(Particle*,int);
-void extraction(Particle*,Datasystem*);
+void printTitle();
+int readInt(char*,char*);
+double readDouble(char*,char*);
+double arcRand(double,double);
 
 
 //── CONDITIONAL ──────────────────────────────────────────────┤

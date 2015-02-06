@@ -12,6 +12,11 @@
 ╚═════════════════════════════════════════════════════════════*/
 
 
+//── CONDITIONAL ──────────────────────────────────────────────┤
+#ifndef global
+#define global
+
+
 //── INCLUDES ─────────────────────────────────────────────────┤
 // 1) Printing and reading functions.
 // 2) C standard general utilities functions.
@@ -30,11 +35,13 @@
 
 //── GLOBAL DEFINES ───────────────────────────────────────────┤
 // 1) Sudo NULL type for int.
-// 2) Mathmatical constant pi.
-// 3) Maximum name length for a material.
-// 4) Maximum word length when reading config files.
-// 5) Maximum comment length when reading config files.
+// 2) Sudo NULL type for double.
+// 3) Mathmatical constant pi.
+// 4) Maximum name length for a material.
+// 5) Maximum word length when reading config files.
+// 6) Maximum comment length when reading config files.
 #define INT_NULL			1234567890
+#define DOUBLE_NULL			0.123456789
 #define PI					3.14159265359
 #define MAX_NAME_LENGTH		16
 #define MAX_WORD_LENGTH		64
@@ -54,7 +61,6 @@
 typedef struct planet{
 	int 	nPhot;
 	int 	nLayers;
-	char 	*lName[MAX_NAME_LENGTH];
 	int 	*lType;
 	double  *lKappa;
 	double 	*lAlbedo;
@@ -71,6 +77,12 @@ enum Dimensions{
 };
 
 
+enum ScatterTypes{
+	ISO,
+	RAY,
+	MIE,
+};
+
 //── TERMINAL OUTPUT COLOURS ──────────────────────────────────┤
 // These defines are used for terminal colouring.
 // Will only work when used within unix terminal.
@@ -81,3 +93,7 @@ enum Dimensions{
 #define AMAGENTA "\x1b[35m"
 #define ACYAN    "\x1b[36m"
 #define ARESET   "\x1b[0m"
+
+
+//── CONDITIONAL ──────────────────────────────────────────────┤
+#endif
