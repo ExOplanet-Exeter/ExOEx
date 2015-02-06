@@ -10,28 +10,24 @@ $(shell basename $(WKDIR))
 all:arc clean
 
 
+                                #ADD THE OTHER .Os WHEN NEEDED!                                                                             
+
 # Main build                                                                                                                                
-arc: main.o input.o photonLoop.o utilities.o extraction.o
-	$(CC) $(CFLAGS) main.o input.o photonLoop.o utilities.o extraction.o -o arc
+arc: main.o input.o
+	$(CC) $(CFLAGS) main.o input.o -o arc
 
 main.o: $(WKDIR)main.c
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
-	
+
 input.o: $(WKDIR)modules/functions/input.c
 	$(CC) $(CFLAGS) -c $(WKDIR)modules/functions/input.c
 
-photonLoop.o: $(WKDIR)modules/functions/photonLoop.c
-	$(CC) $(CFLAGS) -c $(WKDIR)modules/functions/photonLoop.c
+photonLoop.o: $(WKDIR)modules/photonLoop.c
+	$(CC) $(CFLAGS) -c $(WKDIR)modules/photonLoop.c
 
 output.o: $(WKDIR)modules/output.c
 	$(CC) $(CFLAGS) -c $(WKDIR)modules/output.c
 
-utilities.o: $(WKDIR)globals/functions/utilities.c
-	$(CC) $(CFLAGS) -c $(WKDIR)globals/functions/utilities.c
-	
-extraction.o: $(WKDIR)modules/functions/extraction.c
-	$(CC) $(CFLAGS) -c $(WKDIR)modules/functions/extraction.c
-	
 
 # Clean up                                                                                                                                  
 .PHONY: clean
