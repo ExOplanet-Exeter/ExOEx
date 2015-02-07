@@ -15,7 +15,7 @@
 //── FUNCTIONS ────────────────────────────────────────────────┤
 // Prints the title of ExOEx to the terminal.
 void printTitle(){
-	printf(""
+	printf( ABLUE""
 	"\n╦═════════════════════════════════════╦═════════════════"
 	"═══════╦\n"
     "║oooooooooooo               .oooooo.  ║oooooooooooo       "
@@ -34,7 +34,7 @@ void printTitle(){
 	" 888o║\n"
 	"╩═════════════════════════════════════╩═══════════════════"
 	"═════╩\n\n"
-	"");
+	"" ARESET);
 	return;
 }
 
@@ -130,7 +130,9 @@ double readDouble(char *fileName, char *paramName){
 // Generates a random double between the given min and max
 // values.
 double arcRand(double min, double max){
+	
 	double range = max - min;
 	double div = RAND_MAX / range;
+	
 	return min + (rand() / div);
 }

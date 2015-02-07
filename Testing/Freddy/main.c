@@ -16,60 +16,44 @@
 //== HEADERS ===================================================
 #include <stdio.h>
 #include "frdsFuncs.h"
-#include <time.h>
-
-#define BIG_NUMBER 100000
+#include <unistd.h>
 
 
 //== STRUCTURES ================================================
-typedef struct block{
-  int ID;
-  double data1;
-  double data2;
-  double data3;
-  double data4;
-  double data5;
-} Block;
 
 
 //== FUNCTION IN PROGRESS ======================================                             
-void changeID(Block *data, int i){
-  data->ID = i;
-  return;
+static inline void progressBar(int x, int n, int r, int w)
+{
+  // Only update r times.
+  if ( x % (n/r +1) != 0 ) return;
+ 
+  // Calculuate the ratio of complete-to-incomplete.
+  float ratio = x/(float)n;
+  int   c     = ratio * w;
+ 
+  // Show the percentage complete.
+  printf("%3d%% [", (int)(ratio*100) );
+ 
+  // Show the load bar.
+  for (int x=0; x<c; x++)
+     printf("=");
+ 
+  for (int x=c; x<w; x++)
+     printf(" ");
+ 
+  // ANSI Control codes to go back to the
+  // previous line and clear it.
+  printf("]\n\033[F\033[J");
 }
-
 
 //== MAIN FUNCTION =============================================
 int main(){
   
-  float  loopTime1, loopTime2;
-  int    runTime1, runTime2, diff;
-  Block data[BIG_NUMBER] = {0};
- 
-  
-  loopTime1 = clock();
-  for(int i=0; i<BIG_NUMBER; i++){
-    changeID(&data[i], i);
+  for (int i=0; i<=100; i++){
+    progressBar(i, 100, 101, 50);
+    usleep(10000);
   }
-  runTime1 = clock() - loopTime1;
 
-  loopTime2 = clock();
-  for(int i=0; i<BIG_NUMBER; i++){
-    data[i].ID = i;
-  }
-  runTime2 = clock() - loopTime2;
-
-  diff = runTime1 - runTime2;
-
-  printf(AMAGENTA "\nLong loop: %i ms\n" ARESET, runTime1);
-  printf(ACYAN "Short loop: %i ms\n\n" ARESET, runTime2);
- 
-  if (diff >= 0){
-    printf(AGREEN "Short loop is: %i ms faster!\n\n" ARESET, diff);
-  }
-  else{
-    printf(ARED "Short loop is: %i ms slower!\n\n" ARESET, diff);
-  }
-  
   return 0;
 }

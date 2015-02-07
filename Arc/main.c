@@ -28,21 +28,33 @@
 #include "modules/headers/module.h"
 
 
+//── FUNCTION PROTOTYPES ──────────────────────────────────────┤
+static inline void progressBar(int,int,int,int);
+
+
 //── MAIN ─────────────────────────────────────────────────────┤
 int main(){
 	
 	// Entry
 	printTitle();
 	if (DEBUG)
-	  printf("ExOEx Running:\n");
+	  printf(ACYAN "ExOEx Running:\n" ARESET);
 
 	// Initialisation
 	srand(2434);
 	
 	// Declerations
+	int percentDone = 0;
 	Planet exo;
 	Particle photon;
 	Datasystem data;
+	
+	FILE* twoDPos;
+	twoDPos = fopen("data/twoDpos.dat","w");
+	fclose(twoDPos);
+	twoDPos = fopen("data/twoDpos.dat","a");
+	if (twoDPos == NULL)
+		printf(ARED "ERROR! Could not open 2Dpos.dat!\n" ARESET);
 	
 	exo.nLayers = readInt("config.cfg","nLayers");
 	
@@ -53,16 +65,17 @@ int main(){
 	exo.lRadius   = malloc(exo.nLayers * sizeof *exo.lRadius);
 	  
 	// Core modules
-	input(&exo);
+	input(&exo,&photon);
 	
 	if (DEBUG)
-		printf("PhotonLoop Running:\n");
+		printf(ACYAN "PhotonLoop Running:\n" AYELLOW);
 	for (int i=0; i<exo.nPhot; i++){
+		progressBar(i,exo.nPhot,100,58);
 		photonLoop(&photon,i);
-		extraction(&photon,&data);
+		extraction(&photon,&data,twoDPos);
 	}
 	if (DEBUG)
-		printf("PhotonLoop Complete.\n\n");
+		printf(AGREEN "PhotonLoop Complete.\n\n" ARESET);
 	  
 	// Clean up
 	free(exo.lType);
@@ -72,7 +85,35 @@ int main(){
 	
 	// Exit
 	if (DEBUG)
-		printf("ExOEx Complete.\n\n");
+		printf(AGREEN "ExOEx Complete.\n\n" ARESET);
 			
 	return 0;
+}
+
+
+//── COMPLETED FUNCTIONS ──────────────────────────────────────┤
+// Prints out a progress bar to the terminal.
+// x/n is the fraction complete.
+// r is resolution of bar. w is width of bar.
+static inline void progressBar(int x, int n, int r, int w){
+	// Only update r times.
+	if ( x % (n/r +1) != 0 ) return;
+ 
+	// Calculuate the ratio of complete-to-incomplete.
+	float ratio = x/(float)n;
+	int   c     = ratio * w;
+ 
+	// Show the percentage complete.
+	printf("%3d%% [", (int)(ratio*100) );
+ 
+	// Show the load bar.
+	for (int x=0; x<c; x++)
+		 printf("=");
+ 
+	for (int x=c; x<w; x++)
+		 printf(" ");
+ 
+	// ANSI Control codes to go back to the
+	// previous line and clear it.
+	printf("]\n\033[F\033[J");
 }

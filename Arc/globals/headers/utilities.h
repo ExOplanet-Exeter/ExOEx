@@ -21,6 +21,5 @@ int readInt(char*,char*);
 double readDouble(char*,char*);
 double arcRand(double,double);
 
-
 //── CONDITIONAL ──────────────────────────────────────────────┤
 #endif

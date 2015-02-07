@@ -17,9 +17,9 @@
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
-void input(Planet*);
+void input(Planet*,Particle*);
 void photonLoop(Particle*,int);
-void extraction(Particle*,Datasystem*);
+void extraction(Particle*,Datasystem*,FILE*);
 
 
 //── CONDITIONAL ──────────────────────────────────────────────┤

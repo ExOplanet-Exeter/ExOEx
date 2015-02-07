@@ -52,7 +52,6 @@ void photonLoop(Particle *photon,int i){
 //── COMPLETED FUNCTIONS ──────────────────────────────────────┤
 void initPhoton(Particle *photon){
 	
-	photon->wavelength 	= readDouble("config.cfg","wavelength");
 	photon->curLayer 	= -1;
 	photon->alpha 		= -1.0;
 	photon->life		= false;

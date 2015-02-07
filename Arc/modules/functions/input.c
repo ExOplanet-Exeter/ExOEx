@@ -28,18 +28,19 @@ void printLayerProperties(int,char*,Planet*);
 
 
 //── INPUT ────────────────────────────────────────────────────┤
-void input(Planet *exo){
+void input(Planet *exo,Particle *photon){
 	
 	// Entry
 	if (DEBUG)
-		printf("Input Running:\n");
+		printf(ACYAN "Input Running:\n" ARESET);
 
 	// Reading functions
 	exoSetup(exo);
+	photon->wavelength 	= readDouble("config.cfg","wavelength");
 
 	// Exit
 	if (DEBUG)
-		printf("Input Complete.\n\n");
+		printf(AGREEN "Input Complete.\n\n" ARESET);
 				
 	return;
 }
@@ -73,7 +74,7 @@ const char * getMaterialName(int i, Planet *exo){
 	
 	structure = fopen("dependencies/structure.cfg","r");
 	if (structure == NULL)
-		printf("ERROR! Unable to open structure.cfg!\n");
+		printf(ARED "ERROR! Unable to open structure.cfg!\n" ARESET);
 	
 	while (1){
 		fscanf(structure,"%s",word);
@@ -119,10 +120,10 @@ void getLayerProperties(int i, char *name, Planet *exo){
 // Prints the properties of the layer to the terminal.
 void printLayerProperties(int i, char *name, Planet *exo){
 	
-	printf("Layer %i: %s\n"
+	printf(AMAGENTA "Layer %i: %s\n"
 		"	t = %i\n"
 		"	k = %lf\n"
-		"	r = %lf\n",
+		"	r = %lf\n" ARESET,
 		i,name,exo->lType[i],exo->lKappa[i],exo->lRadius[i]);
 	
 	return;
