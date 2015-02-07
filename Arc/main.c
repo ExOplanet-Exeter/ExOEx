@@ -76,7 +76,9 @@ int main(){
 	}
 	if (DEBUG)
 		printf(AGREEN "PhotonLoop Complete.\n\n" ARESET);
-	  
+	
+	output(&data);  
+	
 	// Clean up
 	free(exo.lType);
 	free(exo.lKappa);

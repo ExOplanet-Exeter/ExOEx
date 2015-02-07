@@ -20,6 +20,7 @@
 void input(Planet*,Particle*);
 void photonLoop(Particle*,int);
 void extraction(Particle*,Datasystem*,FILE*);
+void output(Datasystem*);
 
 
 //── CONDITIONAL ──────────────────────────────────────────────┤

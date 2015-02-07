@@ -19,11 +19,14 @@ all: frd clean
 
 
 # Freddy's test build.
-frd: main.o
-	$(CC) $(CFLAGS) main.o -o frd
+frd: main.o gnuplot_i.o
+	$(CC) $(CFLAGS) main.o gnuplot_i.o -o frd
 
 main.o: $(WKDIR)main.c $(WKDIR)frdsFuncs.h
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
+	
+gnuplot_i: $(WKDIR)gnuplot_i.c $(WKDIR)gnuplot_i.h
+	$(CC) $(CFLAGS) -c $(WKDIR)gnuplot_i.c
 
 
 # Clean up.
