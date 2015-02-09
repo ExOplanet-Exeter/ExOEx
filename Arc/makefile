@@ -11,8 +11,8 @@ all:arc clean
 
 
 # Main build                                                                                                                                
-arc: main.o input.o photonLoop.o output.o utilities.o extraction.o
-	$(CC) $(CFLAGS) main.o input.o photonLoop.o output.o utilities.o extraction.o -o arc
+arc: main.o input.o photonLoop.o output.o utilities.o extraction.o gnuplot_i.o
+	$(CC) $(CFLAGS) main.o input.o photonLoop.o output.o utilities.o extraction.o gnuplot_i.o -o arc
 
 main.o: $(WKDIR)main.c
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
@@ -31,6 +31,9 @@ utilities.o: $(WKDIR)globals/functions/utilities.c
 
 extraction.o: $(WKDIR)modules/functions/extraction.c
 	$(CC) $(CFLAGS) -c $(WKDIR)modules/functions/extraction.c
+	
+gnuplot_i.o: $(WKDIR)globals/functions/gnuplot_i.c
+	$(CC) $(CFLAGS) -c $(WKDIR)globals/functions/gnuplot_i.c
 
 
 # Clean up                                                                                                                                  

@@ -53,6 +53,8 @@ void exoSetup(Planet *exo){
 	
 	char nameList[exo->nLayers][MAX_NAME_LENGTH];
 	exo->nPhot = readInt("config.cfg","nPhot");
+	if (DEBUG)
+		printf(AMAGENTA "Number of Photons = %i\n\n" ARESET, exo->nPhot);
 	for (int i=0; i<exo->nLayers; i++){
 		strcpy(nameList[i],getMaterialName(i,exo));
 		getLayerProperties(i,nameList[i],exo);

@@ -136,3 +136,52 @@ double arcRand(double min, double max){
 	
 	return min + (rand() / div);
 }
+
+// Determines the dot product of two vectors.
+double arcDot(Ax,Ay,Az,Bx,By,Bz){
+	
+	return (Ax*Bx)+(Ay*By)+(Az*Bz);
+}
+
+// Converts double from radians to more lovely degrees.
+double degreeConvert(double rad){
+
+	return ((180.0 * rad)/PI);
+}
+
+// Estimates how long it will be until photon loop is done.
+void estimatedTimeUntilCompletion(int t1){
+	int t2 = (clock() - t1);
+	double sec = (t2*1.0)/1000000;
+	double etc = sec*99.0;
+	
+	if (etc <= 2)
+		printf("\n");
+	else if (2 < etc && etc < 120)
+		printf("An estimated %lf sec until completion.\n",etc);
+	else if (120 <= etc && etc < 7200)
+		printf("An estimated %lf min until completion.\n",etc/60);
+	else if (7200 <= etc && etc < 86400)
+		printf("An estimated %lf hrs until completion.\n",etc/(60*60));
+	else
+		printf("This may take over a day to complete.\n");
+		
+	return;
+}
+
+// Prints out the time taken to run photonLoop
+void computationTime(int t1){
+	
+	double timeTaken = ((clock() - t1)*1.0)/1000000;
+	
+	if (0 < timeTaken && timeTaken < 120)
+		printf("%lfsec taken.\n",timeTaken);
+	else if (120 <= timeTaken && timeTaken < 7200)
+		printf("%lfmin taken.\n",timeTaken/60);
+	else if (7200 <= timeTaken && timeTaken < 86400)
+		printf("%lfhrs taken.\n",timeTaken/(60*60));
+	else
+		printf("Taken over a day! Patient one, you are!\n");
+	
+	return;
+}

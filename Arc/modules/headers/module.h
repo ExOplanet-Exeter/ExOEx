@@ -18,8 +18,8 @@
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
 void input(Planet*,Particle*);
-void photonLoop(Particle*,int);
-void extraction(Particle*,Datasystem*,FILE*);
+void photonLoop(int,Particle*,Planet*);
+void extraction(Particle*,Datasystem*,FILE*,FILE*);
 void output(Datasystem*);
 
 

@@ -23,9 +23,14 @@
 
 
 //── PHOTON LOOP ──────────────────────────────────────────────┤
-void extraction(Particle *photon,Datasystem *data,FILE *twoDPos){
+void extraction(Particle *photon,Datasystem *data,FILE *twoDPos,FILE *threeDPos){
 	
-	fprintf(twoDPos,"%lf %lf\n",photon->pos[X],photon->pos[Y]);
+	//fprintf(twoDPos,"%lf %lf\n",photon->pos[X],photon->pos[Y]);
+	//fprintf(threeDPos,"%lf %lf %lf\n",
+		//photon->pos[X],photon->pos[Y],photon->pos[Z]);
+	
+	int alpha = degreeConvert(photon->alpha);
+	data->lightCurve[alpha]++;
 	
 	return;
 }

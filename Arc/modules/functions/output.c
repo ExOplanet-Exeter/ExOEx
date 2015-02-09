@@ -14,6 +14,7 @@
 //── INCLUDES ─────────────────────────────────────────────────┤
 #include "../../globals/headers/global.h"
 #include "../../globals/headers/utilities.h"
+#include "../../globals/headers/gnuplot_i.h"
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
@@ -27,6 +28,38 @@ void output(Datasystem *data){
 	
 	if (DEBUG)
 		printf(ACYAN "Output Running:\n" AYELLOW);
+
+	double x[180];
+	double y[180];
+	FILE* lightcurve;
+	lightcurve = fopen("data/lightcurve.dat","w");
+	if (lightcurve == NULL)
+		printf(ARED "ERROR! Could not open lightcurve.dat!\n" ARESET);
+	
+	// Fitting loop
+	for (int n=0; n<180; n++){
+		data->fittedCurve[n] = data->lightCurve[n] / sin((n+0.5)*(PI/180.0));
+	}
+
+	data->fittedCurve[0] = data->fittedCurve[1];
+	
+	// Printing loop
+	for (int n=0; n<180; n++){
+		fprintf(lightcurve,"%i %lf\n",n,data->fittedCurve[n]);
+		y[n] = data->fittedCurve[n];
+		x[n] = n;
+	}
+
+	gnuplot_ctrl * h1;
+	h1 = gnuplot_init();
+	gnuplot_cmd(h1,"set terminal xterm");
+	gnuplot_setstyle(h1,"points");
+	gnuplot_cmd(h1,"set xrange [0:180]");
+	gnuplot_cmd(h1,"set yrange [0:2000]");
+	//gnuplot_plot_xy(h1,x,y,180,"user-defined points");
+	
+	gnuplot_close(h1);
+	
 
 	if (DEBUG)
 		printf(AGREEN "Output Complete.\n\n" ARESET);

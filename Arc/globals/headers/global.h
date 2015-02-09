@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
+#include <time.h>
 
 
 //── DEBUG CONTROL ────────────────────────────────────────────┤
@@ -93,8 +94,10 @@ typedef struct particle{
 
 // Structure for storing data.
 // 3.1) Array for raw lightcurve data;
+// 3.2) Array for lightcurve after consideration of solid angle.
 typedef struct datasystem{
 	int lightCurve[180];
+	double fittedCurve[180];
 } Datasystem;
 
 //── ENUMERATIONS ─────────────────────────────────────────────┤

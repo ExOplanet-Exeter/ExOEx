@@ -49,12 +49,23 @@ int main(){
 	Particle photon;
 	Datasystem data;
 	
+	for (int n=0; n<180; n++){
+		data.lightCurve[n] = 0;		
+	}
+	
 	FILE* twoDPos;
-	twoDPos = fopen("data/twoDpos.dat","w");
-	fclose(twoDPos);
-	twoDPos = fopen("data/twoDpos.dat","a");
+	FILE* threeDPos;
+	twoDPos   = fopen("data/twoDpos.dat","w");
+		fclose(twoDPos);
+	threeDPos = fopen("data/threeDpos.dat","w");
+		fclose(threeDPos);
+	twoDPos   = fopen("data/twoDpos.dat","a");
+	threeDPos = fopen("data/threeDpos.dat","a");
 	if (twoDPos == NULL)
-		printf(ARED "ERROR! Could not open 2Dpos.dat!\n" ARESET);
+		printf(ARED "ERROR! Could not open twoDpos.dat!\n" ARESET);
+	twoDPos = fopen("data/twoDpos.dat","a");
+	if (threeDPos == NULL)
+		printf(ARED "ERROR! Could not open threeDpos.dat!\n" ARESET);
 	
 	exo.nLayers = readInt("config.cfg","nLayers");
 	
@@ -69,11 +80,20 @@ int main(){
 	
 	if (DEBUG)
 		printf(ACYAN "PhotonLoop Running:\n" AYELLOW);
+	
+	int t1;
+	t1 = clock();
+	
 	for (int i=0; i<exo.nPhot; i++){
+		if (i == (exo.nPhot/100))
+			estimatedTimeUntilCompletion(t1);			
 		progressBar(i,exo.nPhot,100,58);
-		photonLoop(&photon,i);
-		extraction(&photon,&data,twoDPos);
+		photonLoop(i,&photon,&exo);
+		extraction(&photon,&data,twoDPos,threeDPos);
 	}
+	
+	computationTime(t1);
+	
 	if (DEBUG)
 		printf(AGREEN "PhotonLoop Complete.\n\n" ARESET);
 	
