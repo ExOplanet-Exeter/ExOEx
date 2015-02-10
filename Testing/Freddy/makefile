@@ -1,14 +1,14 @@
 # This is Freddy's testing makefile.
 # Use 'make' command to compile.
 # Run compiled programme with './frd'
-# USE TAB NOT 4 SPACES WHEN REQUIRED!
+# USE TAB NOT SPACES WHEN REQUIRED!
 
 
 # Use the GNU C compiler.
-cc = gcc
+CC = gcc-4.9.2
 
 # Flags.
-CFLAGS = -g
+CFLAGS = -g -fopenmp
 
 # Shortcut for working directory.
 $(shell basename $(WKDIR))
@@ -19,14 +19,11 @@ all: frd clean
 
 
 # Freddy's test build.
-frd: main.o gnuplot_i.o
-	$(CC) $(CFLAGS) main.o gnuplot_i.o -o frd
+frd: main.o
+	$(CC) $(CFLAGS) main.o -o frd
 
 main.o: $(WKDIR)main.c $(WKDIR)frdsFuncs.h
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
-	
-gnuplot_i: $(WKDIR)gnuplot_i.c $(WKDIR)gnuplot_i.h
-	$(CC) $(CFLAGS) -c $(WKDIR)gnuplot_i.c
 
 
 # Clean up.

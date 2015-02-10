@@ -61,6 +61,8 @@ void output(Datasystem *data,Planet *exo){
 	gnuplot_cmd(h1,"set yrange [0:200000]");
 	gnuplot_plot_xy(h1,x,y,180,"user-defined points");
 	
+	wait(1);
+	
 	gnuplot_close(h1);
 	
 

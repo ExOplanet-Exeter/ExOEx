@@ -1,5 +1,5 @@
 # Use the GNU C compiler                                                                                                                    
-cc = gcc
+CC = gcc
 
 # Flags                                                                                                                                     
 CFLAGS = -g
