@@ -1,12 +1,12 @@
 /*═════════════════════════════════════════════════════════════╗
 ├──────────────────────────────────────────────────────────────┤
-	  _____  _| |_ _ __ __ _  ___| |_(_) ___  _ __    ___ 
-	 / _ \ \/ / __| '__/ _` |/ __| __| |/ _ \| '_ \  / __|
-	|  __/>  <| |_| | | (_| | (__| |_| | (_) | | | || (__ 
-	 \___/_/\_\\__|_|  \__,_|\___|\__|_|\___/|_| |_(_)___|
+             ___  _   _| |_ _ __  _   _| |_   ___ 
+	        / _ \| | | | __| '_ \| | | | __| / __|
+	       | (_) | |_| | |_| |_) | |_| | |_ | (__ 
+	        \___/ \__,_|\__| .__/ \__,_|\__(_)___|
+			               |_| 
 ├──────────────────────────────────────────────────────────────┤
-	This function extracts meaningful data from the particle
-	structure and stores it into a Datasystem structure.
+	Outputs analysed data, such as lightcurves, to files.
 ├──────────────────────────────────────────────────────────────┤
 ╚═════════════════════════════════════════════════════════════*/
 
@@ -14,6 +14,7 @@
 //── INCLUDES ─────────────────────────────────────────────────┤
 #include "../../globals/headers/global.h"
 #include "../../globals/headers/utilities.h"
+#include "../../globals/headers/gnuplot_i.h"
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
@@ -23,18 +24,51 @@
 
 
 //── PHOTON LOOP ──────────────────────────────────────────────┤
-void extraction(Particle *photon,Datasystem *data,FILE *twoDPos,FILE *threeDPos){
+void output(Datasystem *data,Planet *exo){
 	
-	//fprintf(twoDPos,"%lf %lf\n",photon->pos[X],photon->pos[Y]);
-	//fprintf(threeDPos,"%lf %lf %lf\n",
-		//photon->pos[X],photon->pos[Y],photon->pos[Z]);
+	if (DEBUG)
+		printf(ACYAN "Output Running:\n" ARESET);
+
+	printf(ARESET);
+	double x[180];
+	double y[180];
+	FILE* lightcurve;
+	lightcurve = fopen("data/lightcurve.dat","w");
+	if (lightcurve == NULL)
+		printf(ARED "ERROR! Could not open lightcurve.dat!\n" ARESET);
 	
-	if (photon->life == false)
-		data->nDead++;
+	// Fitting loop
+	for (int n=0; n<180; n++){
+		data->fittedCurve[n] = data->lightCurve[n] / sin((n+0.5)*(PI/180.0));
+	}
+
+	data->fittedCurve[0] = data->fittedCurve[1];
 	
-	int alpha = degreeConvert(photon->alpha);
-	data->lightCurve[alpha]++;
 	
+	printf("Number dead = %i/%i\n(%lf%%)\n",data->nDead,exo->nPhot,(100.0*data->nDead)/exo->nPhot);
+	// Printing loop
+	for (int n=0; n<180; n++){
+		fprintf(lightcurve,"%i %lf\n",n,data->fittedCurve[n]);
+		y[n] = data->fittedCurve[n];
+		x[n] = n;
+	}
+
+	gnuplot_ctrl * h1;
+	h1 = gnuplot_init();
+	gnuplot_cmd(h1,"set terminal xterm");
+	gnuplot_setstyle(h1,"lines");
+	gnuplot_cmd(h1,"set xrange [0:180]");
+	gnuplot_cmd(h1,"set yrange [0:200000]");
+	gnuplot_plot_xy(h1,x,y,180,"user-defined points");
+	
+	wait(1);
+	
+	gnuplot_close(h1);
+	
+
+	if (DEBUG)
+		printf(AGREEN "Output Complete.\n\n" ARESET);
+		
 	return;
 }
 
