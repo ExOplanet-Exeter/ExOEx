@@ -47,7 +47,7 @@ int main(){
 	srand(clock());
 	
 	// Declerations
-	int p_threadID, p_nLoop, g_nLoop = 0;
+	int nThreads, p_threadID, p_nLoop, g_nLoop = 0;
 	int percentDone = 0;
 	Planet exo;
 	Particle photon;
@@ -85,13 +85,13 @@ int main(){
 	input(&exo,&photon);
 	
 	if (DEBUG)
-		printf(ACYAN "PhotonLoop Running:\n" AYELLOW);
+		printf(ACYAN "PhotonLoop Running:\n" ABLUE);
 	
-	int t1;
-	t1 = clock();
+	int t1 = clock();
 	
 	#pragma omp parallel private(p_nLoop, p_threadID, photon, p_data)
 	{
+		nThreads = omp_get_num_threads();
 		p_nLoop = 0;
 		p_threadID = omp_get_thread_num();
 	
@@ -102,9 +102,10 @@ int main(){
 	
 		#pragma omp for
 		for (int i=0; i<exo.nPhot; i++){
-			//if (i == (exo.nPhot/100))
-			//estimatedTimeUntilCompletion(t1);			
-			//progressBar(i,exo.nPhot,100,58);
+			if (p_threadID == 0 && p_nLoop == (exo.nPhot/(100*nThreads)))
+				estimatedTimeUntilCompletion(t1,nThreads);			
+			if (p_threadID == 0)
+				progressBar(i,exo.nPhot/nThreads,100,58);
 			photonLoop(i,&photon,&exo);
 			if (photon.life == false)
 				p_data.nDead++;
@@ -114,10 +115,11 @@ int main(){
 			//extraction(&photon,&data);
 			p_nLoop++;
 		}
-	
+
 		#pragma omp critical
 		{
-			printf("Thread %i ran %i/%i iterations.\n",p_threadID,p_nLoop,exo.nPhot);
+			printf("	Thread %i ran %i/%i iterations.\n",p_threadID,p_nLoop,exo.nPhot);
+			printf("nDead = %i\n",p_data.nDead);
 			g_nLoop = p_nLoop + g_nLoop;
 			for (int k=0; k<180; k++){
 				g_data.lightCurve[k] = g_data.lightCurve[k] + p_data.lightCurve[k];
@@ -127,7 +129,7 @@ int main(){
 		
 	printf("%i / %i photons run successfully.\n",g_nLoop,exo.nPhot);
 		
-	computationTime(t1);
+	computationTime(t1,nThreads);
 	
 	if (DEBUG)
 		printf(AGREEN "PhotonLoop Complete.\n\n" ARESET);
@@ -161,16 +163,16 @@ static inline void progressBar(int x, int n, int r, int w){
 	int   c     = ratio * w;
  
 	// Show the percentage complete.
-	printf("%3d%% [", (int)(ratio*100) );
+	printf(AYELLOW "%3d%% [" ARESET, (int)(ratio*100) );
  
 	// Show the load bar.
 	for (int x=0; x<c; x++)
-		 printf("=");
+		 printf(AYELLOW "=" ARESET);
  
 	for (int x=c; x<w; x++)
 		 printf(" ");
  
 	// ANSI Control codes to go back to the
 	// previous line and clear it.
-	printf("]\n\033[F\033[J");
+	printf(AYELLOW "]\n\033[F\033[J" ABLUE);
 }

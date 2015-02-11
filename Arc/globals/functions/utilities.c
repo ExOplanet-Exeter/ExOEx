@@ -152,14 +152,12 @@ int degreeConvert(double rad){
 }
 
 // Estimates how long it will be until photon loop is done.
-void estimatedTimeUntilCompletion(int t1){
-	int t2 = (clock() - t1);
-	double sec = (t2*1.0)/1000000;
-	double etc = sec*99.0;
-	
-	if (etc <= 2)
-		printf("\n");
-	else if (2 < etc && etc < 120)
+void estimatedTimeUntilCompletion(int t1,int nThreads){
+	int t2 = (clock() - t1)/nThreads;
+	double sec = ((t2*1.0)/1000000.0);
+	double etc = (sec*99.0);
+
+	if (0 < etc && etc < 120)
 		printf("An estimated %lf sec until completion.\n",etc);
 	else if (120 <= etc && etc < 7200)
 		printf("An estimated %lf min until completion.\n",etc/60);
@@ -172,9 +170,9 @@ void estimatedTimeUntilCompletion(int t1){
 }
 
 // Prints out the time taken to run photonLoop
-void computationTime(int t1){
+void computationTime(int t1,int nThreads){
 	
-	double timeTaken = ((clock() - t1)*1.0)/1000000;
+	double timeTaken = ((clock() - t1)*1.0)/(1000000*(nThreads*1.0));
 	
 	if (0 < timeTaken && timeTaken < 120)
 		printf("%lf sec taken.\n",timeTaken);
