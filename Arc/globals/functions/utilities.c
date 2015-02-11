@@ -138,15 +138,17 @@ double arcRand(double min, double max){
 }
 
 // Determines the dot product of two vectors.
-double arcDot(Ax,Ay,Az,Bx,By,Bz){
+double arcDot(double Ax,double Ay,double Az,double Bx,double By,double Bz){
 	
 	return (Ax*Bx)+(Ay*By)+(Az*Bz);
 }
 
 // Converts double from radians to more lovely degrees.
-double degreeConvert(double rad){
+int degreeConvert(double rad){
 
-	return ((180.0 * rad)/PI);
+	int deg = ((180.0 * rad)/PI);
+
+	return deg;
 }
 
 // Estimates how long it will be until photon loop is done.

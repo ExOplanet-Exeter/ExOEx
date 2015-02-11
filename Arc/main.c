@@ -28,6 +28,7 @@
 #include "globals/headers/global.h"
 #include "globals/headers/utilities.h"
 #include "modules/headers/module.h"
+#include <omp.h>
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
@@ -46,13 +47,16 @@ int main(){
 	srand(clock());
 	
 	// Declerations
+	int p_threadID, p_nLoop, g_nLoop = 0;
 	int percentDone = 0;
 	Planet exo;
 	Particle photon;
-	Datasystem data;
+	Datasystem g_data;
+	Datasystem p_data;
 	
+	g_data.nDead = 0;
 	for (int n=0; n<180; n++){
-		data.lightCurve[n] = 0;		
+		g_data.lightCurve[n] = 0;		
 	}
 	
 	FILE* twoDPos;
@@ -86,20 +90,49 @@ int main(){
 	int t1;
 	t1 = clock();
 	
-	for (int i=0; i<exo.nPhot; i++){
-		if (i == (exo.nPhot/100))
-			estimatedTimeUntilCompletion(t1);			
-		progressBar(i,exo.nPhot,100,58);
-		photonLoop(i,&photon,&exo);
-		extraction(&photon,&data,twoDPos,threeDPos);
-	}
+	#pragma omp parallel private(p_nLoop, p_threadID, photon, p_data)
+	{
+		p_nLoop = 0;
+		p_threadID = omp_get_thread_num();
 	
+		p_data.nDead = 0;
+		for (int n=0; n<180; n++){
+			p_data.lightCurve[n] = 0;		
+		}
+	
+		#pragma omp for
+		for (int i=0; i<exo.nPhot; i++){
+			//if (i == (exo.nPhot/100))
+			//estimatedTimeUntilCompletion(t1);			
+			//progressBar(i,exo.nPhot,100,58);
+			photonLoop(i,&photon,&exo);
+			if (photon.life == false)
+				p_data.nDead++;
+			
+			p_data.lightCurve[degreeConvert(photon.alpha)]++;
+			
+			//extraction(&photon,&data);
+			p_nLoop++;
+		}
+	
+		#pragma omp critical
+		{
+			printf("Thread %i ran %i/%i iterations.\n",p_threadID,p_nLoop,exo.nPhot);
+			g_nLoop = p_nLoop + g_nLoop;
+			for (int k=0; k<180; k++){
+				g_data.lightCurve[k] = g_data.lightCurve[k] + p_data.lightCurve[k];
+			}
+		}
+	}
+		
+	printf("%i / %i photons run successfully.\n",g_nLoop,exo.nPhot);
+		
 	computationTime(t1);
 	
 	if (DEBUG)
 		printf(AGREEN "PhotonLoop Complete.\n\n" ARESET);
 	
-	output(&data,&exo);  
+	output(&g_data,&exo);  
 	
 	// Clean up
 	free(exo.lType);

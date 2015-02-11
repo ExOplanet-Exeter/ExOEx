@@ -1,8 +1,8 @@
 # Use the GNU C compiler                                                                                                                    
-CC = gcc
+CC = gcc-4.9.2
 
 # Flags                                                                                                                                     
-CFLAGS = -g
+CFLAGS = -std=c11 -g -fopenmp
 
 # Short for working directory                                                                                                               
 $(shell basename $(WKDIR))

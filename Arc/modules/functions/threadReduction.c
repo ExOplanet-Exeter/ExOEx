@@ -23,17 +23,11 @@
 
 
 //── PHOTON LOOP ──────────────────────────────────────────────┤
-void extraction(Particle *photon,Datasystem *data){
-	
-	//fprintf(twoDPos,"%lf %lf\n",photon->pos[X],photon->pos[Y]);
-	//fprintf(threeDPos,"%lf %lf %lf\n",
-		//photon->pos[X],photon->pos[Y],photon->pos[Z]);
-	
-	if (photon->life == false)
-		data->nDead++;
-	
-	int alpha = degreeConvert(photon->alpha);
-	data->lightCurve[alpha]++;
+void threadReduction(Datasystem *threadData,Datasystem *globalData){
+
+	for (int i=0; i<180; i++){
+		globalData->lightCurve[i] += threadData->lightCurve[i];
+	}
 	
 	return;
 }

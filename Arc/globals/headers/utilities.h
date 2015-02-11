@@ -21,7 +21,7 @@ int readInt(char*,char*);
 double readDouble(char*,char*);
 double arcRand(double,double);
 double arcDot(double,double,double,double,double,double);
-double degreeConvert(double);
+int degreeConvert(double);
 void estimatedTimeUntilCompletion(int);
 void computationTime(int);
 
