@@ -44,7 +44,6 @@ int main(){
 	  printf(ACYAN "ExOEx Running:\n" ARESET);
 
 	// Initialisation
-	srand(clock());
 	
 	// Declerations
 	int nThreads, p_threadID, p_nLoop, g_nLoop = 0;
@@ -91,6 +90,11 @@ int main(){
 	
 	#pragma omp parallel private(p_nLoop, p_threadID, photon, p_data)
 	{
+		#pragma omp critical
+		{
+			srand(clock());
+		}
+		
 		nThreads = omp_get_num_threads();
 		p_nLoop = 0;
 		p_threadID = omp_get_thread_num();
@@ -99,6 +103,9 @@ int main(){
 		for (int n=0; n<180; n++){
 			p_data.lightCurve[n] = 0;		
 		}
+
+		if (p_threadID == 0)
+			printf("Running with %i strings.\n",nThreads);
 	
 		#pragma omp for
 		for (int i=0; i<exo.nPhot; i++){
