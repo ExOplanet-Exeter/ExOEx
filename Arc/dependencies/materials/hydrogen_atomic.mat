@@ -1,0 +1,23 @@
+Atomic hydrogen:
+
+Scatter RAY
+
+Wavelength (m)		Opacity (m^2/kg)
+300E-9			5.80E-4
+400E-9			1.60E-4
+500E-9			6.17E-5
+600E-9			2.88E-5
+700E-9			1.53E-5
+800E-9			8.85E-6
+900E-9			5.48E-6
+1000E-9			3.57E-6
+1250E-9			1.45E-6
+1500E-9			6.96E-7
+1750E-9			3.75E-7
+2000E-9			2.19E-7
+2250E-9			1.37E-7
+2500E-9			8.96E-8
+2750E-9			6.11E-8
+3000E-9			4.32E-8
+
+! To calculate the opacity for specific wavelengths, use the getOpacity function currently contained in eshsFuncs.h
