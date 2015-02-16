@@ -64,7 +64,12 @@ void Configure::on_pushButton_save_config_clicked()
 void Configure::on_pushButton_add_clicked()
 {
     QString itm = ui->listWidget_mat_list->currentItem()->text();
+    double radius = ui->doubleSpinBox_radius->value();
+
+    QString qRadius = QString::number(radius);
+
     ui->listWidget_build->addItem(itm);
+    ui->listWidget_radius->addItem(qRadius);
 }
 
 

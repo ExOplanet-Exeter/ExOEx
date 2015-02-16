@@ -48,16 +48,20 @@ public:
     QWidget *tab_2;
     QPushButton *pushButton_add;
     QPushButton *pushButton_remove;
-    QWidget *widget;
+    QWidget *layoutWidget1;
     QVBoxLayout *verticalLayout_3;
     QLabel *label_4;
     QListWidget *listWidget_mat_list;
     QPushButton *pushButton_invis;
-    QWidget *widget1;
-    QVBoxLayout *verticalLayout_2;
+    QLabel *label_12;
+    QDoubleSpinBox *doubleSpinBox_radius;
+    QWidget *widget;
+    QGridLayout *gridLayout_3;
     QLabel *label_5;
     QListWidget *listWidget_build;
+    QListWidget *listWidget_radius;
     QPushButton *pushButton_save_struct;
+    QLabel *label_11;
     QWidget *tab_3;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
@@ -66,7 +70,7 @@ public:
     QPushButton *pushButton_edit_material;
     QFrame *line;
     QPushButton *pushButton_new_mat;
-    QWidget *widget2;
+    QWidget *layoutWidget2;
     QGridLayout *gridLayout_2;
     QLabel *label_10;
     QLineEdit *lineEdit_name;
@@ -116,6 +120,7 @@ public:
         spinBox_nPhot = new QSpinBox(layoutWidget);
         spinBox_nPhot->setObjectName(QStringLiteral("spinBox_nPhot"));
         spinBox_nPhot->setFont(font1);
+        spinBox_nPhot->setAccelerated(true);
         spinBox_nPhot->setMaximum(1000000000);
         spinBox_nPhot->setValue(10000);
 
@@ -130,6 +135,7 @@ public:
         spinBox_nLayers = new QSpinBox(layoutWidget);
         spinBox_nLayers->setObjectName(QStringLiteral("spinBox_nLayers"));
         spinBox_nLayers->setFont(font1);
+        spinBox_nLayers->setAccelerated(true);
         spinBox_nLayers->setValue(1);
 
         gridLayout->addWidget(spinBox_nLayers, 1, 1, 1, 1);
@@ -143,6 +149,7 @@ public:
         spinBox_wavelength = new QSpinBox(layoutWidget);
         spinBox_wavelength->setObjectName(QStringLiteral("spinBox_wavelength"));
         spinBox_wavelength->setFont(font1);
+        spinBox_wavelength->setAccelerated(true);
         spinBox_wavelength->setMinimum(100);
         spinBox_wavelength->setMaximum(10000);
         spinBox_wavelength->setValue(500);
@@ -154,17 +161,17 @@ public:
         tab_2->setObjectName(QStringLiteral("tab_2"));
         pushButton_add = new QPushButton(tab_2);
         pushButton_add->setObjectName(QStringLiteral("pushButton_add"));
-        pushButton_add->setGeometry(QRect(145, 40, 115, 32));
+        pushButton_add->setGeometry(QRect(136, 28, 81, 32));
         pushButton_remove = new QPushButton(tab_2);
         pushButton_remove->setObjectName(QStringLiteral("pushButton_remove"));
-        pushButton_remove->setGeometry(QRect(145, 160, 115, 32));
-        widget = new QWidget(tab_2);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(3, 6, 141, 231));
-        verticalLayout_3 = new QVBoxLayout(widget);
+        pushButton_remove->setGeometry(QRect(136, 170, 81, 32));
+        layoutWidget1 = new QWidget(tab_2);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(3, 6, 141, 231));
+        verticalLayout_3 = new QVBoxLayout(layoutWidget1);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         verticalLayout_3->setContentsMargins(0, 0, 0, 0);
-        label_4 = new QLabel(widget);
+        label_4 = new QLabel(layoutWidget1);
         label_4->setObjectName(QStringLiteral("label_4"));
         QFont font2;
         font2.setPointSize(15);
@@ -173,39 +180,61 @@ public:
 
         verticalLayout_3->addWidget(label_4);
 
-        listWidget_mat_list = new QListWidget(widget);
+        listWidget_mat_list = new QListWidget(layoutWidget1);
         listWidget_mat_list->setObjectName(QStringLiteral("listWidget_mat_list"));
 
         verticalLayout_3->addWidget(listWidget_mat_list);
 
-        pushButton_invis = new QPushButton(widget);
+        pushButton_invis = new QPushButton(layoutWidget1);
         pushButton_invis->setObjectName(QStringLiteral("pushButton_invis"));
 
         verticalLayout_3->addWidget(pushButton_invis);
 
-        widget1 = new QWidget(tab_2);
-        widget1->setObjectName(QStringLiteral("widget1"));
-        widget1->setGeometry(QRect(261, 6, 131, 231));
-        verticalLayout_2 = new QVBoxLayout(widget1);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        label_5 = new QLabel(widget1);
+        label_12 = new QLabel(tab_2);
+        label_12->setObjectName(QStringLiteral("label_12"));
+        label_12->setGeometry(QRect(147, 73, 59, 16));
+        label_12->setAlignment(Qt::AlignCenter);
+        doubleSpinBox_radius = new QDoubleSpinBox(tab_2);
+        doubleSpinBox_radius->setObjectName(QStringLiteral("doubleSpinBox_radius"));
+        doubleSpinBox_radius->setGeometry(QRect(144, 90, 66, 24));
+        doubleSpinBox_radius->setAccelerated(true);
+        doubleSpinBox_radius->setMaximum(1);
+        doubleSpinBox_radius->setValue(1);
+        widget = new QWidget(tab_2);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(210, 6, 181, 231));
+        gridLayout_3 = new QGridLayout(widget);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        gridLayout_3->setContentsMargins(0, 0, 0, 0);
+        label_5 = new QLabel(widget);
         label_5->setObjectName(QStringLiteral("label_5"));
         label_5->setFont(font2);
         label_5->setAlignment(Qt::AlignCenter);
 
-        verticalLayout_2->addWidget(label_5);
+        gridLayout_3->addWidget(label_5, 0, 0, 1, 1);
 
-        listWidget_build = new QListWidget(widget1);
+        listWidget_build = new QListWidget(widget);
         listWidget_build->setObjectName(QStringLiteral("listWidget_build"));
 
-        verticalLayout_2->addWidget(listWidget_build);
+        gridLayout_3->addWidget(listWidget_build, 1, 0, 1, 1);
 
-        pushButton_save_struct = new QPushButton(widget1);
+        listWidget_radius = new QListWidget(widget);
+        listWidget_radius->setObjectName(QStringLiteral("listWidget_radius"));
+
+        gridLayout_3->addWidget(listWidget_radius, 1, 1, 1, 1);
+
+        pushButton_save_struct = new QPushButton(widget);
         pushButton_save_struct->setObjectName(QStringLiteral("pushButton_save_struct"));
         pushButton_save_struct->setCheckable(false);
 
-        verticalLayout_2->addWidget(pushButton_save_struct);
+        gridLayout_3->addWidget(pushButton_save_struct, 2, 0, 1, 2);
+
+        label_11 = new QLabel(widget);
+        label_11->setObjectName(QStringLiteral("label_11"));
+        label_11->setFont(font2);
+        label_11->setAlignment(Qt::AlignCenter);
+
+        gridLayout_3->addWidget(label_11, 0, 1, 1, 1);
 
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
@@ -245,30 +274,30 @@ public:
         pushButton_new_mat = new QPushButton(tab_3);
         pushButton_new_mat->setObjectName(QStringLiteral("pushButton_new_mat"));
         pushButton_new_mat->setGeometry(QRect(220, 180, 97, 32));
-        widget2 = new QWidget(tab_3);
-        widget2->setObjectName(QStringLiteral("widget2"));
-        widget2->setGeometry(QRect(173, 50, 212, 124));
-        gridLayout_2 = new QGridLayout(widget2);
+        layoutWidget2 = new QWidget(tab_3);
+        layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
+        layoutWidget2->setGeometry(QRect(173, 50, 212, 124));
+        gridLayout_2 = new QGridLayout(layoutWidget2);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         gridLayout_2->setContentsMargins(0, 0, 0, 0);
-        label_10 = new QLabel(widget2);
+        label_10 = new QLabel(layoutWidget2);
         label_10->setObjectName(QStringLiteral("label_10"));
 
         gridLayout_2->addWidget(label_10, 0, 0, 1, 1);
 
-        lineEdit_name = new QLineEdit(widget2);
+        lineEdit_name = new QLineEdit(layoutWidget2);
         lineEdit_name->setObjectName(QStringLiteral("lineEdit_name"));
         lineEdit_name->setInputMethodHints(Qt::ImhLowercaseOnly);
         lineEdit_name->setMaxLength(16);
 
         gridLayout_2->addWidget(lineEdit_name, 0, 1, 1, 1);
 
-        label_7 = new QLabel(widget2);
+        label_7 = new QLabel(layoutWidget2);
         label_7->setObjectName(QStringLiteral("label_7"));
 
         gridLayout_2->addWidget(label_7, 1, 0, 1, 1);
 
-        doubleSpinBox_kappa = new QDoubleSpinBox(widget2);
+        doubleSpinBox_kappa = new QDoubleSpinBox(layoutWidget2);
         doubleSpinBox_kappa->setObjectName(QStringLiteral("doubleSpinBox_kappa"));
         doubleSpinBox_kappa->setAccelerated(true);
         doubleSpinBox_kappa->setDecimals(4);
@@ -278,12 +307,12 @@ public:
 
         gridLayout_2->addWidget(doubleSpinBox_kappa, 1, 1, 1, 1);
 
-        label_8 = new QLabel(widget2);
+        label_8 = new QLabel(layoutWidget2);
         label_8->setObjectName(QStringLiteral("label_8"));
 
         gridLayout_2->addWidget(label_8, 2, 0, 1, 1);
 
-        doubleSpinBox_albedo = new QDoubleSpinBox(widget2);
+        doubleSpinBox_albedo = new QDoubleSpinBox(layoutWidget2);
         doubleSpinBox_albedo->setObjectName(QStringLiteral("doubleSpinBox_albedo"));
         doubleSpinBox_albedo->setAccelerated(true);
         doubleSpinBox_albedo->setMaximum(1);
@@ -292,12 +321,12 @@ public:
 
         gridLayout_2->addWidget(doubleSpinBox_albedo, 2, 1, 1, 1);
 
-        label_9 = new QLabel(widget2);
+        label_9 = new QLabel(layoutWidget2);
         label_9->setObjectName(QStringLiteral("label_9"));
 
         gridLayout_2->addWidget(label_9, 3, 0, 1, 1);
 
-        comboBox_scatter_type = new QComboBox(widget2);
+        comboBox_scatter_type = new QComboBox(layoutWidget2);
         comboBox_scatter_type->setObjectName(QStringLiteral("comboBox_scatter_type"));
 
         gridLayout_2->addWidget(comboBox_scatter_type, 3, 1, 1, 1);
@@ -326,19 +355,11 @@ public:
         QWidget::setTabOrder(tabWidget, pushButton_invis);
 
         retranslateUi(Configure);
-        QObject::connect(doubleSpinBox_albedo, SIGNAL(valueChanged(double)), pushButton_new_mat, SLOT(setFocus()));
-        QObject::connect(doubleSpinBox_kappa, SIGNAL(valueChanged(double)), pushButton_new_mat, SLOT(setFocus()));
-        QObject::connect(lineEdit_name, SIGNAL(editingFinished()), pushButton_new_mat, SLOT(setFocus()));
         QObject::connect(pushButton_exit, SIGNAL(clicked()), Configure, SLOT(close()));
         QObject::connect(pushButton_add, SIGNAL(pressed()), pushButton_save_struct, SLOT(setFocus()));
-        QObject::connect(comboBox_scatter_type, SIGNAL(currentIndexChanged(int)), pushButton_new_mat, SLOT(setFocus()));
-        QObject::connect(pushButton_remove, SIGNAL(clicked()), pushButton_save_struct, SLOT(setFocus()));
-        QObject::connect(spinBox_wavelength, SIGNAL(valueChanged(int)), pushButton_save_config, SLOT(setFocus()));
         QObject::connect(pushButton_cancel, SIGNAL(clicked()), Configure, SLOT(close()));
-        QObject::connect(spinBox_nPhot, SIGNAL(valueChanged(int)), pushButton_save_config, SLOT(setFocus()));
-        QObject::connect(spinBox_nLayers, SIGNAL(valueChanged(int)), pushButton_save_config, SLOT(setFocus()));
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(Configure);
@@ -357,8 +378,10 @@ public:
         pushButton_remove->setText(QApplication::translate("Configure", "Remove", 0));
         label_4->setText(QApplication::translate("Configure", "Avalible Materials", 0));
         pushButton_invis->setText(QApplication::translate("Configure", "PushButton", 0));
+        label_12->setText(QApplication::translate("Configure", "Radius", 0));
         label_5->setText(QApplication::translate("Configure", "Build", 0));
         pushButton_save_struct->setText(QApplication::translate("Configure", "Save", 0));
+        label_11->setText(QApplication::translate("Configure", "Radius", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Configure", "structure", 0));
         label_6->setText(QApplication::translate("Configure", "Known Materials", 0));
         pushButton_edit_material->setText(QApplication::translate("Configure", "Edit", 0));
