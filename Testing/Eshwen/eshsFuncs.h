@@ -79,6 +79,61 @@ Particle isoscatterGetDirection(Particle photon, phi) {
     return photon;
 }
 
+#define WAVELENGTH1 91.2 /* Wavelength in nm at which a photon would ionize a
+                            hydrogen atom from the electron's ground state */
+#define CROSSSECTION_THOMP 6.65E-29 // m^2
+#define MASS_HYDROGEN 1.67E-27 // kg
+
+int getOpacity (void) {
+	double wavelength, frequency, crosssection;
+
+    printf("Enter the wavelength in nanometres.\n\n");
+	scanf("%lg", &wavelength);
+
+	if (wavelength < 91.2 / 0.75 ) {
+		printf("\nSorry, but a photon with a wavelength shorter than %lg nm "
+               "cause electron transitions in the atom.\n\n", 91.2 / 0.75);
+		getOpacity();
+	}
+	frequency = WAVELENGTH1 / wavelength;
+
+	printf("\nFor a wavelength of %lg nm, the frequency in terms of the Lyman "
+           "Limit frequency is %lg.\n\n", wavelength, frequency);
+
+    if (frequency < 0.6) {
+            crosssection = CROSSSECTION_THOMP * pow(frequency,4) * ( 1.2654
+                                                   + 3.73766 * pow(frequency,2)
+                                                   + 8.8127 * pow(frequency,4)
+                                                   + 19.1515 * pow(frequency,6)
+                                                   + 39.919 * pow(frequency,8)
+                                                   + 81.1018 * pow(frequency,10)
+                                                   + 161.896 * pow(frequency,12)
+                                                   + 319.001 * pow(frequency,14)
+                                                   + 622.229 * pow(frequency,16)
+                                                   + 1203.82 * pow(frequency,18)
+                                                   );
+    }
+    else if (frequency > 0.6) {
+            frequency = (frequency - 0.75) / 0.75;
+        crosssection = CROSSSECTION_THOMP * (0.0433056 / pow(frequency,2)) *(1
+                                                  - 1.792 * frequency
+                                                  - 23.637 * pow(frequency,2)
+                                                  - 83.1393 * pow(frequency,3)
+                                                  - 244.1453 * pow(frequency,4)
+                                                  - 699.473 * pow(frequency,5)
+                                                  );
+    }
+	printf("The Rayleigh scattering cross-section is %lg m^2, or %lg Thompson "
+		   "cross-sections. This gives the opacity as %lg m^2/kg.\n",
+		   crosssection, crosssection / CROSSSECTION_THOMP,
+		   crosssection / MASS_HYDROGEN);
+	return 0;
+/* Only problem with this is that if you put in an incorrect value of wavelength
+and you re-enter a correct value, the function calculates the cross-section and
+opacity for both wavelengths that are entered. Not sure yet how I solve this.
+*/
+}
+
 /*
 The following contains old functions I was working on before Christmas. They're
 not relevant to what I'm working on now, but may be of use in the future.
