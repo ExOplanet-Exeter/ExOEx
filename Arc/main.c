@@ -60,7 +60,7 @@ int main(){
 	
 	FILE* twoDPos;
 	FILE* threeDPos;
-	twoDPos   = fopen("data/twoDpos.dat","w");
+	twoDPos   = fopen("~/Desktop/ExOEx/Arc/data/twoDpos.dat","w");
 		fclose(twoDPos);
 	threeDPos = fopen("data/threeDpos.dat","w");
 		fclose(threeDPos);
