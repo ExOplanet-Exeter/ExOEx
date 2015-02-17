@@ -11,7 +11,7 @@
 // Function to grab current time.
 #include <QDateTime>
 // Includes the QtWidgets.
-#include <QtWidgets>
+//#include <QtWidgets>
 
 // Namespace
 using namespace std;
