@@ -13,8 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    configure.cpp \
+    matedit.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    configure.h \
+    matedit.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    configure.ui \
+    matedit.ui

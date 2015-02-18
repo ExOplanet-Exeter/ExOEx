@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+// Header file for the config window.
+#include <configure.h>
 // File functions.
 #include <fstream>
 // Functions for grabbing pngs through paths.
@@ -39,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Gives a label a pixel map (banner/photo).
     QPixmap banner("Resorces/banner.jpg");
     ui->label_banner->setPixmap(banner);
+    ui->label_banner->setScaledContents(true);
 
     // Initialises the MW's clock.
     QTimer *timer = new QTimer(this);
@@ -103,4 +106,12 @@ void MainWindow::showTime(){
     ui->label_clock->setText(time_text);
 
     return;
+}
+
+// Opens the configure window.
+void MainWindow::on_pushButton_configure_clicked()
+{
+    Configure configure;
+    configure.setModal(true);
+    configure.exec();
 }
