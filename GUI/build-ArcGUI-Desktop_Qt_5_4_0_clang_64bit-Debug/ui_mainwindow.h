@@ -29,7 +29,7 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QWidget *widget;
+    QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
     QPushButton *pushButton_about;
     QPushButton *pushButton_run;
@@ -49,30 +49,29 @@ public:
         MainWindow->resize(400, 300);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(8, 10, 381, 231));
-        gridLayout = new QGridLayout(widget);
+        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setContentsMargins(0, 0, 0, 0);
-        pushButton_about = new QPushButton(widget);
+        pushButton_about = new QPushButton(centralWidget);
         pushButton_about->setObjectName(QStringLiteral("pushButton_about"));
 
         gridLayout->addWidget(pushButton_about, 1, 0, 1, 1);
 
-        pushButton_run = new QPushButton(widget);
+        pushButton_run = new QPushButton(centralWidget);
         pushButton_run->setObjectName(QStringLiteral("pushButton_run"));
 
         gridLayout->addWidget(pushButton_run, 1, 1, 1, 1);
 
-        pushButton_exit = new QPushButton(widget);
+        pushButton_exit = new QPushButton(centralWidget);
         pushButton_exit->setObjectName(QStringLiteral("pushButton_exit"));
 
         gridLayout->addWidget(pushButton_exit, 3, 2, 1, 1);
 
-        label_clock = new QLabel(widget);
+        label_clock = new QLabel(centralWidget);
         label_clock->setObjectName(QStringLiteral("label_clock"));
         QFont font;
         font.setPointSize(17);
@@ -81,20 +80,27 @@ public:
 
         gridLayout->addWidget(label_clock, 3, 1, 1, 1);
 
-        pushButton_configure = new QPushButton(widget);
+        pushButton_configure = new QPushButton(centralWidget);
         pushButton_configure->setObjectName(QStringLiteral("pushButton_configure"));
 
         gridLayout->addWidget(pushButton_configure, 1, 2, 1, 1);
 
-        pushButton_credits = new QPushButton(widget);
+        pushButton_credits = new QPushButton(centralWidget);
         pushButton_credits->setObjectName(QStringLiteral("pushButton_credits"));
 
         gridLayout->addWidget(pushButton_credits, 3, 0, 1, 1);
 
-        label_banner = new QLabel(widget);
+        label_banner = new QLabel(centralWidget);
         label_banner->setObjectName(QStringLiteral("label_banner"));
+        label_banner->setCursor(QCursor(Qt::CrossCursor));
+        label_banner->setMouseTracking(false);
+        label_banner->setFrameShape(QFrame::WinPanel);
+        label_banner->setFrameShadow(QFrame::Raised);
 
         gridLayout->addWidget(label_banner, 0, 0, 1, 3);
+
+
+        gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);

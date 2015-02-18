@@ -1,11 +1,16 @@
 #include "mainwindow.h"
 #include <QApplication>
 
+// Functions for operating files.
+#include <fstream>
+// Contains needed change directory function.
+#include <unistd.h>
+// Function for creating messgae boxes.
+#include <QMessageBox>
+
 
 // Namespace
-
-
-// Function Prototypes
+using namespace std;
 
 
 // Main
@@ -18,6 +23,3 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
-
-
-// Completed functions
