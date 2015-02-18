@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-// Printing to terminal functions.
-#include <iostream>
+// File functions.
+#include <fstream>
 // Functions for grabbing pngs through paths.
 #include <QDesktopServices>
 #include <QUrl>
@@ -11,10 +11,14 @@
 // Function to grab current time.
 #include <QDateTime>
 // Includes the QtWidgets.
-//#include <QtWidgets>
+#include <QtWidgets>
 
 // Namespace
 using namespace std;
+
+
+// Function Prototypes
+string getExOExPathString();
 
 
 // Main
@@ -25,11 +29,15 @@ MainWindow::MainWindow(QWidget *parent) :
     //Creates the MainWindow ui.
     ui->setupUi(this);
 
+    // Change the working directory to that of ~/ExOEx/.
+    string path = getExOExPathString();
+    chdir(path.c_str());
+
     // Gives the window a title.
     this->setWindowTitle("ExOEx - Build: Main Sequence");
 
     // Gives a label a pixel map (banner/photo).
-    QPixmap banner("resorces/banner.jpg");
+    QPixmap banner("Resorces/banner.jpg");
     ui->label_banner->setPixmap(banner);
 
     // Initialises the MW's clock.
@@ -46,11 +54,34 @@ MainWindow::~MainWindow()
 
 
 // Completed Functions
+string MainWindow::getExOExPathString(){
+
+    // Change working directory to ~/ExOEx/
+    ifstream file("Resorces/path.txt");
+
+    if (!file){
+        QMessageBox::information(this,tr("ERROR!"),tr("ERROR!\n\npath.txt not found.\nYou likely need to run ./config."));
+    }
+
+    string path;
+    file >> path;
+
+    return path;
+}
+
 // Function for running Arc.exec when run button is clicked.
-void MainWindow::on_pushButton_run_clicked()
-{
-    // Gets the location of ArcGUI (should be in folder above Arc.exec.
-    cout << ".exec at: "<< getenv("PWD") << "kk?" << endl;
+void MainWindow::on_pushButton_run_clicked(){
+
+    QString qArcPath;
+    string arcPath = getExOExPathString();
+
+    arcPath.append("/Arc/arc");
+
+    qArcPath = QString::fromStdString(arcPath);
+
+    QDesktopServices::openUrl(QUrl("file:///"+qArcPath,QUrl::TolerantMode));
+
+    return;
 }
 
 // Displays the current time in hh:mm:ss format.

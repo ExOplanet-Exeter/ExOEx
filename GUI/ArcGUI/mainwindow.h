@@ -16,8 +16,8 @@ public:
     ~MainWindow();
 
 private slots:
+    std::string getExOExPathString();
     void showTime();
-
     void on_pushButton_run_clicked();
 
 private:
