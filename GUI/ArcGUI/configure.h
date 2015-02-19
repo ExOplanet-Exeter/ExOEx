@@ -22,9 +22,15 @@ private slots:
 
     void populateLists();
 
+    void setupMatTable();
+
     void on_pushButton_add_clicked();
 
     void on_pushButton_remove_clicked();
+
+    void on_pushButton_order_clicked();
+
+    void on_tableWidget_build_cellClicked(int row, int column);
 
 private:
     Ui::Configure *ui;

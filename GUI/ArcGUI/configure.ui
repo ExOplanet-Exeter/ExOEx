@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>Configure</class>
  <widget class="QDialog" name="Configure">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>310</height>
+    <width>395</width>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,6 +86,9 @@
            <property name="minimum">
             <number>1</number>
            </property>
+           <property name="value">
+            <number>3</number>
+           </property>
           </widget>
          </item>
          <item row="2" column="1">
@@ -111,17 +117,37 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
-        <widget class="QLabel" name="label_add_material">
-         <property name="text">
-          <string>Add Material</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_add_material">
+           <property name="text">
+            <string>Add Material</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listWidget_add_material"/>
+         </item>
+        </layout>
        </item>
-       <item row="1" column="1">
+       <item row="0" column="1">
         <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
          <item>
           <widget class="QLabel" name="label_radius">
            <property name="text">
@@ -156,6 +182,19 @@
           </widget>
          </item>
          <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QLabel" name="label_6">
            <property name="text">
             <string/>
@@ -164,6 +203,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_remove">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Remove</string>
            </property>
@@ -172,33 +214,18 @@
         </layout>
        </item>
        <item row="0" column="2">
-        <widget class="QLabel" name="label_build">
-         <property name="text">
-          <string>Build</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="label_radius_2">
-         <property name="text">
-          <string>Radius</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QListWidget" name="listWidget_add_material"/>
-       </item>
-       <item row="1" column="2">
-        <widget class="QListWidget" name="listWidget_build"/>
-       </item>
-       <item row="1" column="3">
-        <widget class="QListWidget" name="listWidget_radius"/>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QTableWidget" name="tableWidget_build"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_order">
+           <property name="text">
+            <string>Order</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -418,8 +445,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>321</x>
-     <y>280</y>
+     <x>305</x>
+     <y>331</y>
     </hint>
     <hint type="destinationlabel">
      <x>244</x>
@@ -434,8 +461,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>411</x>
-     <y>286</y>
+     <x>382</x>
+     <y>331</y>
     </hint>
     <hint type="destinationlabel">
      <x>277</x>

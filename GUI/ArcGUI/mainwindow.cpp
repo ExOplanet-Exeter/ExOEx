@@ -74,14 +74,9 @@ string MainWindow::getExOExPathString(){
 // Function for running Arc.exec when run button is clicked.
 void MainWindow::on_pushButton_run_clicked(){
 
-    QString qArcPath;
-    string arcPath = getExOExPathString();
+    QString arcPath = "Arc/arc";
 
-    arcPath.append("/Arc/arc");
-
-    qArcPath = QString::fromStdString(arcPath);
-
-    QDesktopServices::openUrl(QUrl("file:///"+qArcPath,QUrl::TolerantMode));
+    QProcess::execute(arcPath, QStringList());
 
     return;
 }

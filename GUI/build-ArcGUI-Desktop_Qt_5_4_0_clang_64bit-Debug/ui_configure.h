@@ -28,6 +28,7 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -49,18 +50,20 @@ public:
     QSpinBox *spinBox_wavelength;
     QWidget *tab_2;
     QGridLayout *gridLayout_4;
+    QVBoxLayout *verticalLayout_4;
     QLabel *label_add_material;
+    QListWidget *listWidget_add_material;
     QVBoxLayout *verticalLayout;
+    QSpacerItem *verticalSpacer;
     QLabel *label_radius;
     QDoubleSpinBox *doubleSpinBox_radius;
     QPushButton *pushButton_add;
+    QSpacerItem *verticalSpacer_2;
     QLabel *label_6;
     QPushButton *pushButton_remove;
-    QLabel *label_build;
-    QLabel *label_radius_2;
-    QListWidget *listWidget_add_material;
-    QListWidget *listWidget_build;
-    QListWidget *listWidget_radius;
+    QVBoxLayout *verticalLayout_3;
+    QTableWidget *tableWidget_build;
+    QPushButton *pushButton_order;
     QWidget *tab_3;
     QGridLayout *gridLayout_5;
     QVBoxLayout *verticalLayout_2;
@@ -90,7 +93,8 @@ public:
     {
         if (Configure->objectName().isEmpty())
             Configure->setObjectName(QStringLiteral("Configure"));
-        Configure->resize(479, 310);
+        Configure->setEnabled(true);
+        Configure->resize(395, 344);
         gridLayout = new QGridLayout(Configure);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         tabWidget = new QTabWidget(Configure);
@@ -133,6 +137,7 @@ public:
         spinBox_nLayers->setObjectName(QStringLiteral("spinBox_nLayers"));
         spinBox_nLayers->setAccelerated(true);
         spinBox_nLayers->setMinimum(1);
+        spinBox_nLayers->setValue(3);
 
         gridLayout_2->addWidget(spinBox_nLayers, 1, 1, 1, 1);
 
@@ -153,14 +158,28 @@ public:
         tab_2->setObjectName(QStringLiteral("tab_2"));
         gridLayout_4 = new QGridLayout(tab_2);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         label_add_material = new QLabel(tab_2);
         label_add_material->setObjectName(QStringLiteral("label_add_material"));
         label_add_material->setAlignment(Qt::AlignCenter);
 
-        gridLayout_4->addWidget(label_add_material, 0, 0, 1, 1);
+        verticalLayout_4->addWidget(label_add_material);
+
+        listWidget_add_material = new QListWidget(tab_2);
+        listWidget_add_material->setObjectName(QStringLiteral("listWidget_add_material"));
+
+        verticalLayout_4->addWidget(listWidget_add_material);
+
+
+        gridLayout_4->addLayout(verticalLayout_4, 0, 0, 1, 1);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout->addItem(verticalSpacer);
+
         label_radius = new QLabel(tab_2);
         label_radius->setObjectName(QStringLiteral("label_radius"));
         label_radius->setAlignment(Qt::AlignCenter);
@@ -181,6 +200,10 @@ public:
 
         verticalLayout->addWidget(pushButton_add);
 
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout->addItem(verticalSpacer_2);
+
         label_6 = new QLabel(tab_2);
         label_6->setObjectName(QStringLiteral("label_6"));
 
@@ -188,38 +211,27 @@ public:
 
         pushButton_remove = new QPushButton(tab_2);
         pushButton_remove->setObjectName(QStringLiteral("pushButton_remove"));
+        pushButton_remove->setEnabled(false);
 
         verticalLayout->addWidget(pushButton_remove);
 
 
-        gridLayout_4->addLayout(verticalLayout, 1, 1, 1, 1);
+        gridLayout_4->addLayout(verticalLayout, 0, 1, 1, 1);
 
-        label_build = new QLabel(tab_2);
-        label_build->setObjectName(QStringLiteral("label_build"));
-        label_build->setAlignment(Qt::AlignCenter);
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        tableWidget_build = new QTableWidget(tab_2);
+        tableWidget_build->setObjectName(QStringLiteral("tableWidget_build"));
 
-        gridLayout_4->addWidget(label_build, 0, 2, 1, 1);
+        verticalLayout_3->addWidget(tableWidget_build);
 
-        label_radius_2 = new QLabel(tab_2);
-        label_radius_2->setObjectName(QStringLiteral("label_radius_2"));
-        label_radius_2->setAlignment(Qt::AlignCenter);
+        pushButton_order = new QPushButton(tab_2);
+        pushButton_order->setObjectName(QStringLiteral("pushButton_order"));
 
-        gridLayout_4->addWidget(label_radius_2, 0, 3, 1, 1);
+        verticalLayout_3->addWidget(pushButton_order);
 
-        listWidget_add_material = new QListWidget(tab_2);
-        listWidget_add_material->setObjectName(QStringLiteral("listWidget_add_material"));
 
-        gridLayout_4->addWidget(listWidget_add_material, 1, 0, 1, 1);
-
-        listWidget_build = new QListWidget(tab_2);
-        listWidget_build->setObjectName(QStringLiteral("listWidget_build"));
-
-        gridLayout_4->addWidget(listWidget_build, 1, 2, 1, 1);
-
-        listWidget_radius = new QListWidget(tab_2);
-        listWidget_radius->setObjectName(QStringLiteral("listWidget_radius"));
-
-        gridLayout_4->addWidget(listWidget_radius, 1, 3, 1, 1);
+        gridLayout_4->addLayout(verticalLayout_3, 0, 2, 1, 1);
 
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
@@ -380,8 +392,7 @@ public:
         pushButton_add->setText(QApplication::translate("Configure", "Add", 0));
         label_6->setText(QString());
         pushButton_remove->setText(QApplication::translate("Configure", "Remove", 0));
-        label_build->setText(QApplication::translate("Configure", "Build", 0));
-        label_radius_2->setText(QApplication::translate("Configure", "Radius", 0));
+        pushButton_order->setText(QApplication::translate("Configure", "Order", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Configure", "Structure", 0));
         label_known_materials->setText(QApplication::translate("Configure", "Known Materials", 0));
         pushButton_edit_material->setText(QApplication::translate("Configure", "Edit", 0));
