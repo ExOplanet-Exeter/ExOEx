@@ -54,6 +54,7 @@ public:
 
         lineEdit_name = new QLineEdit(MatEdit);
         lineEdit_name->setObjectName(QStringLiteral("lineEdit_name"));
+        lineEdit_name->setEnabled(false);
         lineEdit_name->setReadOnly(true);
 
         gridLayout->addWidget(lineEdit_name, 0, 1, 1, 1);

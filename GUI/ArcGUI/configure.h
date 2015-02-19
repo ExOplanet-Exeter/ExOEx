@@ -30,7 +30,9 @@ private slots:
 
     void on_pushButton_order_clicked();
 
-    void on_tableWidget_build_cellClicked(int row, int column);
+    void on_tableWidget_build_cellClicked();
+
+    void on_pushButton_add_new_material_clicked();
 
 private:
     Ui::Configure *ui;

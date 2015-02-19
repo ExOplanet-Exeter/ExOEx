@@ -1,1 +1,4 @@
+Air 1
+Rock 1
+Hydrogen 1
 END

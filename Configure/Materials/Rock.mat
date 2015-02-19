@@ -1,0 +1,4 @@
+kappa 10
+albedo 0.25
+scatterType MIE
+END

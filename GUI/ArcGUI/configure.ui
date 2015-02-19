@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>395</width>
+    <width>456</width>
     <height>344</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <property name="movable">
       <bool>true</bool>
@@ -116,20 +116,24 @@
        <string>Structure</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item row="0" column="2">
+        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
          <item>
-          <widget class="QLabel" name="label_add_material">
-           <property name="text">
-            <string>Add Material</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+          <widget class="QTableWidget" name="tableWidget_build">
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidget_add_material"/>
+          <widget class="QPushButton" name="pushButton_order">
+           <property name="text">
+            <string>Order</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -213,17 +217,20 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="2">
-        <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QTableWidget" name="tableWidget_build"/>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_order">
+          <widget class="QLabel" name="label_add_material">
            <property name="text">
-            <string>Order</string>
+            <string>Add Material</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listWidget_add_material"/>
          </item>
         </layout>
        </item>
@@ -451,22 +458,6 @@
     <hint type="destinationlabel">
      <x>244</x>
      <y>263</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_done</sender>
-   <signal>clicked()</signal>
-   <receiver>Configure</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>382</x>
-     <y>331</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>277</x>
-     <y>279</y>
     </hint>
    </hints>
   </connection>

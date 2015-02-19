@@ -50,9 +50,9 @@ public:
     QSpinBox *spinBox_wavelength;
     QWidget *tab_2;
     QGridLayout *gridLayout_4;
-    QVBoxLayout *verticalLayout_4;
-    QLabel *label_add_material;
-    QListWidget *listWidget_add_material;
+    QVBoxLayout *verticalLayout_3;
+    QTableWidget *tableWidget_build;
+    QPushButton *pushButton_order;
     QVBoxLayout *verticalLayout;
     QSpacerItem *verticalSpacer;
     QLabel *label_radius;
@@ -61,9 +61,9 @@ public:
     QSpacerItem *verticalSpacer_2;
     QLabel *label_6;
     QPushButton *pushButton_remove;
-    QVBoxLayout *verticalLayout_3;
-    QTableWidget *tableWidget_build;
-    QPushButton *pushButton_order;
+    QVBoxLayout *verticalLayout_4;
+    QLabel *label_add_material;
+    QListWidget *listWidget_add_material;
     QWidget *tab_3;
     QGridLayout *gridLayout_5;
     QVBoxLayout *verticalLayout_2;
@@ -94,7 +94,7 @@ public:
         if (Configure->objectName().isEmpty())
             Configure->setObjectName(QStringLiteral("Configure"));
         Configure->setEnabled(true);
-        Configure->resize(395, 344);
+        Configure->resize(456, 344);
         gridLayout = new QGridLayout(Configure);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         tabWidget = new QTabWidget(Configure);
@@ -158,21 +158,21 @@ public:
         tab_2->setObjectName(QStringLiteral("tab_2"));
         gridLayout_4 = new QGridLayout(tab_2);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        verticalLayout_4 = new QVBoxLayout();
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        label_add_material = new QLabel(tab_2);
-        label_add_material->setObjectName(QStringLiteral("label_add_material"));
-        label_add_material->setAlignment(Qt::AlignCenter);
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        tableWidget_build = new QTableWidget(tab_2);
+        tableWidget_build->setObjectName(QStringLiteral("tableWidget_build"));
+        tableWidget_build->setMinimumSize(QSize(180, 0));
 
-        verticalLayout_4->addWidget(label_add_material);
+        verticalLayout_3->addWidget(tableWidget_build);
 
-        listWidget_add_material = new QListWidget(tab_2);
-        listWidget_add_material->setObjectName(QStringLiteral("listWidget_add_material"));
+        pushButton_order = new QPushButton(tab_2);
+        pushButton_order->setObjectName(QStringLiteral("pushButton_order"));
 
-        verticalLayout_4->addWidget(listWidget_add_material);
+        verticalLayout_3->addWidget(pushButton_order);
 
 
-        gridLayout_4->addLayout(verticalLayout_4, 0, 0, 1, 1);
+        gridLayout_4->addLayout(verticalLayout_3, 0, 2, 1, 1);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -218,20 +218,21 @@ public:
 
         gridLayout_4->addLayout(verticalLayout, 0, 1, 1, 1);
 
-        verticalLayout_3 = new QVBoxLayout();
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        tableWidget_build = new QTableWidget(tab_2);
-        tableWidget_build->setObjectName(QStringLiteral("tableWidget_build"));
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        label_add_material = new QLabel(tab_2);
+        label_add_material->setObjectName(QStringLiteral("label_add_material"));
+        label_add_material->setAlignment(Qt::AlignCenter);
 
-        verticalLayout_3->addWidget(tableWidget_build);
+        verticalLayout_4->addWidget(label_add_material);
 
-        pushButton_order = new QPushButton(tab_2);
-        pushButton_order->setObjectName(QStringLiteral("pushButton_order"));
+        listWidget_add_material = new QListWidget(tab_2);
+        listWidget_add_material->setObjectName(QStringLiteral("listWidget_add_material"));
 
-        verticalLayout_3->addWidget(pushButton_order);
+        verticalLayout_4->addWidget(listWidget_add_material);
 
 
-        gridLayout_4->addLayout(verticalLayout_3, 0, 2, 1, 1);
+        gridLayout_4->addLayout(verticalLayout_4, 0, 0, 1, 1);
 
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
@@ -372,9 +373,8 @@ public:
 
         retranslateUi(Configure);
         QObject::connect(pushButton_cancel, SIGNAL(clicked()), Configure, SLOT(close()));
-        QObject::connect(pushButton_done, SIGNAL(clicked()), Configure, SLOT(close()));
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(Configure);
@@ -387,12 +387,12 @@ public:
         label_number_of_photons->setText(QApplication::translate("Configure", "Number of Photons", 0));
         label_photon_wavelengthnm->setText(QApplication::translate("Configure", "Photon Wavelength (nm)", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Configure", " General ", 0));
-        label_add_material->setText(QApplication::translate("Configure", "Add Material", 0));
+        pushButton_order->setText(QApplication::translate("Configure", "Order", 0));
         label_radius->setText(QApplication::translate("Configure", "Radius", 0));
         pushButton_add->setText(QApplication::translate("Configure", "Add", 0));
         label_6->setText(QString());
         pushButton_remove->setText(QApplication::translate("Configure", "Remove", 0));
-        pushButton_order->setText(QApplication::translate("Configure", "Order", 0));
+        label_add_material->setText(QApplication::translate("Configure", "Add Material", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Configure", "Structure", 0));
         label_known_materials->setText(QApplication::translate("Configure", "Known Materials", 0));
         pushButton_edit_material->setText(QApplication::translate("Configure", "Edit", 0));

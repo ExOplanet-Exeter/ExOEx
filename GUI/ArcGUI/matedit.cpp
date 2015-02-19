@@ -12,3 +12,11 @@ MatEdit::~MatEdit()
 {
     delete ui;
 }
+
+
+void MatEdit::setName(const QString &matName){
+
+    ui->label_name->setText(matName);
+
+    return;
+}

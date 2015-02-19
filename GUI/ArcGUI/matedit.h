@@ -13,6 +13,7 @@ class MatEdit : public QDialog
 
 public:
     explicit MatEdit(QWidget *parent = 0);
+    void setName(const QString &labeltext);
     ~MatEdit();
 
 private:
