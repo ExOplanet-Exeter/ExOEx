@@ -23,7 +23,6 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListView>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
@@ -50,10 +49,7 @@ public:
     QSpinBox *spinBox_wavelength;
     QWidget *tab_2;
     QGridLayout *gridLayout_4;
-    QListView *listView_add_material;
     QLabel *label_add_material;
-    QListWidget *listWidget_radius;
-    QListWidget *listWidget_build;
     QVBoxLayout *verticalLayout;
     QLabel *label_radius;
     QDoubleSpinBox *doubleSpinBox_radius;
@@ -62,11 +58,14 @@ public:
     QPushButton *pushButton_remove;
     QLabel *label_build;
     QLabel *label_radius_2;
+    QListWidget *listWidget_add_material;
+    QListWidget *listWidget_build;
+    QListWidget *listWidget_radius;
     QWidget *tab_3;
     QGridLayout *gridLayout_5;
     QVBoxLayout *verticalLayout_2;
     QLabel *label_known_materials;
-    QListView *listView_known_materials;
+    QListWidget *listWidget_known_materials;
     QPushButton *pushButton_edit_material;
     QFormLayout *formLayout;
     QLabel *label_name;
@@ -124,6 +123,7 @@ public:
 
         spinBox_nPhot = new QSpinBox(tab);
         spinBox_nPhot->setObjectName(QStringLiteral("spinBox_nPhot"));
+        spinBox_nPhot->setAccelerated(true);
         spinBox_nPhot->setMaximum(1000000000);
         spinBox_nPhot->setValue(100000);
 
@@ -131,12 +131,14 @@ public:
 
         spinBox_nLayers = new QSpinBox(tab);
         spinBox_nLayers->setObjectName(QStringLiteral("spinBox_nLayers"));
+        spinBox_nLayers->setAccelerated(true);
         spinBox_nLayers->setMinimum(1);
 
         gridLayout_2->addWidget(spinBox_nLayers, 1, 1, 1, 1);
 
         spinBox_wavelength = new QSpinBox(tab);
         spinBox_wavelength->setObjectName(QStringLiteral("spinBox_wavelength"));
+        spinBox_wavelength->setAccelerated(true);
         spinBox_wavelength->setMinimum(1);
         spinBox_wavelength->setMaximum(20000);
         spinBox_wavelength->setValue(500);
@@ -151,26 +153,11 @@ public:
         tab_2->setObjectName(QStringLiteral("tab_2"));
         gridLayout_4 = new QGridLayout(tab_2);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        listView_add_material = new QListView(tab_2);
-        listView_add_material->setObjectName(QStringLiteral("listView_add_material"));
-
-        gridLayout_4->addWidget(listView_add_material, 1, 0, 1, 1);
-
         label_add_material = new QLabel(tab_2);
         label_add_material->setObjectName(QStringLiteral("label_add_material"));
         label_add_material->setAlignment(Qt::AlignCenter);
 
         gridLayout_4->addWidget(label_add_material, 0, 0, 1, 1);
-
-        listWidget_radius = new QListWidget(tab_2);
-        listWidget_radius->setObjectName(QStringLiteral("listWidget_radius"));
-
-        gridLayout_4->addWidget(listWidget_radius, 1, 3, 1, 1);
-
-        listWidget_build = new QListWidget(tab_2);
-        listWidget_build->setObjectName(QStringLiteral("listWidget_build"));
-
-        gridLayout_4->addWidget(listWidget_build, 1, 2, 1, 1);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -182,6 +169,7 @@ public:
 
         doubleSpinBox_radius = new QDoubleSpinBox(tab_2);
         doubleSpinBox_radius->setObjectName(QStringLiteral("doubleSpinBox_radius"));
+        doubleSpinBox_radius->setAccelerated(true);
         doubleSpinBox_radius->setMaximum(1);
         doubleSpinBox_radius->setSingleStep(0.01);
         doubleSpinBox_radius->setValue(1);
@@ -218,6 +206,21 @@ public:
 
         gridLayout_4->addWidget(label_radius_2, 0, 3, 1, 1);
 
+        listWidget_add_material = new QListWidget(tab_2);
+        listWidget_add_material->setObjectName(QStringLiteral("listWidget_add_material"));
+
+        gridLayout_4->addWidget(listWidget_add_material, 1, 0, 1, 1);
+
+        listWidget_build = new QListWidget(tab_2);
+        listWidget_build->setObjectName(QStringLiteral("listWidget_build"));
+
+        gridLayout_4->addWidget(listWidget_build, 1, 2, 1, 1);
+
+        listWidget_radius = new QListWidget(tab_2);
+        listWidget_radius->setObjectName(QStringLiteral("listWidget_radius"));
+
+        gridLayout_4->addWidget(listWidget_radius, 1, 3, 1, 1);
+
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
@@ -231,10 +234,10 @@ public:
 
         verticalLayout_2->addWidget(label_known_materials);
 
-        listView_known_materials = new QListView(tab_3);
-        listView_known_materials->setObjectName(QStringLiteral("listView_known_materials"));
+        listWidget_known_materials = new QListWidget(tab_3);
+        listWidget_known_materials->setObjectName(QStringLiteral("listWidget_known_materials"));
 
-        verticalLayout_2->addWidget(listView_known_materials);
+        verticalLayout_2->addWidget(listWidget_known_materials);
 
         pushButton_edit_material = new QPushButton(tab_3);
         pushButton_edit_material->setObjectName(QStringLiteral("pushButton_edit_material"));
@@ -357,8 +360,9 @@ public:
 
         retranslateUi(Configure);
         QObject::connect(pushButton_cancel, SIGNAL(clicked()), Configure, SLOT(close()));
+        QObject::connect(pushButton_done, SIGNAL(clicked()), Configure, SLOT(close()));
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(Configure);

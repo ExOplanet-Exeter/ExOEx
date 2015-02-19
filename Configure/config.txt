@@ -1,0 +1,4 @@
+nPhot 100000
+nLayers 1
+wavelength 500
+END

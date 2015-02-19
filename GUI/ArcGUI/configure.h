@@ -18,6 +18,14 @@ public:
 private slots:
     void on_pushButton_edit_material_clicked();
 
+    void on_pushButton_done_clicked();
+
+    void populateLists();
+
+    void on_pushButton_add_clicked();
+
+    void on_pushButton_remove_clicked();
+
 private:
     Ui::Configure *ui;
 };

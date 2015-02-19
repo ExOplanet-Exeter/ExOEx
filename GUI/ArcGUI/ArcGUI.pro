@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2015-02-17T20:20:16
+# Project created by QtCreator 2015-02-18T03:23:56
 #
 #-------------------------------------------------
 
@@ -12,9 +12,10 @@ TARGET = ArcGUI
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
+SOURCES +=\
         mainwindow.cpp \
     configure.cpp \
+    main.cpp \
     matedit.cpp
 
 HEADERS  += mainwindow.h \

@@ -5,6 +5,7 @@
 #include <configure.h>
 // File functions.
 #include <fstream>
+#include <iostream>
 // Functions for grabbing pngs through paths.
 #include <QDesktopServices>
 #include <QUrl>
@@ -31,12 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //Creates the MainWindow ui.
     ui->setupUi(this);
 
-    // Change the working directory to that of ~/ExOEx/.
-    string path = getExOExPathString();
-    chdir(path.c_str());
-
     // Gives the window a title.
     this->setWindowTitle("ExOEx - Build: Main Sequence");
+
+    system("ls");
 
     // Gives a label a pixel map (banner/photo).
     QPixmap banner("Resorces/banner.jpg");

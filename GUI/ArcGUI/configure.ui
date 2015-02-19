@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="movable">
       <bool>true</bool>
@@ -64,6 +64,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QSpinBox" name="spinBox_nPhot">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
            <property name="maximum">
             <number>1000000000</number>
            </property>
@@ -74,6 +77,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QSpinBox" name="spinBox_nLayers">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
            <property name="minimum">
             <number>1</number>
            </property>
@@ -81,6 +87,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QSpinBox" name="spinBox_wavelength">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
            <property name="minimum">
             <number>1</number>
            </property>
@@ -101,9 +110,6 @@
        <string>Structure</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="1" column="0">
-        <widget class="QListView" name="listView_add_material"/>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_add_material">
          <property name="text">
@@ -113,12 +119,6 @@
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QListWidget" name="listWidget_radius"/>
-       </item>
-       <item row="1" column="2">
-        <widget class="QListWidget" name="listWidget_build"/>
        </item>
        <item row="1" column="1">
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -134,6 +134,9 @@
          </item>
          <item>
           <widget class="QDoubleSpinBox" name="doubleSpinBox_radius">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
            <property name="maximum">
             <double>1.000000000000000</double>
            </property>
@@ -188,6 +191,15 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QListWidget" name="listWidget_add_material"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QListWidget" name="listWidget_build"/>
+       </item>
+       <item row="1" column="3">
+        <widget class="QListWidget" name="listWidget_radius"/>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_3">
@@ -208,7 +220,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QListView" name="listView_known_materials"/>
+          <widget class="QListWidget" name="listWidget_known_materials"/>
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_edit_material">
@@ -412,6 +424,22 @@
     <hint type="destinationlabel">
      <x>244</x>
      <y>263</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_done</sender>
+   <signal>clicked()</signal>
+   <receiver>Configure</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>411</x>
+     <y>286</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>279</y>
     </hint>
    </hints>
   </connection>
