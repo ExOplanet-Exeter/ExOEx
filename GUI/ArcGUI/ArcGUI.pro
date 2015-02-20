@@ -16,16 +16,19 @@ SOURCES += \
     configure.cpp \
     main.cpp \
     mainwindow.cpp \
-    matedit.cpp
+    matedit.cpp \
+    credits.cpp
 
 HEADERS  += \
     configure.h \
     mainwindow.h \
-    matedit.h
+    matedit.h \
+    credits.h
 
 FORMS    += \
     configure.ui \
     mainwindow.ui \
-    matedit.ui
+    matedit.ui \
+    credits.ui
 
 RESOURCES +=

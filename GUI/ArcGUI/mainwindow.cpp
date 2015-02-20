@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "credits.h"
 
 // Header file for the config window.
 #include <configure.h>
@@ -108,4 +109,12 @@ void MainWindow::on_pushButton_configure_clicked()
     Configure configure;
     configure.setModal(true);
     configure.exec();
+}
+
+// Opens the credits window.
+void MainWindow::on_pushButton_credits_clicked()
+{
+    Credits credits;
+    credits.setModal(true);
+    credits.exec();
 }

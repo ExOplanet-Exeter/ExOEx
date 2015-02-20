@@ -1,12 +1,50 @@
-// This is a placeholder program for Arc.
+/*═════════════════════════════════════════════════════════════╗
+├──────────────────────────────────────────────────────────────┤
+ __________                  ______     __________
+|          |                /      \   |          |  
+|  ________| ___    ____   /   __   \  |  ________| ____    ____
+|       |    \   \  /   / |   /  \   | |       |    \   \  /   /
+|     __|     \   \/   /  |  |    |  | |     __|     \   \/   / 
+|    |         \      /   |  |    |  | |    |         \      / 
+|    |_____    /  __  \   |   \__/   | |    |_____    /  __  \
+|          |  /  /  \  \   \        /  |          |  /  /  \  \ 
+|__________| /__/    \__\   \______/   |__________| /__/    \__\
+├──────────────────────────────────────────────────────────────┤
+                  _ __ ___   __ _(_)_ __    ___ 
+                 | '_ ` _ \ / _` | | '_ \  / __|
+                 | | | | | | (_| | | | | || (__
+                 |_| |_| |_|\__,_|_|_| |_(_)___|           
+├──────────────────────────────────────────────────────────────┤
+  This program simulates polarised light as it scatted through
+  the atmosphere of an extrasolar planet before being observed.
+├──────────────────────────────────────────────────────────────┤
+╚═════════════════════════════════════════════════════════════*/
 
-#include <stdio.h>
-#include <stdlib.h>
+//── INCLUDES ─────────────────────────────────────────────────┤
+// External libraries <>.
+// Allows for parallelisation settings.
+#include <omp.h>
+// Local libraries "".
+#include "../globals/global.h"
+#include "../globals/utilities.h"
 
+
+//── FUNCTION PROTOTYPES ──────────────────────────────────────┤
+
+
+//── MAIN ─────────────────────────────────────────────────────┤
 int main(){
-
-  printf("\nThis is placeholder.\n\n");
-  printf("./arc is located at: %s\n",getenv("PWD"));
-
+  
+  printTitle();
+  if (DEBUG)
+    printStart("ExOEx");
+  
+  
+  if (DEBUG)
+    printEnd("ExOEx");
+  
   return 0;
 }
+
+
+//─── COMPLETED FUNCTIONS ─────────────────────────────────────┤

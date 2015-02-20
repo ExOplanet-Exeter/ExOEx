@@ -51,16 +51,20 @@ OBJECTS_DIR   = ./
 SOURCES       = ../ArcGUI/configure.cpp \
 		../ArcGUI/main.cpp \
 		../ArcGUI/mainwindow.cpp \
-		../ArcGUI/matedit.cpp moc_configure.cpp \
+		../ArcGUI/matedit.cpp \
+		../ArcGUI/credits.cpp moc_configure.cpp \
 		moc_mainwindow.cpp \
-		moc_matedit.cpp
+		moc_matedit.cpp \
+		moc_credits.cpp
 OBJECTS       = configure.o \
 		main.o \
 		mainwindow.o \
 		matedit.o \
+		credits.o \
 		moc_configure.o \
 		moc_mainwindow.o \
-		moc_matedit.o
+		moc_matedit.o \
+		moc_credits.o
 DIST          = ../../../../Qt/5.4/clang_64/mkspecs/features/spec_pre.prf \
 		../../../../Qt/5.4/clang_64/mkspecs/qdevice.pri \
 		../../../../Qt/5.4/clang_64/mkspecs/features/device_config.prf \
@@ -191,10 +195,12 @@ DIST          = ../../../../Qt/5.4/clang_64/mkspecs/features/spec_pre.prf \
 		../../../../Qt/5.4/clang_64/mkspecs/features/lex.prf \
 		../ArcGUI/ArcGUI.pro ../ArcGUI/configure.h \
 		../ArcGUI/mainwindow.h \
-		../ArcGUI/matedit.h ../ArcGUI/configure.cpp \
+		../ArcGUI/matedit.h \
+		../ArcGUI/credits.h ../ArcGUI/configure.cpp \
 		../ArcGUI/main.cpp \
 		../ArcGUI/mainwindow.cpp \
-		../ArcGUI/matedit.cpp
+		../ArcGUI/matedit.cpp \
+		../ArcGUI/credits.cpp
 QMAKE_TARGET  = ArcGUI
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = ArcGUI.app/Contents/MacOS/ArcGUI
@@ -232,7 +238,7 @@ first: all
 
 ####### Build rules
 
-$(TARGET): ui_configure.h ui_mainwindow.h ui_matedit.h $(OBJECTS)  
+$(TARGET): ui_configure.h ui_mainwindow.h ui_matedit.h ui_credits.h $(OBJECTS)  
 	@test -d ArcGUI.app/Contents/MacOS/ || mkdir -p ArcGUI.app/Contents/MacOS/
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
@@ -530,9 +536,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArcGUI/configure.h ../ArcGUI/mainwindow.h ../ArcGUI/matedit.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArcGUI/configure.cpp ../ArcGUI/main.cpp ../ArcGUI/mainwindow.cpp ../ArcGUI/matedit.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArcGUI/configure.ui ../ArcGUI/mainwindow.ui ../ArcGUI/matedit.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArcGUI/configure.h ../ArcGUI/mainwindow.h ../ArcGUI/matedit.h ../ArcGUI/credits.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArcGUI/configure.cpp ../ArcGUI/main.cpp ../ArcGUI/mainwindow.cpp ../ArcGUI/matedit.cpp ../ArcGUI/credits.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArcGUI/configure.ui ../ArcGUI/mainwindow.ui ../ArcGUI/matedit.ui ../ArcGUI/credits.ui $(DISTDIR)/
 
 
 clean:compiler_clean 
@@ -557,9 +563,9 @@ compiler_objective_c_make_all:
 compiler_objective_c_clean:
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_configure.cpp moc_mainwindow.cpp moc_matedit.cpp
+compiler_moc_header_make_all: moc_configure.cpp moc_mainwindow.cpp moc_matedit.cpp moc_credits.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_configure.cpp moc_mainwindow.cpp moc_matedit.cpp
+	-$(DEL_FILE) moc_configure.cpp moc_mainwindow.cpp moc_matedit.cpp moc_credits.cpp
 moc_configure.cpp: ../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/QDialog \
 		../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/qdialog.h \
 		../ArcGUI/configure.h
@@ -575,11 +581,16 @@ moc_matedit.cpp: ../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/
 		../ArcGUI/matedit.h
 	/Users/FreddyWordingham/Qt/5.4/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -I/Users/FreddyWordingham/Qt/5.4/clang_64/mkspecs/macx-clang -I/Users/FreddyWordingham/Desktop/ExOEx/GUI/ArcGUI -I/Users/FreddyWordingham/Qt/5.4/clang_64/lib/QtWidgets.framework/Headers -I/Users/FreddyWordingham/Qt/5.4/clang_64/lib/QtGui.framework/Headers -I/Users/FreddyWordingham/Qt/5.4/clang_64/lib/QtCore.framework/Headers -I. -F/Users/FreddyWordingham/Qt/5.4/clang_64/lib ../ArcGUI/matedit.h -o moc_matedit.cpp
 
+moc_credits.cpp: ../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/QDialog \
+		../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/qdialog.h \
+		../ArcGUI/credits.h
+	/Users/FreddyWordingham/Qt/5.4/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -I/Users/FreddyWordingham/Qt/5.4/clang_64/mkspecs/macx-clang -I/Users/FreddyWordingham/Desktop/ExOEx/GUI/ArcGUI -I/Users/FreddyWordingham/Qt/5.4/clang_64/lib/QtWidgets.framework/Headers -I/Users/FreddyWordingham/Qt/5.4/clang_64/lib/QtGui.framework/Headers -I/Users/FreddyWordingham/Qt/5.4/clang_64/lib/QtCore.framework/Headers -I. -F/Users/FreddyWordingham/Qt/5.4/clang_64/lib ../ArcGUI/credits.h -o moc_credits.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_configure.h ui_mainwindow.h ui_matedit.h
+compiler_uic_make_all: ui_configure.h ui_mainwindow.h ui_matedit.h ui_credits.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_configure.h ui_mainwindow.h ui_matedit.h
+	-$(DEL_FILE) ui_configure.h ui_mainwindow.h ui_matedit.h ui_credits.h
 ui_configure.h: ../ArcGUI/configure.ui
 	/Users/FreddyWordingham/Qt/5.4/clang_64/bin/uic ../ArcGUI/configure.ui -o ui_configure.h
 
@@ -588,6 +599,9 @@ ui_mainwindow.h: ../ArcGUI/mainwindow.ui
 
 ui_matedit.h: ../ArcGUI/matedit.ui
 	/Users/FreddyWordingham/Qt/5.4/clang_64/bin/uic ../ArcGUI/matedit.ui -o ui_matedit.h
+
+ui_credits.h: ../ArcGUI/credits.ui
+	/Users/FreddyWordingham/Qt/5.4/clang_64/bin/uic ../ArcGUI/credits.ui -o ui_credits.h
 
 compiler_rez_source_make_all:
 compiler_rez_source_clean:
@@ -780,6 +794,12 @@ matedit.o: ../ArcGUI/matedit.cpp ../ArcGUI/matedit.h \
 		../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/qmessagebox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o matedit.o ../ArcGUI/matedit.cpp
 
+credits.o: ../ArcGUI/credits.cpp ../ArcGUI/credits.h \
+		../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/QDialog \
+		../../../../Qt/5.4/clang_64/lib/QtWidgets.framework/Versions/5/Headers/qdialog.h \
+		ui_credits.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o credits.o ../ArcGUI/credits.cpp
+
 moc_configure.o: moc_configure.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_configure.o moc_configure.cpp
 
@@ -788,6 +808,9 @@ moc_mainwindow.o: moc_mainwindow.cpp
 
 moc_matedit.o: moc_matedit.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_matedit.o moc_matedit.cpp
+
+moc_credits.o: moc_credits.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_credits.o moc_credits.cpp
 
 ####### Install
 
