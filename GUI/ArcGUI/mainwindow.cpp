@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     system("ls");
 
     // Gives a label a pixel map (banner/photo).
-    QPixmap banner("Resorces/banner.jpg");
+    QPixmap banner("Resorces/banner.png");
     ui->label_banner->setPixmap(banner);
     ui->label_banner->setScaledContents(true);
 

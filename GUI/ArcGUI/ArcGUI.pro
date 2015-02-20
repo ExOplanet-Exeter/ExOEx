@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2015-02-19T22:15:46
+# Project created by QtCreator 2015-02-20T00:57:13
 #
 #-------------------------------------------------
 
@@ -27,3 +27,5 @@ FORMS    += \
     configure.ui \
     mainwindow.ui \
     matedit.ui
+
+RESOURCES +=
