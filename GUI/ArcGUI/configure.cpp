@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <QMessageBox>
+#include <QStyleFactory>
 
 using namespace std;
 
@@ -19,6 +20,8 @@ Configure::Configure(QWidget *parent) :
 
     populateLists();
     setupMatTable();
+    returnToPreviousValues();
+
 }
 
 Configure::~Configure()
@@ -27,12 +30,65 @@ Configure::~Configure()
 }
 
 
+void Configure::returnToPreviousValues(){
+
+    string word;
+
+    // Returning General tab values.
+    ifstream config("Configure/config.txt");
+
+    while (config){
+        config >> word;
+        if (word == "nPhot"){
+            int nPhot;
+            config >> nPhot;
+            ui->spinBox_nPhot->setValue(nPhot);
+        }
+        else if (word == "nLayers"){
+            int nLayers;
+            config >> nLayers;
+            ui->spinBox_nLayers->setValue(nLayers);
+        }
+        else if (word == "wavelength"){
+            int wavelength;
+            config >> wavelength;
+            ui->spinBox_wavelength->setValue(wavelength);
+        }
+    }
+
+    // Returning Structure setup.
+    ifstream structure("Configure/struct.txt");
+
+    int i=0;
+    while (structure){
+        structure >> word;
+        if (word == "END"){
+            break;
+        }
+        else{
+            double radius;
+            string mat = word;
+            QString qMat, qRadius;
+            structure >> radius;
+            qRadius = QString::number(radius);
+            qMat = QString::fromStdString(mat);
+            ui->tableWidget_build->item(i,0)->setText(qMat);
+            ui->tableWidget_build->item(i,1)->setText(qRadius);
+            cout << mat << " " << radius << endl;
+            i++;
+        }
+
+    }
+
+    return;
+}
+
 void Configure::on_pushButton_edit_material_clicked(){
 
     MatEdit matedit;
 
-    QString matName = ui->listWidget_add_material->currentItem()->text();
-    matedit.setName(matName);
+    QString qMatName = ui->listWidget_known_materials->currentItem()->text();
+    matedit.setName(qMatName);
 
     matedit.setModal(true);
     matedit.exec();
@@ -248,6 +304,25 @@ void Configure::on_pushButton_add_new_material_clicked(){
     QString qName = ui->lineEdit_name->text();
     ui->listWidget_add_material->addItem(qName);
     ui->listWidget_known_materials->addItem(qName);
+
+    return;
+}
+
+void Configure::on_listWidget_known_materials_clicked()
+{
+    ui->pushButton_edit_material->setEnabled(true);
+}
+
+
+
+void Configure::on_spinBox_nLayers_valueChanged(int nLayers){
+
+    ui->tableWidget_build->setRowCount(nLayers);
+
+    for (int i=0; i<nLayers; i++){
+        ui->tableWidget_build->setItem(i,0,new QTableWidgetItem("-"));
+        ui->tableWidget_build->setItem(i,1,new QTableWidgetItem(" "));
+    }
 
     return;
 }

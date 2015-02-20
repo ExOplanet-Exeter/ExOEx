@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="movable">
       <bool>true</bool>
@@ -174,7 +174,7 @@
             <double>0.010000000000000</double>
            </property>
            <property name="value">
-            <double>1.000000000000000</double>
+            <double>0.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -258,6 +258,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_edit_material">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Edit</string>
            </property>

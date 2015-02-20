@@ -16,6 +16,8 @@ public:
     ~Configure();
 
 private slots:
+    void returnToPreviousValues();
+
     void on_pushButton_edit_material_clicked();
 
     void on_pushButton_done_clicked();
@@ -33,6 +35,10 @@ private slots:
     void on_tableWidget_build_cellClicked();
 
     void on_pushButton_add_new_material_clicked();
+
+    void on_listWidget_known_materials_clicked();
+
+    void on_spinBox_nLayers_valueChanged(int nLayers);
 
 private:
     Ui::Configure *ui;

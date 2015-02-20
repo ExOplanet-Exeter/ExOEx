@@ -13,11 +13,16 @@ class MatEdit : public QDialog
 
 public:
     explicit MatEdit(QWidget *parent = 0);
-    void setName(const QString &labeltext);
+    void setName(const QString &labelText);
     ~MatEdit();
+
+private slots:
+    void on_pushButton_done_clicked();
 
 private:
     Ui::MatEdit *ui;
+
+    void populateComboBox();
 };
 
 #endif // MATEDIT_H

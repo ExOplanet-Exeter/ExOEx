@@ -1,4 +1,4 @@
-Air 1
-Rock 1
-Hydrogen 1
+Rock 0.2
+Rock 0.3
+Air 0.4
 END

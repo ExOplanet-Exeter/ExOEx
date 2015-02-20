@@ -191,7 +191,7 @@ public:
         doubleSpinBox_radius->setAccelerated(true);
         doubleSpinBox_radius->setMaximum(1);
         doubleSpinBox_radius->setSingleStep(0.01);
-        doubleSpinBox_radius->setValue(1);
+        doubleSpinBox_radius->setValue(0);
 
         verticalLayout->addWidget(doubleSpinBox_radius);
 
@@ -254,6 +254,7 @@ public:
 
         pushButton_edit_material = new QPushButton(tab_3);
         pushButton_edit_material->setObjectName(QStringLiteral("pushButton_edit_material"));
+        pushButton_edit_material->setEnabled(false);
 
         verticalLayout_2->addWidget(pushButton_edit_material);
 
@@ -374,7 +375,7 @@ public:
         retranslateUi(Configure);
         QObject::connect(pushButton_cancel, SIGNAL(clicked()), Configure, SLOT(close()));
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Configure);

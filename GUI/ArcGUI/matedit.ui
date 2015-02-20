@@ -133,5 +133,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_done</sender>
+   <signal>clicked()</signal>
+   <receiver>MatEdit</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>146</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>129</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

@@ -113,6 +113,7 @@ public:
 
         retranslateUi(MatEdit);
         QObject::connect(pushButton_cancel, SIGNAL(clicked()), MatEdit, SLOT(close()));
+        QObject::connect(pushButton_done, SIGNAL(clicked()), MatEdit, SLOT(close()));
 
         QMetaObject::connectSlotsByName(MatEdit);
     } // setupUi
