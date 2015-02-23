@@ -25,6 +25,7 @@
 4) Itermediate mathmatical functions, sin() etc.
 5) C bool library.
 6) Functions for grabbing time.
+&) Contains usleep() among other useful functions.
 */
 #include <stdio.h>
 #include <string.h>
@@ -32,6 +33,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 
 //── DEBUGGER CONTROL ─────────────────────────────────────────┤
@@ -113,6 +115,13 @@ typedef struct datasystem{
 	int 	lightcurve[180];
 	double 	fittedCurve[180];
 } Datasystem;
+
+
+typedef struct threadInfo{
+	int id;
+	int nLoop;
+	Datasystem data;
+} ThreadInfo;
 
 
 //── ENUMERATIONS ──────────────────────────────────────────┤

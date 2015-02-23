@@ -46,7 +46,8 @@ int main(){
   // -- Declerations
   // g_variable is for global use, p_variable is for private
   // string use.
-  Datasystem g_data = {0}, p_data = {0};
+  ThreadInfo thread = {0};
+  Datasystem totalData = {0};
   Planet exo = {0};
   Particle photon = {0};
 
@@ -61,6 +62,38 @@ int main(){
   
   // -- Core modules
   input(&exo,&photon);
+  
+  if (DEBUG)
+    printStart("Photon Loop");
+  
+  // Parallel thread section.
+  #pragma omp parallel private(thread)
+  {  
+    // Indervidual thread initialisation.
+    #pragma omp critical
+    {
+      srand(clock());
+    }
+
+    thread.id = omp_get_thread_num();    
+
+    if (thread.id == 0)
+      printf(ABLUE "Number of threads running: %i\n",omp_get_num_threads());
+
+    // Parallel thread for loop.
+    #pragma omp for
+    for (int i=0; i<exo.nPhot; i++){
+      photonLoop(&exo,&photon);
+    }
+    
+    // Thread convergence.
+    #pragma omp critical
+    {
+    }
+  }
+    
+  if (DEBUG)
+    printEnd("Photon Loop");
   
   // -- Exit
   if (DEBUG)

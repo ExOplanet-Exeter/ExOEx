@@ -2,7 +2,6 @@
 #include "ui_matedit.h"
 
 #include <fstream>
-#include <iostream>
 #include <QMessageBox>
 
 using namespace std;

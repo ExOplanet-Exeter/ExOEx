@@ -1,1 +1,17 @@
-tree
+.
+├── arc
+├── globals
+│   ├── global.h
+│   ├── utilities.c
+│   └── utilities.h
+├── main
+│   ├── arc
+│   ├── main.c
+│   ├── makefile
+│   └── template.c
+├── modules
+│   ├── input.c
+│   ├── modules.h
+│   └── photonLoop.c
+├── readme.txt
+└── tree.txt

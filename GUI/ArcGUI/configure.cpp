@@ -3,7 +3,6 @@
 
 #include "matedit.h"
 
-#include <iostream>
 #include <fstream>
 #include <QMessageBox>
 #include <QStyleFactory>
@@ -74,7 +73,6 @@ void Configure::returnToPreviousValues(){
             qMat = QString::fromStdString(mat);
             ui->tableWidget_build->item(i,0)->setText(qMat);
             ui->tableWidget_build->item(i,1)->setText(qRadius);
-            cout << mat << " " << radius << endl;
             i++;
         }
 
@@ -96,6 +94,23 @@ void Configure::on_pushButton_edit_material_clicked(){
 
 void Configure::on_pushButton_done_clicked()
 {
+    double radius = 0.0, outerRadius = 0.0, normalisedRadius = 0.0;
+    QString qNormalisedRadius;
+
+    for (int i=0; i<ui->spinBox_nLayers->value(); i++){
+        radius = QString(ui->tableWidget_build->item(i,1)->text()).toDouble();
+        if (radius > outerRadius){
+            outerRadius = radius;
+        }
+    }
+
+    for (int i=0; i<ui->spinBox_nLayers->value(); i++){
+        radius = QString(ui->tableWidget_build->item(i,1)->text()).toDouble();
+        normalisedRadius = radius / outerRadius;
+        qNormalisedRadius = QString::number(normalisedRadius);
+        ui->tableWidget_build->item(i,1)->setText(qNormalisedRadius);
+    }
+
     ofstream config("Configure/config.cfg");
     ofstream structure("Configure/struct.cfg");
     ofstream matList("Configure/matList.txt");
@@ -139,7 +154,7 @@ void Configure::populateLists(){
     ifstream matList("Configure/matList.txt");
 
     if (!matList)
-        cerr << "Could not open matlist.txt" << endl;
+        QMessageBox::warning(this,tr("Error!"),tr("Error!\n\nCould not open matList.txt."));
 
     while (matList){
         string name;
@@ -229,7 +244,7 @@ void Configure::on_pushButton_remove_clicked(){
     if (row != -1){
         ui->tableWidget_build->item(row,0)->setText("-");
         ui->tableWidget_build->item(row,1)->setText(" ");
-        ui->tableWidget_build->item(row,1)->setBackgroundColor(Qt::white);
+        ui->tableWidget_build->item(row,1)->setBackgroundColor(Qt::black);
     }
 
     return;
@@ -287,8 +302,6 @@ void Configure::on_pushButton_add_new_material_clicked(){
     string path = "Configure/Materials/";
     path += name;
     path += ".mat";
-
-    cout << path << endl;
 
     double kappa = QString(ui->doubleSpinBox_kappa->text()).toDouble();
     double albedo = QString(ui->doubleSpinBox_albedo->text()).toDouble();

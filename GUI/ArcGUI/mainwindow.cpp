@@ -6,7 +6,6 @@
 #include <configure.h>
 // File functions.
 #include <fstream>
-#include <iostream>
 // Functions for grabbing pngs through paths.
 #include <QDesktopServices>
 #include <QUrl>
