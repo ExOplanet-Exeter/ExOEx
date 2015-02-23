@@ -49,7 +49,7 @@ void input(Planet *exo,Particle *photon){
 						"	kappa : %lf\n"
 						"	albedo: %lf\n\n"
 						 ARESET,
-						i,nameList[i],exo->radius[i],enumText("scatType",exo->scatType[i]),exo->kappa[i],exo->albedo[i]);
+						i+1,nameList[i],exo->radius[i],enumText("scatType",exo->scatType[i]),exo->kappa[i],exo->albedo[i]);
 						
 	}
 	
