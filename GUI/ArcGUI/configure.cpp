@@ -35,7 +35,7 @@ void Configure::returnToPreviousValues(){
     string word;
 
     // Returning General tab values.
-    ifstream config("Configure/config.txt");
+    ifstream config("Configure/config.cfg");
 
     while (config){
         config >> word;
@@ -57,7 +57,7 @@ void Configure::returnToPreviousValues(){
     }
 
     // Returning Structure setup.
-    ifstream structure("Configure/struct.txt");
+    ifstream structure("Configure/struct.cfg");
 
     int i=0;
     while (structure){
@@ -96,8 +96,8 @@ void Configure::on_pushButton_edit_material_clicked(){
 
 void Configure::on_pushButton_done_clicked()
 {
-    ofstream config("Configure/config.txt");
-    ofstream structure("Configure/struct.txt");
+    ofstream config("Configure/config.cfg");
+    ofstream structure("Configure/struct.cfg");
     ofstream matList("Configure/matList.txt");
 
     config << "nPhot " << ui->spinBox_nPhot->value() << endl;

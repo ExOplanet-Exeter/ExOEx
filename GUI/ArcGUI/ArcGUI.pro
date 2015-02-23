@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2015-02-20T00:57:13
+# Project created by QtCreator 2015-02-20T19:06:55
 #
 #-------------------------------------------------
 
@@ -14,21 +14,19 @@ TEMPLATE = app
 
 SOURCES += \
     configure.cpp \
+    credits.cpp \
     main.cpp \
     mainwindow.cpp \
-    matedit.cpp \
-    credits.cpp
+    matedit.cpp
 
 HEADERS  += \
     configure.h \
+    credits.h \
     mainwindow.h \
-    matedit.h \
-    credits.h
+    matedit.h
 
 FORMS    += \
     configure.ui \
+    credits.ui \
     mainwindow.ui \
-    matedit.ui \
-    credits.ui
-
-RESOURCES +=
+    matedit.ui

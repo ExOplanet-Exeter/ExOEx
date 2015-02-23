@@ -43,12 +43,14 @@ Turns debug printing off/on with 0/1 respectively.
 
 //── GLOBAL DEFINES ───────────────────────────────────────────┤
 /*
+0) Local path from ./arc program to /configure/ folder.
 1) Mathmatical constant Pi.
 2) Maximum name length for a material.
 3) Maximum string length for a read word from a config file.
 4) Maximum string length for a read comment in a config file.
 5) Distance new photons are set at when being emitted from star.
 */
+#define configPath			"../../Configure/"
 #define PI 					3.14159265359
 #define MAX_NAME_LENGTH 	16
 #define MAX_WORD_LENGTH 	64

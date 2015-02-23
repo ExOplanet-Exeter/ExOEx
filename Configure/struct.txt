@@ -1,6 +1,0 @@
-Rock 0.11
-Hydrogen 0.19
-Air 0.21
-Air 0.26
-Hydrogen 0.36
-END

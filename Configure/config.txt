@@ -1,4 +1,0 @@
-nPhot 100001
-nLayers 5
-wavelength 503
-END

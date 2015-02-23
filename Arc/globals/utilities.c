@@ -62,3 +62,130 @@ void printEnd(char *word){
 	
 	return;
 }
+
+// Informs user of an error.
+void printErr(char *errorMessage){
+	
+	printf(ARED);
+	printf("ERROR! ");
+	printf(errorMessage);
+	printf("!\n" ARESET);
+	
+	return;
+}
+
+// Informs user of a warning.
+void printWarn(char *warningMessage){
+	
+	printf(AYELLOW);
+	printf("WARNING: ");
+	printf(warningMessage);
+	printf(".\n" ARESET);
+	
+	return;
+}
+
+// Reads an given integer from a given filename.
+int readInt(char *fileName,char *paramName){
+	
+	// Declerations
+	bool found = false;
+	int value = 0;
+	FILE *file;
+	char *path = malloc(strlen(configPath) + strlen(fileName));
+	char word[MAX_WORD_LENGTH];
+	
+	// Create full file path string.
+	strcpy(path,configPath);
+	strcat(path,fileName);
+	
+	// Open file for reading and check it opened successfully.
+	file = fopen(path,"r");
+	if (file == NULL){
+		printErr("Could not open file!");
+	}
+	
+	// Reading loop.
+	while (1){
+		fscanf(file,"%s",word);
+		if (strcmp(word,"END") == 0){
+			if (found == false){
+				printWarn("Parameter was not found");
+			}
+			break;
+		}
+		else if (strcmp(word,paramName) == 0){
+			found = true;
+			if (strcmp(paramName,"scatterType") == 0){
+				fscanf(file,"%s",word);
+				if (strcmp(word,"ISO") == 0)
+					return ISO;
+				if (strcmp(word,"RAY") == 0)
+					return RAY;
+				if (strcmp(word,"MIE") == 0)
+					return MIE;
+			}
+			else {
+				fscanf(file,"%i",&value);
+			}
+		}
+	}
+	
+	return value;
+}
+
+// Reads an given double from a given filename.
+int readDouble(char *fileName,char *paramName){
+	
+	// Declerations
+	bool found = false;
+	double value = 0.0;
+	FILE *file;
+	char *path = malloc(strlen(configPath) + strlen(fileName));
+	char word[MAX_WORD_LENGTH];
+	
+	// Create full file path string.
+	strcpy(path,configPath);
+	strcat(path,fileName);
+	
+	// Open file for reading and check it opened successfully.
+	file = fopen(path,"r");
+	if (file == NULL){
+		printErr("Could not open file!");
+	}
+	
+	// Reading loop.
+	while (1){
+		fscanf(file,"%s",word);
+		if (strcmp(word,"END") == 0){
+			if (found == false){
+				printWarn("Parameter was not found");
+			}
+			break;
+		}
+		else if (strcmp(word,paramName) == 0){
+			found = true;
+			fscanf(file,"%lf",&value);
+		}
+	}
+	
+	return value;
+}
+
+char *enumText(char *type,int i){
+	
+	if (type == "scatType"){
+		if (i == 0){
+			return "ISO";
+		}
+		else if (i == 1){
+			return "RAY";
+		}
+		else if (i == 2){
+			return "MIE";
+		}
+	}
+	else {
+		return "Unknown enum list.";
+	}
+}
