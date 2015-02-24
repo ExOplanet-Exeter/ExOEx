@@ -53,6 +53,7 @@ Turns debug printing off/on with 0/1 respectively.
 5) Distance new photons are set at when being emitted from star.
 */
 #define configPath			"../../Configure/"
+#define outputPath			"../../Output/"
 #define PI 					3.14159265359
 #define MAX_NAME_LENGTH 	16
 #define MAX_WORD_LENGTH 	64
@@ -94,12 +95,12 @@ typedef struct planet{
 2.6) Emission angle of particle from planet.
 */
 typedef struct particle{
-	bool life;
-	int curLayer;
-	double wavelength;
-	double pos[3];
-	double dirVec[3];
-	double alpha;
+	bool 	life;
+	int 	curLayer;
+	double 	wavelength;
+	double 	pos[3];
+	double 	dirVec[3];
+	double 	alpha;
 } Particle;
 
 
@@ -117,9 +118,19 @@ typedef struct datasystem{
 } Datasystem;
 
 
+/*
+	Private thread information structure.
+	An initialised copy is passed to each thread for it to
+	store all it's data.
+	These seperate strucutures may then be compiled into a
+	single, total, data structure.
+4.1) Thread identification number.
+4.2) Number of loops completed by that thread.
+4.3) Copy of a data structure for storage of high level data.
+*/
 typedef struct threadInfo{
-	int id;
-	int nLoop;
+	int 	id;
+	int 	nLoop;
 	Datasystem data;
 } ThreadInfo;
 

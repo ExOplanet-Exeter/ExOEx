@@ -16,14 +16,16 @@
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
-void printTitle();
-void printStart(char*);
-void printEnd(char*);
-void printErr(char*);
-void printWarn(char*);
-int readInt(char*,char*);
+void   printTitle();
+void   printStart(char*);
+void   printEnd(char*);
+void   printErr(char*);
+void   printWarn(char*);
+int    readInt(char*,char*);
 double readDouble(char*,char*);
-char *enumText(char*,int);
+char   *enumText(char*,int);
+double arcRand(double,double);
+double degreeConvert(double);
 
 
 //── END CONDITIONAL ──────────────────────────────────────────┤

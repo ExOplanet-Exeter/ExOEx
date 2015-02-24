@@ -39,9 +39,16 @@ int main(){
   
   // -- Entry
   printTitle();
-  if (DEBUG)
+  if (DEBUG){
     printStart("ExOEx");
-    
+    FILE *file;  
+    file = fopen(outputPath "position.dat","w");
+   
+    if (file == NULL)
+      printErr("Could not open position.dat"); 
+
+    fclose(file);
+  }
   
   // -- Declerations
   // g_variable is for global use, p_variable is for private
@@ -52,7 +59,8 @@ int main(){
   Particle photon = {0};
 
   // -- Initialisation
-  exo.nLayers = readInt("config.cfg","nLayers");
+  exo.nLayers  = readInt("config.cfg","nLayers");
+  exo.nPhot    = readInt("config.cfg","nPhot");
   
   // -- Memory allocation
   exo.scatType = malloc(exo.nLayers * sizeof *exo.scatType);
@@ -67,7 +75,7 @@ int main(){
     printStart("Photon Loop");
   
   // Parallel thread section.
-  #pragma omp parallel private(thread)
+  #pragma omp parallel firstprivate(thread)
   {  
     // Indervidual thread initialisation.
     #pragma omp critical
@@ -78,22 +86,36 @@ int main(){
     thread.id = omp_get_thread_num();    
 
     if (thread.id == 0)
-      printf(ABLUE "Number of threads running: %i\n",omp_get_num_threads());
+      printf(ABLUE "Number of threads running: %i\n" ARESET,omp_get_num_threads());
 
     // Parallel thread for loop.
     #pragma omp for
     for (int i=0; i<exo.nPhot; i++){
       photonLoop(&exo,&photon);
+      extraction(&photon,&thread);
+      thread.nLoop++;
     }
     
     // Thread convergence.
     #pragma omp critical
     {
+      reduction(&thread,&totalData);
+            
+      printf(ABLUE "Thread #%i ran %i/%i (%lf%%)\n" ARESET,
+        thread.id,thread.nLoop,exo.nPhot,(100.0*thread.nLoop)/exo.nPhot);
     }
   }
     
   if (DEBUG)
     printEnd("Photon Loop");
+    
+  output(&totalData);
+  
+  // -- Clean up
+  free(exo.scatType);
+  free(exo.kappa);
+  free(exo.albedo);
+  free(exo.radius);
   
   // -- Exit
   if (DEBUG)

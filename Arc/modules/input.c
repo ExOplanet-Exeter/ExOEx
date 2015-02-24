@@ -31,8 +31,6 @@ void input(Planet *exo,Particle *photon){
 	// -- Planet setup
 	char nameList[exo->nLayers][MAX_NAME_LENGTH];
 	
-	exo->nPhot = readInt("config.cfg","nPhot");
-	
 	for (int i=0; i<exo->nLayers; i++){
 		strcpy(nameList[i],getMatName(i,exo));
 		getLayerProperties(i,nameList[i],exo);

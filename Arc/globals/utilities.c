@@ -189,3 +189,22 @@ char *enumText(char *type,int i){
 		return "Unknown enum list.";
 	}
 }
+
+// Returns a random value between a given Min and Max value.
+double arcRand(double min, double max){
+	
+	double smallRange, bigRange, randy;
+	
+	smallRange 	= abs(max - min);
+	bigRange 	= RAND_MAX / smallRange;
+		
+	randy = min + (rand() / bigRange);
+		
+	return randy;
+}
+
+// Converts a value in radians to degrees.
+double degreeConvert(double rad){
+	
+	return rad*(180.0/PI);
+}

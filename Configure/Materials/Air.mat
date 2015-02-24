@@ -1,4 +1,4 @@
-kappa 0.5
-albedo 0.94
-scatterType MIE
+kappa 1
+albedo 0.99
+scatterType ISO
 END
