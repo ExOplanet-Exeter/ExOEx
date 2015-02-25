@@ -81,7 +81,7 @@ int main(){
     // Indervidual thread initialisation.
     #pragma omp critical
     {
-      srand(clock() + thread.id);
+      photonLoop(&exo,&photon);
     }
 
     thread.id = omp_get_thread_num();    
@@ -94,8 +94,11 @@ int main(){
     for (int i=0; i<exo.nPhot; i++){
       if (thread.id == 0){
         progressBar(i,exo.nPhot);
-        usleep(100);
       }
+      
+      photonLoop(&exo,&photon);
+      extraction(&photon,&thread);
+      
       thread.nLoop++;
     }
     

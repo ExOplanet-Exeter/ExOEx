@@ -22,6 +22,8 @@
 //── OUTPUT ───────────────────────────────────────────────────┤
 void output(Datasystem *totalData){
 
+      printf("nDead = %i\n",totalData->nDead);
+
 	return;
 }
 

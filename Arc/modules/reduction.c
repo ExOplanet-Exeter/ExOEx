@@ -22,6 +22,8 @@
 //── REDUCTION ────────────────────────────────────────────────┤
 void reduction(ThreadInfo *thread,Datasystem *totalData){
 
+      totalData->nDead += thread->data.nDead;
+
 	return;
 }
 
