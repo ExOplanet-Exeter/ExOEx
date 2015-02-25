@@ -32,6 +32,7 @@
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
+static inline void progressBar(int i, int total);
 
 
 //── MAIN ─────────────────────────────────────────────────────┤
@@ -80,7 +81,7 @@ int main(){
     // Indervidual thread initialisation.
     #pragma omp critical
     {
-      srand(clock());
+      srand(clock() + thread.id);
     }
 
     thread.id = omp_get_thread_num();    
@@ -91,8 +92,10 @@ int main(){
     // Parallel thread for loop.
     #pragma omp for
     for (int i=0; i<exo.nPhot; i++){
-      photonLoop(&exo,&photon);
-      extraction(&photon,&thread);
+      if (thread.id == 0){
+        progressBar(i,exo.nPhot);
+        usleep(100);
+      }
       thread.nLoop++;
     }
     
@@ -126,3 +129,34 @@ int main(){
 
 
 //─── COMPLETED FUNCTIONS ─────────────────────────────────────┤
+static inline void progressBar(int i, int total){
+  
+  // Width of progress bar.
+  int width = 58;
+  
+  // Only update 100 times.
+  if (i % ((total/100) + 1) != 0){
+    return;
+  }
+  
+  // Fraction completed.
+  double frac = i/(1.0*total);
+  int c = frac * width;
+  
+  // Print percentage complete.
+  printf(AYELLOW "%3d%% [" ARESET, (int)(frac*100));
+  
+  // Print progress bar.
+  for (int i=0; i<c; i++){
+    printf(AYELLOW "=" ARESET);
+  }
+  for (int i=c; i<width; i++){
+    printf(" ");
+  }
+  
+  // ANSI consol control codes to return to previous line and
+  // clean it.
+  printf(AYELLOW "]\n\033[F\033[J" ARESET);
+  
+  return;
+}

@@ -21,12 +21,6 @@
 
 //── EXTRACTION ───────────────────────────────────────────────┤
 void extraction(Particle *photon,ThreadInfo *thread){
-	
-      if (photon->life == false)
-            thread->data.nDead++;
-            
-      int alpha = degreeConvert(photon->alpha);
-      thread->data.lightcurve[alpha]++;
 
 	return;
 }

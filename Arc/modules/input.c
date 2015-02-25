@@ -105,14 +105,6 @@ void getLayerProperties(int i,char *name,Planet *exo){
 	exo->scatType[i] = readInt(fileName,"scatterType");;//readInt(fileName,"scatterType");
 	exo->kappa[i] = readDouble(fileName,"kappa");
 	exo->albedo[i] = readDouble(fileName,"albedo");
-	
-	/*exo->scatType = readInt();
-	
-	int		*scatType;
-	double 	*kappa;
-	double 	*albedo;
-	double	*radius;
-	*/
-	
+
 	return;
 }
