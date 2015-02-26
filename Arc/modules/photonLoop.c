@@ -20,15 +20,22 @@ void initialisePhoton(Particle*);
 void stellarEmission(Particle* photon);
 void mapToPlanetSkin(Planet*,Particle*);
 void injectPhoton(Planet*,Particle*);
+
+double pathLength(Planet*,Particle*);
+int layerToHit(Planet*,Particle*);
+int getLayer(Planet*,double,double,double);
+
 /**/void dev_recordPos(Particle*);
 
 
 //── FUNCTION IN PROGRESS ─────────────────────────────────────┤
-double pathLength(Planet* exo,Particle* photon){
+double pathLength(Planet *exo,Particle *photon){
   
   double tau = -log(arcRand(0.0,1.0));
-  
+  double tauTotal = 0.0;  
   int impactLayer = layerToHit(exo,photon);
+  
+  
   
   // Get distance to layer
   // Times that by kappa for tau'
@@ -40,49 +47,27 @@ double pathLength(Planet* exo,Particle* photon){
   return arcRand(0.0,1.0);
 }
 
-int layerToHit(Planet *exo,Particle *photon){
+double distToLayer(Planet *exo,Particle *photon,double x,double y,double z,int layer){
   
-  // Photon will always exit inner most layer.
-  if (photon->curLayer == 0){
-    return 0;
-  }
+  double lambda = 0.0;
   
-  double rPhot, rInner, rCrit;
-  rPhot = sqrt(pow(photon->pos[X],2.0)+pow(photon->pos[Y],2.0)+pow(photon->pos[Z],2.0));
-  rInner= exo->radius[photon->curLayer];
-  rCrit = sqrt(pow(rPhot,2.0)+pow(rInner,2.0));
+  double R_phot, R_layer, dotProd;
+  double alpha, beta, gamma;
   
-  double ghostPos[3];
-  for (int i=0; i<3; i++){
-    ghostPos[i] = photon->pos[i] + (photon->dirVec[i]*rCrit);
-  }
+  R_phot = sqrt(pow(x,2.0)+pow(y,2.0)+pow(z,2.0));
+  R_layer = exo->radius[layer];
   
-  if (getLayer(exo,ghostPos[X],ghostPos[Y],ghostPos[Z]) < photon->curLayer){
-    // Then photon is hitting inner layer;
-    return photon->curLayer - 1;
-  }
-  else {
-    // Then photon is hitting outer boundary of current layer.
-    return photon->curLayer;
-  }
+  dotProd = (photon->dirVec[X] * -x) + (photon->dirVec[Y] * -y) + (photon->dirVec[Z] * -z);
+  
+  alpha = acos(dotProd / R_phot);
+  beta = asin((R_phot/R_layer)*sin(alpha));
+  gamma = (2.0*PI) - alpha - beta;
+  
+  lambda = (sin(gamma)/sin(alpha)) * R_layer;
+  
+  return lambda;
 }
 
-int getLayer(Planet *exo,double x,double y,double z){
-
-  double rho = sqrt(pow(x,2.0)+pow(y,2.0)+pow(z,2.0));
-  if (rho > 1.0){
-    return 999;
-  }
-  
-  for(int i=0; i<exo->nLayers; i++){
-    if ((rho > exo->radius[i]) && (rho <= exo->radius[i+1])){
-      return i+1;
-    }
-  }
-
-  // If not already returned it must be in core layer (0);
-  return 0; 
-}
 
 
 //── PHOTON LOOP ──────────────────────────────────────────────┤
@@ -157,6 +142,51 @@ void injectPhoton(Planet *exo,Particle *photon){
   return;
 }
 
+
+
+int layerToHit(Planet *exo,Particle *photon){
+  
+  // Photon will always exit inner most layer.
+  if (photon->curLayer == 0){
+    return 0;
+  }
+  
+  double rPhot, rInner, rCrit;
+  rPhot = sqrt(pow(photon->pos[X],2.0)+pow(photon->pos[Y],2.0)+pow(photon->pos[Z],2.0));
+  rInner= exo->radius[photon->curLayer];
+  rCrit = sqrt(pow(rPhot,2.0)+pow(rInner,2.0));
+  
+  double ghostPos[3];
+  for (int i=0; i<3; i++){
+    ghostPos[i] = photon->pos[i] + (photon->dirVec[i]*rCrit);
+  }
+  
+  if (getLayer(exo,ghostPos[X],ghostPos[Y],ghostPos[Z]) < photon->curLayer){
+    // Then photon is hitting inner layer;
+    return photon->curLayer - 1;
+  }
+  else {
+    // Then photon is hitting outer boundary of current layer.
+    return photon->curLayer;
+  }
+}
+
+int getLayer(Planet *exo,double x,double y,double z){
+
+  double rho = sqrt(pow(x,2.0)+pow(y,2.0)+pow(z,2.0));
+  if (rho > 1.0){
+    return 999;
+  }
+  
+  for(int i=0; i<exo->nLayers; i++){
+    if ((rho > exo->radius[i]) && (rho <= exo->radius[i+1])){
+      return i+1;
+    }
+  }
+
+  // If not already returned it must be in core layer (0);
+  return 0; 
+}
 
 
 // Developer function: Record the position of photon to a file.
