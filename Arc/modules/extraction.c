@@ -25,6 +25,10 @@ void extraction(Particle *photon,ThreadInfo *thread){
       if (photon->life == false){
             thread->data.nDead++;
       }
+      
+      int theta = photon->alpha * (180.0/PI);
+
+      thread->data.lightcurve[theta]++;
 
 	return;
 }

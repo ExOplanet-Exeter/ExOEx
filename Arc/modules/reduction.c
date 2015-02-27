@@ -23,7 +23,11 @@
 void reduction(ThreadInfo *thread,Datasystem *totalData){
 
       totalData->nDead += thread->data.nDead;
-
+      
+      for (int i=0; i<180; i++){
+            totalData->lightcurve[i] += thread->data.lightcurve[i];
+      }
+      
 	return;
 }
 
