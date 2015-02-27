@@ -76,7 +76,7 @@ int main(){
     printStart("Photon Loop");
   
   // Parallel thread section.
-  #pragma omp parallel firstprivate(thread)
+  #pragma omp parallel default (none), firstprivate(thread,photon), shared(totalData,exo)
   {  
     // Indervidual thread initialisation.
     #pragma omp critical
@@ -93,7 +93,7 @@ int main(){
     #pragma omp for
     for (int i=0; i<exo.nPhot; i++){
       if (thread.id == 0){
-        progressBar(i,exo.nPhot);
+        progressBar(i*omp_get_num_threads(),exo.nPhot);
       }
       
       photonLoop(&exo,&photon);
@@ -138,7 +138,7 @@ static inline void progressBar(int i, int total){
   int width = 58;
   
   // Only update 100 times.
-  if (i % ((total/100) + 1) != 0){
+  if (i % ((total/(100*omp_get_num_threads())) + 1) != 0){
     return;
   }
   

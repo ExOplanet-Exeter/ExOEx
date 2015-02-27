@@ -193,6 +193,7 @@ void isotropic(Particle  *photon){
   double unit = sqrt(pow(photon->dirVec[X],2.0)+pow(photon->dirVec[Y],2.0)+pow(photon->dirVec[Z],2.0));
   if (unit < 0.999999 || unit > 1.000001){
     printErr("Scattering vector is not a unit vector");
+    printf("%lf\n",unit);
   }
   
   return;
