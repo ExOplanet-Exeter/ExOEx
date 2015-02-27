@@ -131,6 +131,7 @@ typedef struct datasystem{
 typedef struct threadInfo{
 	int 	id;
 	int 	nLoop;
+	int		startTime;
 	Datasystem data;
 } ThreadInfo;
 

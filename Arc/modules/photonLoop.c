@@ -58,7 +58,7 @@ void photonLoop(Planet *exo,Particle *photon){
   
   photon->alpha = acos(photon->dirVec[Z]);
     
-  dev_recordPos(photon);
+  //dev_recordPos(photon);
 
   return;
 }

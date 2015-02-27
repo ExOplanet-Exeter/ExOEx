@@ -32,7 +32,8 @@
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
-static inline void progressBar(int i, int total);
+static inline void progressBar(int,int,int,time_t);
+void printTimeTaken(time_t);
 
 
 //── MAIN ─────────────────────────────────────────────────────┤
@@ -74,9 +75,11 @@ int main(){
   
   if (DEBUG)
     printStart("Photon Loop");
+    
+  time_t start = time(NULL);
   
   // Parallel thread section.
-  #pragma omp parallel default (none), firstprivate(thread,photon), shared(totalData,exo)
+  #pragma omp parallel default (none), firstprivate(thread,photon), shared(totalData,exo,start)
   {  
     // Indervidual thread initialisation.
     #pragma omp critical
@@ -93,7 +96,7 @@ int main(){
     #pragma omp for
     for (int i=0; i<exo.nPhot; i++){
       if (thread.id == 0){
-        progressBar(i*omp_get_num_threads(),exo.nPhot);
+        progressBar(i*omp_get_num_threads(),exo.nPhot,i,start);
       }
       
       photonLoop(&exo,&photon);
@@ -106,12 +109,14 @@ int main(){
     #pragma omp critical
     {
       reduction(&thread,&totalData);
-            
+
       printf(ABLUE "Thread #%i ran %i/%i (%lf%%)\n" ARESET,
         thread.id,thread.nLoop,exo.nPhot,(100.0*thread.nLoop)/exo.nPhot);
     }
   }
-    
+  
+  printTimeTaken(start);
+  
   if (DEBUG)
     printEnd("Photon Loop");
     
@@ -132,15 +137,38 @@ int main(){
 
 
 //─── COMPLETED FUNCTIONS ─────────────────────────────────────┤
-static inline void progressBar(int i, int total){
+static inline void progressBar(int i,int total,int j,time_t start){
   
   // Width of progress bar.
-  int width = 58;
+  int width = 50;
   
   // Only update 100 times.
-  if (i % ((total/(100*omp_get_num_threads())) + 1) != 0){
+  if (i % ((total/((total/100000)*omp_get_num_threads())) + 1) != 0){
     return;
   }
+  
+  // --- Time testing
+  if (i >= 100000){
+    double elapsed = (double)(time(NULL) - start);
+    
+    double timePerPhot = elapsed/j;
+    
+    double endTime = (1.0-((1.0*j)/total))*timePerPhot*total;
+    
+    if (endTime <= 120){
+      printf(AYELLOW "ETC: %.2fs" ARESET,endTime);
+    }
+    else if ((endTime > 120) && (endTime <= 7200)){
+      int min = endTime / 60;
+      printf(AYELLOW "ETC: %im" ARESET,min); 
+    }
+    else {
+      int hr = endTime / 3600;
+      printf(AYELLOW "ETC: %ihr" ARESET,hr);
+    }
+    
+  }
+  // --- End of time testing
   
   // Fraction completed.
   double frac = i/(1.0*total);
@@ -160,6 +188,25 @@ static inline void progressBar(int i, int total){
   // ANSI consol control codes to return to previous line and
   // clean it.
   printf(AYELLOW "]\n\033[F\033[J" ARESET);
+  
+  return;
+}
+
+void printTimeTaken(time_t start){
+  
+  double timeTaken = (double)(time(NULL) - start);
+  
+  if (timeTaken <= 120){
+    printf(AYELLOW "Time taken: %.2fs\n" ARESET,timeTaken);
+  }
+  else if ((timeTaken > 120) && (timeTaken <= 7200)){
+    int min = timeTaken / 60;
+    printf(AYELLOW "Time taken: %im\n" ARESET,min); 
+  }
+  else {
+    int hr = timeTaken / 3600;
+    printf(AYELLOW "Time taken: %ihr\n" ARESET,hr);
+  }
   
   return;
 }
