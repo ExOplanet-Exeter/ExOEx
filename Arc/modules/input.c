@@ -37,7 +37,7 @@ void input(Planet *exo,Particle *photon){
 	}
 	
 	// -- Print structure
-	printf(AMAGENTA "\nnPhot  : %i\nnLayers: %i\n\n" ARESET,exo->nPhot,exo->nLayers);
+	printf(AMAGENTA "\nnPhot  : 10^%.1f\nnLayers: %i\n\n" ARESET,log10(exo->nPhot),exo->nLayers);
 	
 	for (int i=0; i<exo->nLayers; i++){
 		printf(AMAGENTA "Layer %i)\n"

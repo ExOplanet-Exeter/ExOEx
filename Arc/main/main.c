@@ -32,7 +32,7 @@
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
-static inline void progressBar(int,int,int,time_t);
+static inline void progressBar(int,int,int,time_t,int);
 void printTimeTaken(time_t);
 
 
@@ -96,7 +96,7 @@ int main(){
     #pragma omp for
     for (int i=0; i<exo.nPhot; i++){
       if (thread.id == 0){
-        progressBar(i*omp_get_num_threads(),exo.nPhot,i,start);
+        progressBar(i*omp_get_num_threads(),exo.nPhot,i,start,omp_get_num_threads());
       }
       
       photonLoop(&exo,&photon);
@@ -137,7 +137,7 @@ int main(){
 
 
 //─── COMPLETED FUNCTIONS ─────────────────────────────────────┤
-static inline void progressBar(int i,int total,int j,time_t start){
+static inline void progressBar(int i,int total,int j,time_t start,int nThreads){
   
   // Width of progress bar.
   int width = 50;
@@ -153,18 +153,18 @@ static inline void progressBar(int i,int total,int j,time_t start){
     
     double timePerPhot = elapsed/j;
     
-    double endTime = (1.0-((1.0*j)/total))*timePerPhot*total;
+    double endTime = ((1.0-((1.0*j)/total))*timePerPhot*total)/nThreads;
     
     if (endTime <= 120){
       printf(AYELLOW "ETC: %.2fs" ARESET,endTime);
     }
     else if ((endTime > 120) && (endTime <= 7200)){
-      int min = endTime / 60;
-      printf(AYELLOW "ETC: %im" ARESET,min); 
+      double min = endTime / 60.0;
+      printf(AYELLOW "ETC: %.2fm" ARESET,min); 
     }
     else {
-      int hr = endTime / 3600;
-      printf(AYELLOW "ETC: %ihr" ARESET,hr);
+      double hr = endTime / 3600.0;
+      printf(AYELLOW "ETC: %.2fhr" ARESET,hr);
     }
     
   }
