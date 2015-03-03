@@ -37,8 +37,33 @@ void printTimeTaken(time_t);
 
 
 //── MAIN ─────────────────────────────────────────────────────┤
-int main(){
+int main(int argc,char **argv){
+
+  // -- Mode Selection
+  if (argc > 2){
+    printf(ARED "FATAL ERROR: Maximum arguments = 2. Not %i\n\n" ARESET,argc);
+    exit(1);
+  }
   
+  if (argv[1] == NULL){
+    printf(ARED "Running in NORMAL mode.\n\n" ARESET);
+    globalRunningMode = NORMAL;
+  }
+  else if (strcmp(argv[1],"test") == 0){
+    printf(ARED "Running in TESTING mode.\n\n" ARESET);
+    globalRunningMode = TEST;
+    testing();
+    exit(0);
+  }
+  else if (strcmp(argv[1],"lambert") == 0){
+    printf(ARED "Running LAMBERTIAN test.\n" ARESET);
+    globalRunningMode = LAMBERT;
+  }
+  else {
+    printf(ARED "FATAL ERROR: Argument '%s' is not recognised.\n" ARESET,argv[1]);
+    exit(1);
+  }
+
   // -- Entry
   printTitle();
   if (DEBUG){
@@ -84,6 +109,7 @@ int main(){
     // Indervidual thread initialisation.
     #pragma omp critical
     {
+      srand(time(NULL) + omp_get_thread_num());
       photonLoop(&exo,&photon);
     }
 

@@ -27,6 +27,8 @@ char   *enumText(char*,int);
 double arcRand(double,double);
 double degreeConvert(double);
 
+void printOutcome(char*,bool);
+
 
 //── END CONDITIONAL ──────────────────────────────────────────┤
 #endif

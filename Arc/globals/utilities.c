@@ -85,6 +85,21 @@ void printWarn(char *warningMessage){
 	return;
 }
 
+// Informs user of a test being passed.
+void printOutcome(char *testName,bool pass){
+	
+	printf(testName);
+	
+	if (pass == true){
+		printf(AGREEN " Passed.\n" ARESET);
+	}
+	else if (pass == false){
+		printf(ARED " Failed.\n" ARESET);
+	}
+	
+	return;
+}
+
 // Reads an given integer from a given filename.
 int readInt(char *fileName,char *paramName){
 	

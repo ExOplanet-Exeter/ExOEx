@@ -45,15 +45,40 @@ void photonLoop(Planet *exo,Particle *photon){
   initialisePhoton(photon);
   stellarEmission(photon);
   mapToPlanetSkin(exo,photon);
-  injectPhoton(exo,photon);
-  photon->curLayer = getLayer(exo,photon->pos[X],photon->pos[Y],photon->pos[Z]);
-  checkLife(exo,photon);
   
-  while (photon->life == true){
-    scatter(exo,photon);
-    move(exo,photon);
+  if (globalRunningMode == NORMAL){
+    injectPhoton(exo,photon);
     photon->curLayer = getLayer(exo,photon->pos[X],photon->pos[Y],photon->pos[Z]);
     checkLife(exo,photon);
+    
+    while (photon->life == true){
+      scatter(exo,photon);
+      move(exo,photon);
+      photon->curLayer = getLayer(exo,photon->pos[X],photon->pos[Y],photon->pos[Z]);
+      checkLife(exo,photon);
+    }
+  }
+  else if (globalRunningMode == LAMBERT){
+    double u[3] = {0.0};
+    for (int i=0; i<3; i++){
+      u[i] = -photon->pos[i];
+      photon->dirVec[i] = -u[i];
+    }
+    
+    bool done = false;
+    while (done == false){
+      double A = arcRand(0.0,1.0);
+      isotropic(photon);
+      double dotProd = acos((photon->dirVec[X]*u[X])+(photon->dirVec[Y]*u[Y])+(photon->dirVec[Z]*u[Z]));
+      double B = cos(dotProd);
+      if (B >= A){
+        done = true;
+      }
+      if (dotProd > PI/2.0){
+        done = false;
+      }
+    }
+    photon->dirVec[Z] = -photon->dirVec[Z];
   }
   
   photon->alpha = acos(photon->dirVec[Z]);
@@ -180,7 +205,7 @@ void scatter(Planet *exo,Particle* photon){
 }
 
 // Creates an isotropic scattering direction.
-void isotropic(Particle  *photon){
+void isotropic(Particle *photon){
   
   double phi = arcRand(0.0,2.0*PI);
   double costheta = arcRand(-1.0,1.0);

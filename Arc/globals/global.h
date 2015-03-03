@@ -43,6 +43,13 @@ Turns debug printing off/on with 0/1 respectively.
 #define DEBUG 1
 
 
+//── RUNNING MODE CONTROL ──────────────────────────────────────┤
+/*
+Determines what mode the program will run in.
+*/
+int globalRunningMode;
+
+
 //── GLOBAL DEFINES ───────────────────────────────────────────┤
 /*
 0) Local path from ./arc program to /configure/ folder.
@@ -93,6 +100,7 @@ typedef struct planet{
 2.4) Position of particle in three dimensions.
 2.5) Direction vector of particle travel.
 2.6) Emission angle of particle from planet.
+2.7) Polarisation four vector.
 */
 typedef struct particle{
 	bool 	life;
@@ -101,6 +109,7 @@ typedef struct particle{
 	double 	pos[3];
 	double 	dirVec[3];
 	double 	alpha;
+	double	pol[4];
 } Particle;
 
 
@@ -137,6 +146,16 @@ typedef struct threadInfo{
 
 
 //── ENUMERATIONS ──────────────────────────────────────────┤
+/*
+	Sets NORMAL, LAMBERT as an enumeration for clarity.
+*/
+enum Modes{
+	NORMAL,
+	TEST,
+	LAMBERT,
+};
+
+
 /*
 	Sets X, Y & Z to 0, 1 & 2 for clarity when manipulating
 	array dimensions. Note that these are capatalised.

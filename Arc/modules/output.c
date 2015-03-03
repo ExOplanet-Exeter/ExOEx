@@ -23,7 +23,13 @@
 void output(Datasystem *totalData){
 
       FILE* file;
-      file = fopen(outputPath "lightcurve.dat","w");
+      
+      if (globalRunningMode == NORMAL){
+            file = fopen(outputPath "lightcurve.dat","w");
+      }
+      else if (globalRunningMode == LAMBERT){
+            file = fopen(outputPath "lambertian.dat","w");
+      }
       
       if (file == NULL){
             printErr("Could not open lightcurve.dat");
@@ -31,8 +37,17 @@ void output(Datasystem *totalData){
       
       printf("nDead = %i\n",totalData->nDead);
 
+      double fittedMax = 0.0;
       for (int i=0; i<179; i++){
             totalData->fittedCurve[i] = totalData->lightcurve[i] / sin((i+0.5)*(PI/180.0));
+            if (totalData->fittedCurve[i] > fittedMax){
+                  fittedMax = totalData->fittedCurve[i];
+            }
+      }
+      
+      // Normalise the fittedCurve.
+      for (int i=0; i<180; i++){
+            totalData->fittedCurve[i] = totalData->fittedCurve[i]/fittedMax;
             fprintf(file,"%i %lf\n",i,totalData->fittedCurve[i]);
       }
       

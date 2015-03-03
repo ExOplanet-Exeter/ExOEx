@@ -13,16 +13,16 @@ all: arc clean
 
 
 # Main build: 'arc'.
-arc: main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o
-	$(CC) $(CFLAGS) main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o -o arc
+arc: main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o testing.o
+	$(CC) $(CFLAGS) main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o testing.o -o arc
 	
-main.o: $(WKDIR)main.c
+main.o: $(WKDIR)main.o
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
 	
-input.o: $(WKDIR)../modules/input.c
+input.o: $(WKDIR)../modules/input.o
 	$(CC) $(CFLAGS) -c $(WKDIR)../modules/input.c
 	
-photonLoop.o: $(WKDIR)../modules/photonLoop.c
+photonLoop.o: $(WKDIR)../modules/photonLoop.o
 	$(CC) $(CFLAGS) -c $(WKDIR)../modules/photonLoop.c
 	
 extraction.o: $(WKDIR)../modules/extraction.o
@@ -34,8 +34,11 @@ reduction.o: $(WKDIR)../modules/reduction.o
 output.o: $(WKDIR)../modules/output.o
 	$(CC) $(CFLAGS) -c $(WKDIR)../modules/output.c
 	
-utilities.o: $(WKDIR)../globals/utilities.c
-	$(CC) $(CFLAGS) -c $(WKDIR)../globals/utilities.c	
+utilities.o: $(WKDIR)../globals/utilities.o
+	$(CC) $(CFLAGS) -c $(WKDIR)../globals/utilities.c
+	
+testing.o: $(WKDIR)../modules/testing.o
+	$(CC) $(CFLAGS) -c $(WKDIR)../modules/testing.c
 	
 	
 # Clean up commands.
