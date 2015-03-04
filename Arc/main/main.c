@@ -35,6 +35,8 @@
 static inline void progressBar(int,int,int,time_t,int);
 void printTimeTaken(time_t);
 
+int k = 0;
+
 
 //── MAIN ─────────────────────────────────────────────────────┤
 int main(int argc,char **argv){
@@ -169,30 +171,24 @@ static inline void progressBar(int i,int total,int j,time_t start,int nThreads){
   int width = 50;
   
   // Only update 100 times.
-  if (i % ((total/((total/100000)*omp_get_num_threads())) + 1) != 0){
+  if (i % ((total/((total/1000000)*omp_get_num_threads())) + 1) != 0){
     return;
   }
   
   // --- Time testing
-  if (i >= 100000){
-    double elapsed = (double)(time(NULL) - start);
+  if (j >= 100000){
+   
+    time_t now = time(NULL);
+    double timePerPhot = ((double)now - (double)start)/j;
     
-    double timePerPhot = elapsed/j;
+    double timeLeft = (total - j)*timePerPhot;
+    printf("%.0f ",timeLeft);
     
-    double endTime = ((1.0-((1.0*j)/total))*timePerPhot*total)/nThreads;
-    
-    if (endTime <= 120){
-      printf(AYELLOW "ETC: %.2fs" ARESET,endTime);
-    }
-    else if ((endTime > 120) && (endTime <= 7200)){
-      double min = endTime / 60.0;
-      printf(AYELLOW "ETC: %.2fm" ARESET,min); 
-    }
-    else {
-      double hr = endTime / 3600.0;
-      printf(AYELLOW "ETC: %.2fhr" ARESET,hr);
-    }
-    
+    FILE *file;  
+    file = fopen(outputPath "position.dat","a");
+    fprintf(file,"%i %.0f\n",k,timeLeft);
+    fclose(file);
+    k++;
   }
   // --- End of time testing
   

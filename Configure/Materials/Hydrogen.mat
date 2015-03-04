@@ -1,4 +1,4 @@
-kappa 1.7
-albedo 0.97
-scatterType RAY
+kappa 1
+albedo 0.01
+scatterType ISO
 END
