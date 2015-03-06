@@ -13,8 +13,8 @@ all: arc clean
 
 
 # Main build: 'arc'.
-arc: main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o testing.o
-	$(CC) $(CFLAGS) main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o testing.o -o arc
+arc: main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o testing.o gnuplot_i.o
+	$(CC) $(CFLAGS) main.o input.o photonLoop.o extraction.o reduction.o output.o utilities.o testing.o gnuplot_i.o -o arc
 	
 main.o: $(WKDIR)main.o
 	$(CC) $(CFLAGS) -c $(WKDIR)main.c
@@ -39,6 +39,9 @@ utilities.o: $(WKDIR)../globals/utilities.o
 	
 testing.o: $(WKDIR)../modules/testing.o
 	$(CC) $(CFLAGS) -c $(WKDIR)../modules/testing.c
+	
+gnuplot_i.o: $(WKDIR)../globals/gnuplot_i.o
+	$(CC) $(CFLAGS) -c $(WKDIR)../globals/gnuplot_i.c
 	
 	
 # Clean up commands.

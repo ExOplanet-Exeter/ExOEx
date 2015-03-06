@@ -35,8 +35,6 @@
 static inline void progressBar(int,int,int,time_t,int);
 void printTimeTaken(time_t);
 
-int k = 0;
-
 
 //── MAIN ─────────────────────────────────────────────────────┤
 int main(int argc,char **argv){
@@ -171,7 +169,7 @@ static inline void progressBar(int i,int total,int j,time_t start,int nThreads){
   int width = 50;
   
   // Only update 100 times.
-  if (i % ((total/((total/1000000)*omp_get_num_threads())) + 1) != 0){
+  if (i % ((total/((100)*omp_get_num_threads())) + 1) != 0){
     return;
   }
   
@@ -182,13 +180,22 @@ static inline void progressBar(int i,int total,int j,time_t start,int nThreads){
     double timePerPhot = ((double)now - (double)start)/j;
     
     double timeLeft = (total - j)*timePerPhot;
-    printf("%.0f ",timeLeft);
     
-    FILE *file;  
-    file = fopen(outputPath "position.dat","a");
-    fprintf(file,"%i %.0f\n",k,timeLeft);
-    fclose(file);
-    k++;
+    if (timeLeft < 60){
+      printf("%.0fs ",timeLeft);  
+    }
+    else if (timeLeft < 3600){
+      int min = timeLeft / 60;
+      int sec = (int)timeLeft % 60;
+      printf("%im %is ",min,sec);
+    }
+    else {
+      int hour = timeLeft / 3600;
+      int min = ((int)timeLeft % 3600)/60;
+      int sec = ((int)timeLeft % 3600)%60;
+      printf("%ihr %im %is ",hour,min,sec);
+    }
+    
   }
   // --- End of time testing
   

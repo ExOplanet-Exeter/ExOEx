@@ -21,21 +21,21 @@ void printTitle(){
 	
 	printf(ARED
 	"\n╦═════════════════════════════════════╦═════════════════"
-		"═══════╦\n" AYELLOW
+		"═══════╦\n" ABLUE
 	    "║oooooooooooo               .oooooo.  ║oooooooooooo       "
-	    "     ║ \n" AGREEN
+	    "     ║ \n" ARED
 		"║`888'     `8              d8P'  `Y8b ║`888'     `8       "
-		"     ║ \n" ACYAN
+		"     ║ \n" ABLUE
 		"║ 888         oooo    ooo 888      888║ 888         oooo  "
-		"  ooo║ \n" ABLUE
+		"  ooo║ \n" ARED
 		"║ 888oooo8     `88b..8P'  888      888║ 888oooo8     `88b."
-		".8P' ║ \n" AMAGENTA
+		".8P' ║ \n" ABLUE
 		"║ 888    \"       Y888'    888      888║ 888    \"       Y"
 		"888'   ║\n" ARED
 		"║ 888       o  .o8\"'88b   `88b    d88'║ 888       o  .o8"
-		"\"'88b  ║\n" AYELLOW
+		"\"'88b  ║\n" ABLUE
 		"║o888ooooood8 o88'   888o  `Y8bood8P' ║o888ooooood8 o88'  "
-		" 888o║\n" AGREEN
+		" 888o║\n" ARED
 		"╩═════════════════════════════════════╩═══════════════════"
 		"═════╩\n\n"
 	ARESET);
@@ -210,7 +210,7 @@ double arcRand(double min, double max){
 	
 	double smallRange, bigRange, randy;
 	
-	smallRange 	= abs(max - min);
+	smallRange 	= fabs(max - min);
 	bigRange 	= RAND_MAX / smallRange;
 		
 	randy = min + (rand() / bigRange);

@@ -58,6 +58,8 @@ void photonLoop(Planet *exo,Particle *photon){
       checkLife(exo,photon);
     }
   }
+  
+
   else if (globalRunningMode == LAMBERT){
     double u[3] = {0.0};
     for (int i=0; i<3; i++){
@@ -80,6 +82,7 @@ void photonLoop(Planet *exo,Particle *photon){
     }
     photon->dirVec[Z] = -photon->dirVec[Z];
   }
+  
   
   photon->alpha = acos(photon->dirVec[Z]);
     
