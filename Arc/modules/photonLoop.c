@@ -27,15 +27,98 @@ void scatter(Planet*,Particle*);
 void isotropic(Particle*);
 void move(Planet*,Particle*);
 
+int layerToHit(Planet*,Particle*);
+double distToLayer(Planet*,Particle*,int);
+
 /**/void dev_recordPos(Particle*);
 
 
 //── FUNCTION IN PROGRESS ─────────────────────────────────────┤
 double pathLength(Planet *exo,Particle *photon){
   
-  double lambda = -log(arcRand(0.0,1.0)) / exo->kappa[photon->curLayer];
+  /*
+  double pos[3] = {0.0};
+  int curLayer = 0.0;
+  for (int i=0; i<3; i++){
+    pos[i] = photon->pos[i];
+  }
+  curLayer = photon->curLayer;
   
-  return lambda;
+  
+  double tau = -log(arcRand(0.0,1.0));
+  double lambda = 0.0;
+  
+  while(tau > 0.0){
+    
+    if (getLayer(exo,pos[X],pos[Y],pos[Z]) == 999){
+      lambda = 20.0;
+      return lambda;
+    }
+    
+    int impactLayer = layerToHit(exo,photon);
+    double lambdaPrime = distToLayer(exo,photon,impactLayer);
+    double tauPrime = lambdaPrime * exo->kappa[curLayer];
+    
+    if ((tau - tauPrime) > 0.0){
+      tau -= tauPrime;
+      lambda += lambdaPrime;
+      for (int i=0; i<3; i++){
+        pos[i] += lambdaPrime * photon->dirVec[i];
+      }
+      curLayer = getLayer(exo,pos[X],pos[Y],pos[Z]);
+    }
+    else {
+      double frac = tau / tauPrime;
+      for (int i=0; i<3; i++){
+        pos[i] += frac * lambdaPrime * photon->dirVec[i];
+      }
+      lambda += lambdaPrime * frac;
+      tau = -1.0;
+      if (getLayer(exo,pos[X],pos[Y],pos[Z]) == 999){
+        photon->life = false;
+        return 20.0;
+      }
+    }
+  }
+  
+  return lambda;*/
+  return arcRand(0.0,1.0)/exo->kappa[photon->curLayer];
+}
+
+// Determines which layer the photon will impact if it continues
+// to travel in the direction dirVec[]
+int layerToHit(Planet *exo,Particle *photon){
+  
+  if (photon->curLayer == 0){
+    return 0;
+  }
+  
+  double innerRadius = exo->radius[photon->curLayer - 1];
+  double photRadius = sqrt(pow(photon->pos[X],2.0)+pow(photon->pos[Y],2.0)+pow(photon->pos[Z],2.0));
+  
+  double theta = asin(innerRadius/photRadius);
+  
+  double phi = acos((photon->dirVec[X]*-photon->pos[X])+(photon->dirVec[Y]*-photon->pos[Y])+(photon->dirVec[Z]*-photon->pos[Z]));
+  
+  if (phi <= theta){
+    return photon->curLayer - 1;
+  }
+  else {
+    return photon->curLayer;
+  }
+}
+
+// Calculates the distance a photon will travel before impacting
+// the layer.
+double distToLayer(Planet *exo,Particle *photon,int impactLayer){
+  
+  double alpha = acos((photon->dirVec[X]*-photon->pos[X])+(photon->dirVec[Y]*-photon->pos[Y])+(photon->dirVec[Z]*-photon->pos[Z]));
+  double photRadius = sqrt(pow(photon->pos[X],2.0)+pow(photon->pos[Y],2.0)+pow(photon->pos[Z],2.0));
+  double layerRadius = exo->radius[impactLayer];
+  
+  double beta = asin((photRadius/layerRadius)*sin(alpha));
+  
+  return (photRadius * (sin(alpha)/sin(beta)));
 }
 
 
@@ -45,6 +128,7 @@ void photonLoop(Planet *exo,Particle *photon){
   initialisePhoton(photon);
   stellarEmission(photon);
   mapToPlanetSkin(exo,photon);
+  
   
   if (globalRunningMode == NORMAL){
     injectPhoton(exo,photon);
@@ -86,7 +170,7 @@ void photonLoop(Planet *exo,Particle *photon){
   
   photon->alpha = acos(photon->dirVec[Z]);
     
-  //dev_recordPos(photon);
+  dev_recordPos(photon);
 
   return;
 }
@@ -144,6 +228,7 @@ void mapToPlanetSkin(Planet *exo,Particle *photon){
 void injectPhoton(Planet *exo,Particle *photon){
   
   double lambda = pathLength(exo,photon);
+  printf("lambda = %lf\n",lambda);
   
   photon->pos[Z] -= lambda;
   
@@ -157,6 +242,7 @@ void checkLife(Planet *exo,Particle *photon){
   double A = arcRand(0.0,1.0);  
   if (A > exo->albedo[photon->curLayer]){
     photon->life = false;
+    printf("absorbed\n");
   }
   
   double rPhot = sqrt(pow(photon->pos[X],2.0)+pow(photon->pos[Y],2.0)+pow(photon->pos[Z],2.0));
@@ -247,7 +333,9 @@ void move(Planet *exo,Particle *photon){
   FILE* file;
   file = fopen(outputPath "position.dat","a");
   
-  fprintf(file, "%lf %lf %lf\n",photon->pos[X],photon->pos[Y],photon->pos[Z]);
+  if ((photon->life == false) && ((pow(photon->pos[X],2.0)+pow(photon->pos[Y],2.0)+pow(photon->pos[Z],2.0))<1.0)){
+    fprintf(file,"%lf %lf %lf\n",photon->pos[X],photon->pos[Y],photon->pos[Z]);
+  }
   
   fclose(file);
   
