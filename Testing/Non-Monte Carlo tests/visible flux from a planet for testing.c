@@ -9,30 +9,43 @@
 #define DIST_STAR 10    // Distance from planet to star
 
 /*
-- INCLUDE ISOTROPIC AND RAYLEIGH SCATTERING (FIGURE OUT HOW TO READ IN SPECIFIC VALUES FOR THE
-  H-FUNCTION ETC. FOR A GIVEN MU (THAT'S ROUNDED TO COINCIDE WITH VALUES IN THE TABLES).
+- INCLUDE ISOTROPIC AND RAYLEIGH SCATTERING (FIGURE OUT HOW TO READ IN SPECIFIC
+  VALUES FOR THE H-FUNCTION ETC. FOR A GIVEN MU (THAT'S ROUNDED TO COINCIDE
+  WITH VALUES IN THE TABLES).
 */
 
 typedef struct variables {
-    double areaGrid[N_ROWS][N_COLS];    // Array containing surface area elements of planet
-    double obsPhaseangle;               /* Angle between observer and planet relative to star
-										 set so maximum flux is at a phase angle of zero */
+    double areaGrid[N_ROWS][N_COLS];    /* Array containing surface area
+                                           elements of planet */
+    double obsPhaseangle;               /* Angle between observer and planet
+                                           relative to star set so maximum flux
+                                           is at a phase angle of zero */
     double obsDistance;                 // Distance from observer to planet
     double obsDistance_x;               // x-coordinate of observer's position
     double obsDistance_y;               // y-coordinate of observer's position
     int i;                              // 'i' is a theta designation
     int j;	                            // 'j' is a phi designation
-    double theta;                       // theta increases with row value in areaGrid
+    double theta;                       /* theta increases with row value in
+                                           areaGrid */
     double phi;                         // phi with column value in areaGrid
-    double delta_theta;                 // theta increment between successive cells
-    double delta_phi;                   // phi increment between successive cells
-	double element_x;					// x-component of position of area element
-	double element_y;					// y-component of position of area element
-	double element_z;					// z-component of position of area element
-	double mu_in;						// Cosine of the angle between star and area normal
-	double mu_out;						// Cosine of the angle between the area normal and observer
-    double intensity_element;           // Intensity of radiation reflected by a surface area element
-    double area_visible;                // Amount of surface area illuminated and visible to observer
+    double delta_theta;                 /* theta increment between successive
+                                           cells */
+    double delta_phi;                   /* phi increment between successive
+                                           cells */
+	double element_x;					/* x-component of position of area
+                                           element */
+	double element_y;					/* y-component of position of area
+	                                       element */
+	double element_z;					/* z-component of position of area
+	                                       element */
+	double mu_in;						/* Cosine of the angle between star and
+	                                       area normal */
+	double mu_out;						/* Cosine of the angle between the area
+                                           normal and observer */
+    double intensity_element;           /* Intensity of radiation received by a
+                                           surface area element */
+    double area_visible;                /* Amount of surface area illuminated
+                                           and visible to observer */
     double flux_received;               // Total flux received by the observer
 } Variables;
 
@@ -56,7 +69,8 @@ int main () {
 
 	Variables *A = newvariables(); // Initializes structure
 
-	A->obsDistance = 2 * RADIUS_PLANET; // Arbitrary observation distance, makes no difference to result
+	A->obsDistance = 2 * RADIUS_PLANET;
+	// Arbitrary observation distance, makes no difference to result
 
     printf("For Lambert scattering, enter '1'.\n"
 		   "For isotropic scattering, enter '2'.\n"
@@ -75,19 +89,21 @@ int main () {
 
 		for (G = 0 ; G <= 180 ; ++G) {
 			printf("phase angle = %i\n", G);
-			A->obsPhaseangle = (180 - G) * PI / 180; // Sets phase angle and converts from degrees to radians
+			A->obsPhaseangle = (180 - G) * PI / 180;
+			// Sets phase angle and converts from degrees to radians
 			A->obsDistance_x = A->obsDistance * cos(A->obsPhaseangle);
 			A->obsDistance_y = A->obsDistance * sin(A->obsPhaseangle);
 			if (choice == 1)
 				conductLambert(A);
-			/* else if (choice == 2)
-			 conductIso(A);
-			 else if (choice == 3)
-			 conductRayleigh(A); */
-			double normalizer;
+			else if (choice == 2)
+                conductIso(A);
+            else if (choice == 3)
+                conductRayleigh(A);
 
+			double normalizer;
 			if (G == 0)
-				normalizer = A->flux_received; // gets the flux at zero phase angle to normalize phase curve
+				normalizer = A->flux_received;
+				// gets the flux at zero phase angle to normalize phase curve
 
 			fprintf(outfile, "%i %g\n", G, A->flux_received / normalizer);
 		}
@@ -105,7 +121,8 @@ void populategrid (Variables *A) {
 	for (A->i = 0; A->i < N_ROWS; ++A->i) {
 		for (A->j = 0; A->j < N_COLS; ++A->j) {
 			getAngles(A);
-			A->areaGrid[A->i][A->j] = pow(RADIUS_PLANET,2) * sin(A->theta) * A->delta_theta * A->delta_phi;
+			A->areaGrid[A->i][A->j] = pow(RADIUS_PLANET,2) * sin(A->theta) *
+                                      A->delta_theta * A->delta_phi;
 			//Finds the area of the element
 			area_total = area_total + A->areaGrid[A->i][A->j];
 		}
@@ -130,16 +147,19 @@ void getVisibleArea (Variables *A) {
 
 void getMus (Variables *A) {
 	A->mu_in = -A->element_x / RADIUS_PLANET;
-	/* acos(mu_in) is the incident angle, which is the angle between the star and the normal to the
-	   surface element */
-	A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y) / (RADIUS_PLANET *
-                                                                                   A->obsDistance);
-	// acos(mu_out) is the angle between the normal to the surface element and the observer
+	/* acos(mu_in) is the incident angle, which is the angle between the star
+	   and the normal to the surface element */
+	A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
+              / (RADIUS_PLANET * A->obsDistance);
+	/* acos(mu_out) is the angle between the normal to the surface element and
+	   the observer */
 }
 
 void getReceivedFlux (Variables *A) {
-	A->flux_received = A->flux_received + (A->intensity_element * A->mu_out * A->areaGrid[A->i][A->j]);
-	// Should divide by the square of the observer's distance, but it's just a scaling factor
+	A->flux_received = A->flux_received + (A->intensity_element * A->mu_out *
+                                           A->areaGrid[A->i][A->j]);
+	/* Should divide by the square of the observer's distance, but it's just a
+	   scaling factor */
 }
 
 void conductLambert (Variables *A) {
@@ -153,21 +173,25 @@ void conductLambert (Variables *A) {
 			getAngles(A);
 			getCartesianPosition(A);
 
-            if ( -A->element_x / RADIUS_PLANET > 0 && (A->element_x*A->obsDistance_x +
-                A->element_y*A->obsDistance_y) / (RADIUS_PLANET * A->obsDistance) > 0 ) {
-				/* The star is lying on the -x-axis: the first condition determines whether the angle
-                   between the normal of the area element and star is < 90 degrees, if so it's
-                   illuminated. The second condition tests whether the angle between the normal of the
-                   area element and the observer is < 90 degrees, if so it's visible. */
+            if ( -A->element_x / RADIUS_PLANET > 0 &&
+                (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
+                 / (RADIUS_PLANET * A->obsDistance) > 0 ) {
+/* The star is lying on the -x-axis: the first condition determines whether the
+   angle between the normal of the area element and star is < 90 degrees, if so
+   it's illuminated. The second condition tests whether the angle between the
+   normal of the area element and the observer is < 90 degrees, if so it's
+   visible. */
 				getVisibleArea(A);
 				getMus(A);
                 A->intensity_element = A->mu_in;
-				// Should also multiply by incident flux and albedo, but they're just scaling factors
+				/* Should also multiply by incident flux and albedo but they're
+				   just scaling factors */
                 getReceivedFlux(A);
             }
 		}
     }
-	printf("The visible illuminated area is %g.pi.R^2.\n", A->area_visible / (PI * pow(RADIUS_PLANET,2)) );
+	printf("The visible illuminated area is %g.pi.R^2.\n",
+           A->area_visible / (PI * pow(RADIUS_PLANET,2)) );
 }
 
 void conductIso (Variables *A) {
