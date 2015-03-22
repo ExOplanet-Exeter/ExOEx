@@ -1,7 +1,7 @@
 !Values of the H-function for different values of mu and omega_0.
-!mu = cos(theta), theta being the emergent angle, and omega_0 is the single-scattering albedo.
+!mu = cos(theta), theta being the incident/emergent angle, and 'albedo' is the single-scattering albedo.
 
-mu	omega_0 = 0.1	omega_0 = 0.2	omega_0 = 0.3	omega_0 = 0.4	omega_0 = 0.5	omega_0 = 0.6	omega_0 = 0.7
+mu	albedo = 0.1	albedo = 0.2	albedo = 0.3	albedo = 0.4	albedo = 0.5	albedo = 0.6	albedo = 0.7
 0	1.00000		1.00000		1.00000		1.00000		1.00000		1.00000		1.00000
 0.05	1.00783		1.01608		1.02484		1.03422		1.04439		1.05544		1.06780
 0.10	1.01238		1.02562		1.03989		1.05535		1.07241		1.09137		1.11306
