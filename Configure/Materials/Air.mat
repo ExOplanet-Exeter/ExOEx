@@ -1,4 +1,4 @@
-kappa 1
-albedo 1
+kappa 0.5
+albedo 0.99
 scatterType ISO
 END

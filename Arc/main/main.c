@@ -109,7 +109,7 @@ int main(int argc,char **argv){
     // Indervidual thread initialisation.
     #pragma omp critical
     {
-      srand(time(NULL) + omp_get_thread_num());
+      srand(time(NULL) * omp_get_thread_num());
       photonLoop(&exo,&photon);
     }
 

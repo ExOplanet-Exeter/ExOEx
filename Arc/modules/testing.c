@@ -19,7 +19,7 @@
 //── DEFINES ──────────────────────────────────────────────────┤
 #define NPHOT 10000000
 
-
+/*
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
 bool randomTest();
 bool isotropicTest();
@@ -28,10 +28,10 @@ bool rayleighTest();
 
 void isotropic(Particle*);
 
-
+*/
 //── TESTING ──────────────────────────────────────────────────┤
 void testing(){
-	
+	/*
 	srand(time(NULL));
 	
 	int p=0,f=0;
@@ -48,11 +48,11 @@ void testing(){
 	
 	pass = rayleighTest();
 	printOutcome("rayleigh",pass);
-	
+	*/
 	return;
 }
 
-
+/*
 //─── COMPLETED FUNCTIONS ─────────────────────────────────────┤
 bool rayleighTest(){
 	
@@ -206,3 +206,4 @@ bool randomTest(){
 		return false;
 	}
 }
+*/

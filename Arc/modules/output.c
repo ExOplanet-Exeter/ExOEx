@@ -49,6 +49,7 @@ void output(Datasystem *totalData){
       for (int i=0; i<180; i++){
             totalData->fittedCurve[i] = totalData->fittedCurve[i]/fittedMax;
             fprintf(file,"%i %lf\n",i,totalData->fittedCurve[i]);
+            printf("%i %lf\n",i,totalData->fittedCurve[i]);
       }
       
       return;

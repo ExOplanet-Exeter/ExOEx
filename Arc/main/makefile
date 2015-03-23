@@ -31,7 +31,7 @@ extraction.o: $(WKDIR)../modules/extraction.o
 reduction.o: $(WKDIR)../modules/reduction.o
 	$(CC) $(CFLAGS) -c $(WKDIR)../modules/reduction.c
 	
-output.o: $(WKDIR)../modules/output.o
+output.o: $(WKDIR)../modules/output.o
 	$(CC) $(CFLAGS) -c $(WKDIR)../modules/output.c
 	
 utilities.o: $(WKDIR)../globals/utilities.o
