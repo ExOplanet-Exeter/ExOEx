@@ -51,6 +51,7 @@ Variables *newvariables(void) {
     return A;
 }
 
+void makearrays (Variables *, int);
 void gridcalculations (Variables *, int);
 void getAngles (Variables *);
 void getCartesianPosition (Variables *);
@@ -81,31 +82,13 @@ int main () {
         printf("Enter an albedo between 0.05 and 1.\n");
         /* An albedo of < 0.05 rounds down to 0 in later calculations, yielding
         no reflected radiation */
-
         scanf("%lg", &A->albedo);
         if (A->albedo < 0.05 || A->albedo > 1) {
                 printf("Albedo is in the wrong range, please choose again.\n");
                 main();
         }
-		int m, n; // Indices for Hvalues array
-
-		FILE *readfile;
-		readfile = fopen("H-function_values_reduced.txt", "r");
-
-		if ( readfile == NULL ) {
-			printf("The file cannot be opened.\n");
-			exit(1);
-		}
-		for (m = 0 ; m < 21 ; ++m) {
-			for (n = 0 ; n < 10; ++n) {
-				fscanf(readfile, "%lg", &A->Hvalues[m][n]);
-			}
-		} /* Maps the table in H-function_values_reduced.txt and stores the
-		   information in a 2D array */
-        fclose(readfile);
-        /* It's easier to open the .txt file and copy the information to an
-        array that can be called repeatedly, rather than having to open the
-        .txt file each time in order to read-in specific values. */
+        else
+            makearrays(A, choice);
 	}
 	// Main calculations begin from now
     int G;
@@ -131,6 +114,33 @@ int main () {
     fclose(outfile);
 
 	return 0;
+}
+
+void makearrays(Variables *A, int choice) {
+    int m, n; // Indices for arrays
+
+    FILE *readfile;
+    readfile = fopen("H-function_values_reduced.txt", "r");
+
+    if ( readfile == NULL ) {
+        printf("The file cannot be opened.\n");
+        exit(1);
+    }
+    for (m = 0 ; m < 21 ; ++m) {
+        for (n = 0 ; n < 10; ++n) {
+            fscanf(readfile, "%lg", &A->Hvalues[m][n]);
+        }
+    } /* Maps the table in H-function_values_reduced.txt and stores the
+        information in a 2D array */
+    fclose(readfile);
+    /* It's easier to open the .txt file and copy the information to an array
+    that can be called repeatedly, rather than having to open the .txt file
+    each time in order to read-in specific values. */
+
+    if (choice == 3) {
+        /* CREATE THE ARRAYS FROM THE TABLES CONTAINING THE OTHER FUNCTIONS,
+        LIKE THE PSI, PHI FUNCTIONS ETC. */
+    }
 }
 
 void gridcalculations (Variables *A, int choice) {
