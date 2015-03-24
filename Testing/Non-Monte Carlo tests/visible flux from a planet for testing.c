@@ -8,7 +8,8 @@
 #define RADIUS_PLANET 1
 #define DIST_STAR 10    // Distance from planet to star
 
-// - INCLUDE RAYLEIGH SCATTERING.
+/* GET ACTUAL EQUATION FOR azimuthal_in AND CHECK RAYLEIGH EQUATIONS TO SEE IF
+   THEY ARE CORRECT. */
 
 typedef struct variables {
     double areaGrid[N_ROWS][N_COLS];    /* Array containing surface area
@@ -33,14 +34,30 @@ typedef struct variables {
 										 element */
 	double element_y;					/* y-component of position of area
 										 element */
-	double mu_in;						/* Cosine of the (incident)angle between
+	double mu_in;						/* Cosine of the(incident)angle between
 										 the star and normal to area element */
+    double azimuthal_in;                // Azimuthal angle fr incoming rdiation
 	double H_muin;						// H-function value for mu_in
+	double psi_muin;                    // psi-function value for mu_in
+	double phi_muin;                    // phi-function value for mu_in
+	double chi_muin;                    // chi-function value for mu_in
+	double zeta_muin;                   // zeta-function value for mu_in
+	double H1_muin;                     // H1-function value for mu_in
+	double H2_muin;                     // H2-function value for mu_in
 	double mu_out;						/* Cosine of the (outgoing/scattering)
-										 angle betweenthe normal to area element
-										 and observer */
+										 angle between the normal to area
+										 element and observer */
+    double azimuthal_out;               // Azimuthal angle fr outgoing rdiation
 	double H_muout;						// H-function value for mu_out
+    double psi_muout;                   // psi-function value for mu_out
+	double phi_muout;                   // phi-function value for mu_out
+	double chi_muout;                   // chi-function value for mu_out
+	double zeta_muout;                  // zeta-function value for mu_out
+	double H1_muout;                    // H1-function value for mu_out
+	double H2_muout;                    // H2-function value for mu_out
 	double Hvalues[21][10];				// Array to store H-function values
+	double Multifunctionvalues[21][6];  /* Array to store the values from
+                                         multiple function in a single array */
     double intensity_element;           /* Intensity of radiation received by a
 										 surface area element */
     double flux_received;               // Total flux received by the observer
@@ -55,7 +72,7 @@ void makearrays (Variables *, int);
 void gridcalculations (Variables *, int);
 void getAngles (Variables *);
 void getCartesianPosition (Variables *);
-void getMus (Variables *);
+void getMus (Variables *, int);
 void getReceivedFlux (Variables *);
 void conductLambert (Variables *);
 void conductIso (Variables *);
@@ -119,27 +136,40 @@ int main () {
 void makearrays(Variables *A, int choice) {
     int m, n; // Indices for arrays
 
-    FILE *readfile;
-    readfile = fopen("H-function_values_reduced.txt", "r");
+    if (choice == 2) {
+        FILE *readfile;
+        readfile = fopen("H-function_values_reduced.txt", "r");
 
-    if ( readfile == NULL ) {
-        printf("The file cannot be opened.\n");
-        exit(1);
-    }
-    for (m = 0 ; m < 21 ; ++m) {
-        for (n = 0 ; n < 10; ++n) {
-            fscanf(readfile, "%lg", &A->Hvalues[m][n]);
+        if ( readfile == NULL ) {
+            printf("The file cannot be opened.\n");
+            exit(1);
         }
-    } /* Maps the table in H-function_values_reduced.txt and stores the
-        information in a 2D array */
-    fclose(readfile);
-    /* It's easier to open the .txt file and copy the information to an array
-    that can be called repeatedly, rather than having to open the .txt file
-    each time in order to read-in specific values. */
+        for (m = 0 ; m < 21 ; ++m) {
+            for (n = 0 ; n < 10; ++n) {
+                fscanf(readfile, "%lg", &A->Hvalues[m][n]);
+            }
+        } /* Maps the table in H-function_values_reduced.txt and stores the
+            information in a 2D array */
+        fclose(readfile);
+        /* It's easier to open the .txt file and copy the information to an
+        array that can be called repeatedly, rather than having to open the
+        .txt file each time in order to read-in specific values. */
+    }
 
-    if (choice == 3) {
-        /* CREATE THE ARRAYS FROM THE TABLES CONTAINING THE OTHER FUNCTIONS,
-        LIKE THE PSI, PHI FUNCTIONS ETC. */
+    else if (choice == 3) {
+        FILE *readfile;
+        readfile = fopen("Multi-function_values.txt","r");
+
+        if ( readfile == NULL ) {
+            printf("The file cannot be opened.\n");
+            exit(1);
+        }
+        for (m = 0 ; m < 21 ; ++m) {
+            for (n = 0 ; n < 6; ++n) {
+                fscanf(readfile, "%lg", &A->Multifunctionvalues[m][n]);
+            }
+        } /* Maps the table in Multi-function_tables.txt and stores the
+        information in a 2D array */
     }
 }
 
@@ -156,7 +186,7 @@ void gridcalculations (Variables *A, int choice) {
 			A->delta_theta * A->delta_phi;
 			//Finds the area of the element
 			getCartesianPosition(A);
-			getMus(A);
+			getMus(A, choice);
 
 			if ( A->mu_in > 0 && A->mu_out > 0 ) {
 				/* The first condition determines whether the incicent angle is
@@ -186,15 +216,22 @@ void getCartesianPosition (Variables *A) {
 	A->element_y = RADIUS_PLANET * sin(A->theta) * sin(A->phi);
 } // Gets x- and y-Cartesian components of position of area element
 
-void getMus (Variables *A) {
-	A->mu_in = -A->element_x / RADIUS_PLANET;
-	/* acos(mu_in) is the incident angle, which is the angle between the star
-	 and the normal to the surface element. This forces the star to lie on the
-	 -x-axis. */
-	A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
-	/ (RADIUS_PLANET * A->obsDistance);
-	/* acos(mu_out) is the angle between the normal to the surface element and
-	 the observer */
+void getMus (Variables *A, int choice) {
+    A->mu_in = -A->element_x / RADIUS_PLANET;
+    /* acos(mu_in) is the incident angle, which is the angle between the
+    star and the normal to the surface element. This forces the star to lie
+    on the -x-axis. */
+    A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
+                / (RADIUS_PLANET * A->obsDistance);
+    /* acos(mu_out) is the angle between the normal to the surface element
+    and the observer */
+
+    if (choice == 2 || choice == 3) {
+        A->mu_in = round(A->mu_in * 20.0) / 20.0;
+        A->mu_out = round(A->mu_out * 20.0) / 20.0;
+        /* Rounds mu_in and mu_out to the nearest 0.05 to seek correct values
+        in Hvalues and Multifunctionvalues arrays */
+    }
 }
 
 void getReceivedFlux (Variables *A) {
@@ -211,26 +248,60 @@ void conductLambert (Variables *A) {
 } // Gets intensity due to Lambertian scattering incident on an area element
 
 void conductIso (Variables *A) {
-	A->mu_in = round(A->mu_in * 20.0) / 20.0;
-	A->mu_out = round(A->mu_out * 20.0) / 20.0;
-	/* Rounds mu_in and mu_out to the nearest 0.05 to seek correct values in
-	 Hvalues array */
 	A->albedo = round(A->albedo * 10.0) / 10.0;
 	// Rounds albedo to the nearest 0.1 to seek correct values in Hvalues array
 
 	A->H_muin = A->Hvalues[(long) (A->mu_in * 20)][(long) (A->albedo * 10)];
 	A->H_muout = A->Hvalues[(long) (A->mu_out* 20)][(long) (A->albedo * 10)];
 
-    if (A->mu_in == 0 || A->mu_out == 0)
+    if (A->mu_in == 0 && A->mu_out == 0)
         A->intensity_element = 0;
-    // Otherwise there's a division by zero
+    // Otherwise there's a division by zero when calculating intensity_element
     else {
-        A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) * A->H_muin *
-							   A->H_muout;
+        A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) *
+                               A->H_muin * A->H_muout;
 	// Should multiply by albedo * flux / 4, but they're scaling factors
     }
 } // Gets intensity due to isotropic scattering incident on an area element
 
 void conductRayleigh (Variables *A) {
-    // Add intensity equation for Rayleigh scattering
+    A->azimuthal_in = 0;    // SET FOR THE TIME BEING
+    A->azimuthal_out = acos( (A->mu_in*A->mu_out - cos(A->obsPhaseangle)) /
+                             sin(acos(A->mu_in))*sin(acos(A->mu_out)) );
+
+    A->psi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
+    A->psi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
+
+    A->phi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][1];
+    A->phi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][1];
+
+    A->chi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][2];
+    A->chi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][2];
+
+    A->zeta_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][3];
+    A->zeta_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][3];
+
+    A->H1_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][4];
+    A->H1_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][4];
+
+    A->H2_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][5];
+    A->H2_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][5];
+    // Refer to Multi-function_values.txt to clear confusion
+
+    if (A->mu_in == 0 && A->mu_out == 0)
+        A->intensity_element = 0;
+    // Otherwise there's a division by zero when calculating intensity_element
+    else {
+        A->intensity_element = ( A->mu_in / (A->mu_in + A->mu_out) *
+
+        ( (A->psi_muout + A->chi_muout)*(A->psi_muin + A->chi_muin) +
+
+        2*(A->phi_muout + A->zeta_muout)*(A->phi_muin + A->zeta_muin) -
+
+        4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
+        A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
+
+    (1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
+     cos(2*(A->azimuthal_in - A->azimuthal_out)) ) ) ;
+    }
 } // Gets intensity due to Rayleigh scattering incident on an area element
