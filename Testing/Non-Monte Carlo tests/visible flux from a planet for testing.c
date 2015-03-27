@@ -3,49 +3,63 @@
 #include <math.h>
 
 #define PI 3.14159265
-#define N_ROWS 750
-#define N_COLS 750
+#define N_ROWS 500
+#define N_COLS 500
 #define RADIUS_PLANET 1
 #define DIST_STAR 10    // Distance from planet to star
 
-/*
-- INCLUDE ISOTROPIC AND RAYLEIGH SCATTERING (FIGURE OUT HOW TO READ IN SPECIFIC
-  VALUES FOR THE H-FUNCTION ETC. FOR A GIVEN MU (THAT'S ROUNDED TO COINCIDE
-  WITH VALUES IN THE TABLES).
-*/
+/* GET ACTUAL EQUATION FOR azimuthal_in AND CHECK RAYLEIGH EQUATIONS TO SEE IF
+   THEY ARE CORRECT. */
 
 typedef struct variables {
     double areaGrid[N_ROWS][N_COLS];    /* Array containing surface area
-                                           elements of planet */
+										 elements of planet */
+	double albedo;						// Single scattering albedo
     double obsPhaseangle;               /* Angle between observer and planet
-                                           relative to star set so maximum flux
-                                           is at a phase angle of zero */
+										 relative to star set so maximum flux
+										 is at a phase angle of zero */
     double obsDistance;                 // Distance from observer to planet
     double obsDistance_x;               // x-coordinate of observer's position
     double obsDistance_y;               // y-coordinate of observer's position
     int i;                              // 'i' is a theta designation
     int j;	                            // 'j' is a phi designation
     double theta;                       /* theta increases with row value in
-                                           areaGrid */
+										 areaGrid */
     double phi;                         // phi with column value in areaGrid
     double delta_theta;                 /* theta increment between successive
-                                           cells */
+										 cells */
     double delta_phi;                   /* phi increment between successive
-                                           cells */
+										 cells */
 	double element_x;					/* x-component of position of area
-                                           element */
+										 element */
 	double element_y;					/* y-component of position of area
-	                                       element */
-	double element_z;					/* z-component of position of area
-	                                       element */
-	double mu_in;						/* Cosine of the angle between star and
-	                                       area normal */
-	double mu_out;						/* Cosine of the angle between the area
-                                           normal and observer */
+										 element */
+	double mu_in;						/* Cosine of the(incident)angle between
+										 the star and normal to area element */
+    double azimuthal_in;                // Azimuthal angle fr incoming rdiation
+	double H_muin;						// H-function value for mu_in
+	double psi_muin;                    // psi-function value for mu_in
+	double phi_muin;                    // phi-function value for mu_in
+	double chi_muin;                    // chi-function value for mu_in
+	double zeta_muin;                   // zeta-function value for mu_in
+	double H1_muin;                     // H1-function value for mu_in
+	double H2_muin;                     // H2-function value for mu_in
+	double mu_out;						/* Cosine of the (outgoing/scattering)
+										 angle between the normal to area
+										 element and observer */
+    double azimuthal_out;               // Azimuthal angle fr outgoing rdiation
+	double H_muout;						// H-function value for mu_out
+    double psi_muout;                   // psi-function value for mu_out
+	double phi_muout;                   // phi-function value for mu_out
+	double chi_muout;                   // chi-function value for mu_out
+	double zeta_muout;                  // zeta-function value for mu_out
+	double H1_muout;                    // H1-function value for mu_out
+	double H2_muout;                    // H2-function value for mu_out
+	double Hvalues[21][10];				// Array to store H-function values
+	double Multifunctionvalues[21][6];  /* Array to store the values from
+                                         multiple function in a single array */
     double intensity_element;           /* Intensity of radiation received by a
-                                           surface area element */
-    double area_visible;                /* Amount of surface area illuminated
-                                           and visible to observer */
+										 surface area element */
     double flux_received;               // Total flux received by the observer
 } Variables;
 
@@ -54,11 +68,11 @@ Variables *newvariables(void) {
     return A;
 }
 
-void populategrid (Variables *);
+void makearrays (Variables *, int);
+void gridcalculations (Variables *, int);
 void getAngles (Variables *);
 void getCartesianPosition (Variables *);
-void getVisibleArea (Variables *);
-void getMus (Variables *);
+void getMus (Variables *, int);
 void getReceivedFlux (Variables *);
 void conductLambert (Variables *);
 void conductIso (Variables *);
@@ -71,7 +85,6 @@ int main () {
 
 	A->obsDistance = 2 * RADIUS_PLANET;
 	// Arbitrary observation distance, makes no difference to result
-
     printf("For Lambert scattering, enter '1'.\n"
 		   "For isotropic scattering, enter '2'.\n"
 		   "For Rayleigh scattering, enter '3'.\n");
@@ -81,50 +94,114 @@ int main () {
 		printf("Number is invalid, please choose again.\n");
 		main();
 	}
-	else {
-		int G;
 
-		FILE *outfile;
-		outfile = fopen("flux_array.txt","w"); // opens file for writing
-
-		for (G = 0 ; G <= 180 ; ++G) {
-			printf("phase angle = %i\n", G);
-			A->obsPhaseangle = (180 - G) * PI / 180;
-			// Sets phase angle and converts from degrees to radians
-			A->obsDistance_x = A->obsDistance * cos(A->obsPhaseangle);
-			A->obsDistance_y = A->obsDistance * sin(A->obsPhaseangle);
-			if (choice == 1)
-				conductLambert(A);
-			else if (choice == 2)
-                conductIso(A);
-            else if (choice == 3)
-                conductRayleigh(A);
-
-			double normalizer;
-			if (G == 0)
-				normalizer = A->flux_received;
-				// gets the flux at zero phase angle to normalize phase curve
-
-			fprintf(outfile, "%i %g\n", G, A->flux_received / normalizer);
-		}
-		fclose(outfile);
+	else if (choice == 2 || choice == 3) {
+        printf("Enter an albedo between 0.05 and 1.\n");
+        /* An albedo of < 0.05 rounds down to 0 in later calculations, yielding
+        no reflected radiation */
+        scanf("%lg", &A->albedo);
+        if (A->albedo < 0.05 || A->albedo > 1) {
+                printf("Albedo is in the wrong range, please choose again.\n");
+                main();
+        }
+        else
+            makearrays(A, choice);
 	}
+	// Main calculations begin from now
+    int G;
+
+    FILE *outfile;
+    outfile = fopen("flux_array.txt","w"); // opens file for writing
+
+    for (G = 0 ; G <= 180 ; ++G) {
+        printf("Phase angle = %i\n", G); // Just used to track progress
+        A->obsPhaseangle = (180 - G) * PI / 180;
+        // Sets phase angle and converts from degrees to radians
+        A->obsDistance_x = A->obsDistance * cos(A->obsPhaseangle);
+        A->obsDistance_y = A->obsDistance * sin(A->obsPhaseangle);
+        gridcalculations(A, choice);
+
+        double normalizer;
+        if (G == 0)
+            normalizer = A->flux_received;
+        // gets the flux at zero phase angle to normalize phase curve
+
+        fprintf(outfile, "%i %g\n", G, A->flux_received / normalizer);
+    }
+    fclose(outfile);
+
 	return 0;
 }
 
-void populategrid (Variables *A) {
+void makearrays(Variables *A, int choice) {
+    int m, n; // Indices for arrays
 
-	double area_total = 0;          // Initializes the total area to zero
+    if (choice == 2) {
+        FILE *readfile;
+        readfile = fopen("H-function_values_reduced.txt", "r");
+
+        if ( readfile == NULL ) {
+            printf("The file cannot be opened.\n");
+            exit(1);
+        }
+        for (m = 0 ; m < 21 ; ++m) {
+            for (n = 0 ; n < 10; ++n) {
+                fscanf(readfile, "%lg", &A->Hvalues[m][n]);
+            }
+        } /* Maps the table in H-function_values_reduced.txt and stores the
+            information in a 2D array */
+        fclose(readfile);
+        /* It's easier to open the .txt file and copy the information to an
+        array that can be called repeatedly, rather than having to open the
+        .txt file each time in order to read-in specific values. */
+    }
+
+    else if (choice == 3) {
+        FILE *readfile;
+        readfile = fopen("Multi-function_values.txt","r");
+
+        if ( readfile == NULL ) {
+            printf("The file cannot be opened.\n");
+            exit(1);
+        }
+        for (m = 0 ; m < 21 ; ++m) {
+            for (n = 0 ; n < 6; ++n) {
+                fscanf(readfile, "%lg", &A->Multifunctionvalues[m][n]);
+            }
+        } /* Maps the table in Multi-function_tables.txt and stores the
+        information in a 2D array */
+    }
+}
+
+void gridcalculations (Variables *A, int choice) {
 	A->delta_theta = PI / N_ROWS;
 	A->delta_phi = 2 * PI / N_COLS;
+
+	A->flux_received = 0;   // Initializes total flux to zero
 
 	for (A->i = 0; A->i < N_ROWS; ++A->i) {
 		for (A->j = 0; A->j < N_COLS; ++A->j) {
 			getAngles(A);
 			A->areaGrid[A->i][A->j] = pow(RADIUS_PLANET,2) * sin(A->theta) *
-                                      A->delta_theta * A->delta_phi;
+			A->delta_theta * A->delta_phi;
 			//Finds the area of the element
-			area_total = area_total + A->areaGrid[A->i][A->j];
+			getCartesianPosition(A);
+			getMus(A, choice);
+
+			if ( A->mu_in > 0 && A->mu_out > 0 ) {
+				/* The first condition determines whether the incicent angle is
+				 < 90 degrees, if so it's illuminated. The second condition
+				 tests whether the outgoing (scattering) angle is < 90 degrees,
+				 if so it's visible. */
+				if (choice == 1)
+					conductLambert(A);
+				else if (choice == 2)
+					conductIso(A);
+				else if (choice == 3)
+					conductRayleigh(A);
+
+				getReceivedFlux(A);
+			}
 		}
 	}
 }
@@ -137,69 +214,94 @@ void getAngles (Variables *A) {
 void getCartesianPosition (Variables *A) {
 	A->element_x = RADIUS_PLANET * sin(A->theta) * cos(A->phi);
 	A->element_y = RADIUS_PLANET * sin(A->theta) * sin(A->phi);
-	A->element_z = RADIUS_PLANET * cos(A->theta);
-} // Gets Cartesian components of position of area element
+} // Gets x- and y-Cartesian components of position of area element
 
+void getMus (Variables *A, int choice) {
+    A->mu_in = -A->element_x / RADIUS_PLANET;
+    /* acos(mu_in) is the incident angle, which is the angle between the
+    star and the normal to the surface element. This forces the star to lie
+    on the -x-axis. */
+    A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
+                / (RADIUS_PLANET * A->obsDistance);
+    /* acos(mu_out) is the angle between the normal to the surface element
+    and the observer */
 
-void getVisibleArea (Variables *A) {
-	A->area_visible = A->area_visible + A->areaGrid[A->i][A->j];
-}
-
-void getMus (Variables *A) {
-	A->mu_in = -A->element_x / RADIUS_PLANET;
-	/* acos(mu_in) is the incident angle, which is the angle between the star
-	   and the normal to the surface element */
-	A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
-              / (RADIUS_PLANET * A->obsDistance);
-	/* acos(mu_out) is the angle between the normal to the surface element and
-	   the observer */
+    if (choice == 2 || choice == 3) {
+        A->mu_in = round(A->mu_in * 20.0) / 20.0;
+        A->mu_out = round(A->mu_out * 20.0) / 20.0;
+        /* Rounds mu_in and mu_out to the nearest 0.05 to seek correct values
+        in Hvalues and Multifunctionvalues arrays */
+    }
 }
 
 void getReceivedFlux (Variables *A) {
 	A->flux_received = A->flux_received + (A->intensity_element * A->mu_out *
                                            A->areaGrid[A->i][A->j]);
 	/* Should divide by the square of the observer's distance, but it's just a
-	   scaling factor */
+	 scaling factor */
 }
 
 void conductLambert (Variables *A) {
-	populategrid(A);
-
-	A->area_visible = 0;    // Initializes visible area to zero
-	A->flux_received = 0;   // Initializes total flux to zero
-
-    for (A->i = 0; A->i < N_ROWS; ++A->i) {
-		for (A->j = 0; A->j < N_COLS; ++A->j) {
-			getAngles(A);
-			getCartesianPosition(A);
-
-            if ( -A->element_x / RADIUS_PLANET > 0 &&
-                (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
-                 / (RADIUS_PLANET * A->obsDistance) > 0 ) {
-/* The star is lying on the -x-axis: the first condition determines whether the
-   angle between the normal of the area element and star is < 90 degrees, if so
-   it's illuminated. The second condition tests whether the angle between the
-   normal of the area element and the observer is < 90 degrees, if so it's
-   visible. */
-				getVisibleArea(A);
-				getMus(A);
-                A->intensity_element = A->mu_in;
-				/* Should also multiply by incident flux and albedo but they're
-				   just scaling factors */
-                getReceivedFlux(A);
-            }
-		}
-    }
-	printf("The visible illuminated area is %g.pi.R^2.\n",
-           A->area_visible / (PI * pow(RADIUS_PLANET,2)) );
-}
+	A->intensity_element = A->mu_in;
+	/* Should also multiply by incident flux and albedo but they're just scaling
+	 factors */
+} // Gets intensity due to Lambertian scattering incident on an area element
 
 void conductIso (Variables *A) {
-    populategrid(A);
-    // DO CALCULATIONS
-}
+	A->albedo = round(A->albedo * 10.0) / 10.0;
+	// Rounds albedo to the nearest 0.1 to seek correct values in Hvalues array
+
+	A->H_muin = A->Hvalues[(long) (A->mu_in * 20)][(long) (A->albedo * 10)];
+	A->H_muout = A->Hvalues[(long) (A->mu_out* 20)][(long) (A->albedo * 10)];
+
+    if (A->mu_in == 0 && A->mu_out == 0)
+        A->intensity_element = 0;
+    // Otherwise there's a division by zero when calculating intensity_element
+    else {
+        A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) *
+                               A->H_muin * A->H_muout;
+	// Should multiply by albedo * flux / 4, but they're scaling factors
+    }
+} // Gets intensity due to isotropic scattering incident on an area element
 
 void conductRayleigh (Variables *A) {
-    populategrid(A);
-    // DO CALCULATIONS
-}
+    A->azimuthal_in = 0;    // SET FOR THE TIME BEING
+    A->azimuthal_out = acos( (A->mu_in*A->mu_out - cos(A->obsPhaseangle)) /
+                             sin(acos(A->mu_in))*sin(acos(A->mu_out)) );
+
+    A->psi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
+    A->psi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
+
+    A->phi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][1];
+    A->phi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][1];
+
+    A->chi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][2];
+    A->chi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][2];
+
+    A->zeta_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][3];
+    A->zeta_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][3];
+
+    A->H1_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][4];
+    A->H1_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][4];
+
+    A->H2_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][5];
+    A->H2_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][5];
+    // Refer to Multi-function_values.txt to clear confusion
+
+    if (A->mu_in == 0 && A->mu_out == 0)
+        A->intensity_element = 0;
+    // Otherwise there's a division by zero when calculating intensity_element
+    else {
+        A->intensity_element = ( A->mu_in / (A->mu_in + A->mu_out) *
+
+        ( (A->psi_muout + A->chi_muout)*(A->psi_muin + A->chi_muin) +
+
+        2*(A->phi_muout + A->zeta_muout)*(A->phi_muin + A->zeta_muin) -
+
+        4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
+        A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
+
+    (1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
+     cos(2*(A->azimuthal_in - A->azimuthal_out)) ) ) ;
+    }
+} // Gets intensity due to Rayleigh scattering incident on an area element
