@@ -37,19 +37,35 @@ void output(Datasystem *totalData){
       
       printf("nDead = %i\n",totalData->nDead);
 
-      double fittedMax = 0.0;
+      double fittedMax = 0.0, iMax = 0.0, qMax = 0.0, uMax = 0.0, vMax = 0.0;
       for (int i=0; i<179; i++){
             totalData->fittedCurve[i] = totalData->lightcurve[i] / sin((i+0.5)*(PI/180.0));
             if (totalData->fittedCurve[i] > fittedMax){
                   fittedMax = totalData->fittedCurve[i];
+            }
+            if (totalData->IPol[i] > iMax){
+                  iMax = totalData->IPol[i];
+            }
+            if (totalData->QPol[i] > qMax){
+                  qMax = totalData->QPol[i];
+            }
+            if (totalData->UPol[i] > uMax){
+                  uMax = totalData->UPol[i];
+            }
+            if (totalData->VPol[i] > vMax){
+                  vMax = totalData->VPol[i];
             }
       }
       
       // Normalise the fittedCurve.
       for (int i=0; i<180; i++){
             totalData->fittedCurve[i] = totalData->fittedCurve[i]/fittedMax;
-            fprintf(file,"%i %lf\n",i,totalData->fittedCurve[i]);
-            printf("%i %lf\n",i,totalData->fittedCurve[i]);
+            totalData->IPol[i] = totalData->IPol[i]/iMax;
+            totalData->QPol[i] = totalData->QPol[i]/qMax;
+            totalData->UPol[i] = totalData->UPol[i]/uMax;
+            totalData->VPol[i] = totalData->VPol[i]/vMax;
+            fprintf(file,"%i %lf %lf %lf %lf %lf\n",i,totalData->fittedCurve[i],totalData->IPol[i],totalData->QPol[i],totalData->UPol[i],totalData->VPol[i]);
+            printf("%i %lf %lf %lf %lf %lf\n",i,totalData->fittedCurve[i],totalData->IPol[i],totalData->QPol[i],totalData->UPol[i],totalData->VPol[i]);
       }
       
       return;

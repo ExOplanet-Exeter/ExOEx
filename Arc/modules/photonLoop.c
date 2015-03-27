@@ -31,9 +31,13 @@ void randomDirection(Particle*);
 void isotropic(Particle*);
 void rayleigh(Particle*);
 void move(Planet*,Particle*);
+void moveBack(Particle*);
+void moveBack(Particle*);
+void observerPol(Particle*);
 /**/ void dev_recordPos(Particle*);
 /**/ void dev_observe(Particle*);
 /**/ void dev_look(Particle*);
+/**/ void dev_recordPol(Particle*);
 
 
 //── FUNCTIONS IN PROGRESS ────────────────────────────────────┤
@@ -65,14 +69,21 @@ void photonLoop(Planet *exo,Particle *photon){
   }
   
   if (photon->life == true){
+    moveBack(photon);
     photon->alpha = acos(photon->dirVec[Z]);
   }
   else {
     photon->alpha = -1.0;  
   }
   
-  dev_recordPos(photon);
-  dev_observe(photon);
+  observerPol(photon);
+  
+  //printf("%lf %lf %lf %lf\n",photon->pol[I],photon->pol[Q],photon->pol[U],photon->pol[V]);
+  
+  //dev_recordPos(photon);
+  //dev_observe(photon);
+  //dev_look(photon);
+  //dev_recordPol(photon);
   
   return;
 }
@@ -85,6 +96,17 @@ void initialisePhoton(Particle *photon){
   photon->life    = true;
   photon->curLayer= -1;
   photon->alpha   = -1.0;
+  
+  photon->pol[I] = 1.0;
+  photon->pol[Q] = arcRand(-1.0,1.0);
+  photon->pol[U] = arcRand(-1.0,1.0);
+  photon->pol[V] = arcRand(-1.0,1.0);
+  
+  photon->norm[X] = arcRand(-1.0,1.0);
+  photon->norm[Y] = sqrt(1.0 - pow(photon->norm[X],2.0));
+  photon->norm[Z] = 0.0;
+  
+  photon->lambda = 0.0;
   
   for (int i=0; i<3; i++){
     photon->pos[i]    = 0.0;
@@ -325,6 +347,34 @@ void rayleigh(Particle *photon){
     }
   }
   
+  // This is where polarisation happens
+  // u[] is incoming, v[] is outgoing, n[] is normal.
+  
+  double v[3]={0.0}, o[3]={0.0}, n[3]={0.0};
+  
+  for (int i=0; i<3; i++){
+    v[i] = photon->dirVec[i];
+    o[i] = photon->norm[i];
+  }
+  
+  n[X] = (u[Y]*v[Z]) - (u[Z]*v[Y]);
+  n[Y] = - ((u[X]*v[Z]) - (u[Z]*v[X]));
+  n[Z] = (u[X]*v[Y]) - (u[Y]*v[X]);
+  
+  double phi = acos((o[X]*n[X])+(o[Y]*n[Y])+(o[Z]*n[Z]));
+  double theta = dotProd;
+  
+  // Rotation matrix
+  photon->pol[I] = photon->pol[I];
+  photon->pol[Q] = (photon->pol[Q]*cos(2.0*phi)) + (photon->pol[U]*sin(2.0*phi));
+  photon->pol[U] = (-photon->pol[Q]*sin(2.0*phi)) + (photon->pol[U]*cos(2.0*phi));
+  photon->pol[V] = photon->pol[V];
+  
+  // Rayleigh Scattering Polarisation Matrix
+  photon->pol[I] = (photon->pol[I]*0.5) + (photon->pol[Q]*0.5*cos(2.0*theta)) + (photon->pol[U]*0.5*sin(2.0*theta));
+  photon->pol[Q] = (photon->pol[I]*0.5*cos(2.0*theta)) + (photon->pol[Q]*0.5*pow(cos(2.0*theta),2.0)) + (photon->pol[U]*0.5*cos(2.0*theta)*sin(2.0*theta));
+  photon->pol[U] = (photon->pol[I]*0.5*sin(2.0*theta)) + (photon->pol[Q]*0.5*cos(2.0*theta)*sin(2.0*theta)) + (photon->pol[V]*0.5*pow(sin(2.0*theta),2.0));
+  
   return;
 }
 
@@ -333,9 +383,32 @@ void move(Planet *exo,Particle *photon){
   double lambda = -log(arcRand(0.0,1.0))/exo->kappa[getLayer(exo,photon->pos[X],photon->pos[Y],photon->pos[Z])];
   //double lambda = pathLength(exo,photon);
   
+  photon->lambda = lambda;
+  
   for (int i=0; i<3; i++){
     photon->pos[i] += photon->dirVec[i] * lambda;
   }
+  
+  return;
+}
+
+void moveBack(Particle *photon){
+  
+  for (int i=0; i<3; i++){
+    photon->pos[i] -= photon->dirVec[i] * photon->lambda;
+  }
+  
+  return;
+}
+
+void observerPol(Particle *photon){
+  
+  double phi = acos(photon->norm[Y]);
+  
+  photon->pol[I] = photon->pol[I];
+  photon->pol[Q] = (photon->pol[Q]*cos(2.0*phi)) + (photon->pol[U]*sin(2.0*phi));
+  photon->pol[U] = (-photon->pol[Q]*sin(2.0*phi)) + (photon->pol[U]*cos(2.0*phi));
+  photon->pol[V] = photon->pol[V];
   
   return;
 }
@@ -376,7 +449,7 @@ void dev_observe(Particle *photon){
 
   if ((alpha >= 270.0) || (alpha <= 90.0)){
     if (pos[Z] >= 0.0){
-      fprintf(file,"%lf %lf\n",pos[X],pos[Y]);
+      fprintf(file,"%lf %lf %lf %lf %lf %lf\n",pos[X],pos[Y],photon->pol[I],photon->pol[Q],photon->pol[U],photon->pol[V]);
     }
   }
     
@@ -386,32 +459,12 @@ void dev_observe(Particle *photon){
 }
 
 /**/ // Observes if phot dir in right direction.
-void dev_look(Particle *photon){
+void dev_recordPol(Particle *photon){
   
   FILE *file;
-  file = fopen(outputPath "view.dat","a");
+  file = fopen(outputPath "polarisation.dat","a");
   
-  double direction = 0 * (PI/180.0);
-  
-  double alpha = acos(photon->dirVec[Z]);
-  if (photon->dirVec[X] < 0.0){
-    alpha = - alpha;
-  }
-  
-  double pos[3] = {0.0};
-  for (int i=0; i<3; i++){
-    pos[i] = photon->pos[i];
-  }
-  pos[X] = (photon->pos[X]*cos(direction)) - (photon->pos[Z]*sin(direction));
-  pos[Z] = (photon->pos[X]*sin(direction)) + (photon->pos[Z]*cos(direction));
-  
-  if ((alpha <= (direction + 0.35)) && (alpha >= (direction - 0.35))){
-    double beta = acos(photon->pos[Z]);
-    if (pos[Z] < 0.0){
-      beta = (2.0*PI) - beta;
-    }
-    //
-  }
+  fprintf(file,"%lf %lf %lf %lf %lf %lf %lf %lf\n",photon->pos[X],photon->pos[Y],photon->pos[Z],photon->pol[I],photon->pol[Q],photon->pol[U],photon->pol[V],photon->alpha);
   
   return;
 }

@@ -1,4 +1,4 @@
 kappa 100
 albedo 1
-scatterType ISO
+scatterType RAY
 END

@@ -29,6 +29,10 @@ void extraction(Particle *photon,ThreadInfo *thread){
       }
       else {
             thread->data.lightcurve[theta]++;
+            thread->data.IPol[theta] += photon->pol[I];
+            thread->data.QPol[theta] += photon->pol[Q];
+            thread->data.UPol[theta] += photon->pol[U];
+            thread->data.VPol[theta] += photon->pol[V];
       }
 
 	return;

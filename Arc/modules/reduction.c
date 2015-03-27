@@ -26,6 +26,10 @@ void reduction(ThreadInfo *thread,Datasystem *totalData){
       
       for (int i=0; i<180; i++){
             totalData->lightcurve[i] += thread->data.lightcurve[i];
+            totalData->IPol[i] += thread->data.IPol[i];
+            totalData->QPol[i] += thread->data.QPol[i];
+            totalData->UPol[i] += thread->data.UPol[i];
+            totalData->VPol[i] += thread->data.VPol[i];
       }
       
 	return;

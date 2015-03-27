@@ -110,6 +110,8 @@ typedef struct particle{
 	double 	dirVec[3];
 	double 	alpha;
 	double	pol[4];
+	double	lambda;
+	double norm[3];
 } Particle;
 
 
@@ -124,6 +126,10 @@ typedef struct datasystem{
 	int 	nDead;
 	int 	lightcurve[180];
 	double 	fittedCurve[180];
+	double	IPol[180];
+	double	QPol[180];
+	double	UPol[180];
+	double	VPol[180];
 } Datasystem;
 
 
@@ -177,6 +183,13 @@ enum ScatterTypes{
 	MIE,
 };
 
+
+enum PolarisationElements{
+	I,
+	Q,
+	U,
+	V,
+};
 
 //── TERMINAL OUTPUT COLOURS ──────────────────────────────────┤
 /*
