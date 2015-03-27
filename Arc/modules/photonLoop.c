@@ -29,8 +29,11 @@ void absorbe(Planet*,Particle*);
 void scatter(Planet*,Particle*);
 void randomDirection(Particle*);
 void isotropic(Particle*);
+void rayleigh(Particle*);
 void move(Planet*,Particle*);
 /**/ void dev_recordPos(Particle*);
+/**/ void dev_observe(Particle*);
+/**/ void dev_look(Particle*);
 
 
 //── FUNCTIONS IN PROGRESS ────────────────────────────────────┤
@@ -68,7 +71,8 @@ void photonLoop(Planet *exo,Particle *photon){
     photon->alpha = -1.0;  
   }
   
-  //dev_recordPos(photon);
+  dev_recordPos(photon);
+  dev_observe(photon);
   
   return;
 }
@@ -269,6 +273,7 @@ void scatter(Planet *exo,Particle *photon){
     isotropic(photon);
   }
   if (exo->scatType[photon->curLayer] == RAY){
+    rayleigh(photon);
   }
   if (exo->scatType[photon->curLayer] == MIE){
   }
@@ -295,9 +300,12 @@ void randomDirection(Particle *photon){
 void isotropic(Particle *photon){
   
   randomDirection(photon);
-  return;
   
-  /*
+  return;
+}
+
+void rayleigh(Particle *photon){
+  
   double A, B, dotProd;
   double u[3] = {0.0};
   
@@ -308,22 +316,22 @@ void isotropic(Particle *photon){
   bool done = false;
   
   while (done == false){
-    A = 1.0;
+    A = arcRand(0.0,2.0);
     randomDirection(photon);
     dotProd = acos((photon->dirVec[X]*u[X])+(photon->dirVec[Y]*u[Y])+(photon->dirVec[Z]*u[Z]));
-    B = A + 1.0;
+    B = 1.0 + pow(cos(dotProd),2.0);
     if (B >= A){
       done = true;
     }
   }
   
-  return;*/
+  return;
 }
 
 void move(Planet *exo,Particle *photon){
   
-  //double lambda = -log(arcRand(0.0,1.0))/exo->kappa[getLayer(exo,photon->pos[X],photon->pos[Y],photon->pos[Z])];
-  double lambda = pathLength(exo,photon);
+  double lambda = -log(arcRand(0.0,1.0))/exo->kappa[getLayer(exo,photon->pos[X],photon->pos[Y],photon->pos[Z])];
+  //double lambda = pathLength(exo,photon);
   
   for (int i=0; i<3; i++){
     photon->pos[i] += photon->dirVec[i] * lambda;
@@ -341,4 +349,69 @@ void dev_recordPos(Particle *photon){
   fprintf(file,"%lf %lf %lf\n",photon->pos[X],photon->pos[Y],photon->pos[Z]);
 
   fclose(file);
+}
+
+/**/ // Records what the Planet would look like
+void dev_observe(Particle *photon){
+  
+  FILE *file;
+  file = fopen(outputPath "view.dat","a");
+  
+  double pos[3] = {0.0};
+  double alpha = 0.0, omega = 0.0;
+  
+  for (int i=0; i<3; i++){
+    pos[i] = photon->pos[i];
+  }
+  
+  alpha = acos(pos[Z]);
+  
+  if (pos[X] < 0.0){
+    alpha = (2.0*PI) - alpha;
+  }
+
+  omega = 45 * (PI/180.0);
+  pos[X] = (photon->pos[X]*cos(omega)) - (photon->pos[Z]*sin(omega));
+  pos[Z] = (photon->pos[X]*sin(omega)) + (photon->pos[Z]*cos(omega));
+
+  if ((alpha >= 270.0) || (alpha <= 90.0)){
+    if (pos[Z] >= 0.0){
+      fprintf(file,"%lf %lf\n",pos[X],pos[Y]);
+    }
+  }
+    
+  fclose(file);
+  
+  return;
+}
+
+/**/ // Observes if phot dir in right direction.
+void dev_look(Particle *photon){
+  
+  FILE *file;
+  file = fopen(outputPath "view.dat","a");
+  
+  double direction = 0 * (PI/180.0);
+  
+  double alpha = acos(photon->dirVec[Z]);
+  if (photon->dirVec[X] < 0.0){
+    alpha = - alpha;
+  }
+  
+  double pos[3] = {0.0};
+  for (int i=0; i<3; i++){
+    pos[i] = photon->pos[i];
+  }
+  pos[X] = (photon->pos[X]*cos(direction)) - (photon->pos[Z]*sin(direction));
+  pos[Z] = (photon->pos[X]*sin(direction)) + (photon->pos[Z]*cos(direction));
+  
+  if ((alpha <= (direction + 0.35)) && (alpha >= (direction - 0.35))){
+    double beta = acos(photon->pos[Z]);
+    if (pos[Z] < 0.0){
+      beta = (2.0*PI) - beta;
+    }
+    //
+  }
+  
+  return;
 }

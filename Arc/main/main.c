@@ -70,9 +70,10 @@ int main(int argc,char **argv){
     printStart("ExOEx");
     FILE *file;  
     file = fopen(outputPath "position.dat","w");
+    file = fopen(outputPath "view.dat","w");
    
     if (file == NULL)
-      printErr("Could not open position.dat"); 
+      printErr("Could not open position.dat or view.dat"); 
 
     fclose(file);
   }
