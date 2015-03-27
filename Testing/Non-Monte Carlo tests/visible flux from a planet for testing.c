@@ -8,8 +8,8 @@
 #define RADIUS_PLANET 1
 #define DIST_STAR 10    // Distance from planet to star
 
-/* GET ACTUAL EQUATION FOR azimuthal_in AND CHECK RAYLEIGH EQUATIONS TO SEE IF
-   THEY ARE CORRECT. */
+/* SORT OUT azimuthal_in AND CHECK RAYLEIGH EQUATIONS TO SEE IF
+ THEY ARE CORRECT. */
 
 typedef struct variables {
     double areaGrid[N_ROWS][N_COLS];    /* Array containing surface area
@@ -98,11 +98,11 @@ int main () {
 	else if (choice == 2 || choice == 3) {
         printf("Enter an albedo between 0.05 and 1.\n");
         /* An albedo of < 0.05 rounds down to 0 in later calculations, yielding
-        no reflected radiation */
+		 no reflected radiation */
         scanf("%lg", &A->albedo);
         if (A->albedo < 0.05 || A->albedo > 1) {
-                printf("Albedo is in the wrong range, please choose again.\n");
-                main();
+			printf("Albedo is in the wrong range, please choose again.\n");
+			main();
         }
         else
             makearrays(A, choice);
@@ -149,11 +149,11 @@ void makearrays(Variables *A, int choice) {
                 fscanf(readfile, "%lg", &A->Hvalues[m][n]);
             }
         } /* Maps the table in H-function_values_reduced.txt and stores the
-            information in a 2D array */
+		   information in a 2D array */
         fclose(readfile);
         /* It's easier to open the .txt file and copy the information to an
-        array that can be called repeatedly, rather than having to open the
-        .txt file each time in order to read-in specific values. */
+		 array that can be called repeatedly, rather than having to open the
+		 .txt file each time in order to read-in specific values. */
     }
 
     else if (choice == 3) {
@@ -169,7 +169,7 @@ void makearrays(Variables *A, int choice) {
                 fscanf(readfile, "%lg", &A->Multifunctionvalues[m][n]);
             }
         } /* Maps the table in Multi-function_tables.txt and stores the
-        information in a 2D array */
+		   information in a 2D array */
     }
 }
 
@@ -219,18 +219,18 @@ void getCartesianPosition (Variables *A) {
 void getMus (Variables *A, int choice) {
     A->mu_in = -A->element_x / RADIUS_PLANET;
     /* acos(mu_in) is the incident angle, which is the angle between the
-    star and the normal to the surface element. This forces the star to lie
-    on the -x-axis. */
+	 star and the normal to the surface element. This forces the star to lie
+	 on the -x-axis. */
     A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
-                / (RADIUS_PLANET * A->obsDistance);
+	/ (RADIUS_PLANET * A->obsDistance);
     /* acos(mu_out) is the angle between the normal to the surface element
-    and the observer */
+	 and the observer */
 
     if (choice == 2 || choice == 3) {
         A->mu_in = round(A->mu_in * 20.0) / 20.0;
         A->mu_out = round(A->mu_out * 20.0) / 20.0;
         /* Rounds mu_in and mu_out to the nearest 0.05 to seek correct values
-        in Hvalues and Multifunctionvalues arrays */
+		 in Hvalues and Multifunctionvalues arrays */
     }
 }
 
@@ -259,34 +259,34 @@ void conductIso (Variables *A) {
     // Otherwise there's a division by zero when calculating intensity_element
     else {
         A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) *
-                               A->H_muin * A->H_muout;
-	// Should multiply by albedo * flux / 4, but they're scaling factors
+		A->H_muin * A->H_muout;
+		// Should multiply by albedo * flux / 4, but they're scaling factors
     }
 } // Gets intensity due to isotropic scattering incident on an area element
 
 void conductRayleigh (Variables *A) {
     A->azimuthal_in = 0;    // SET FOR THE TIME BEING
     A->azimuthal_out = acos( (A->mu_in*A->mu_out - cos(A->obsPhaseangle)) /
-                             sin(acos(A->mu_in))*sin(acos(A->mu_out)) );
+							sin(acos(A->mu_in))*sin(acos(A->mu_out)) );
 
     A->psi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
-    A->psi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
-
+    A->psi_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][0];
+	// Psi function values are in column 0 of Multifunctionvalues
     A->phi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][1];
-    A->phi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][1];
-
+    A->phi_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][1];
+	// Phi function values are in column 1 of Multifunctionvalues
     A->chi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][2];
-    A->chi_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][2];
-
+    A->chi_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][2];
+	// Chi function values are in column 2 of Multifunctionvalues
     A->zeta_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][3];
-    A->zeta_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][3];
-
+    A->zeta_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][3];
+	// Zeta function values are in column 3 of Multifunctionvalues
     A->H1_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][4];
-    A->H1_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][4];
-
+    A->H1_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][4];
+	// H1 function values are in column 4 of Multifunctionvalues
     A->H2_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][5];
-    A->H2_muout = A->Multifunctionvalues[(long) (A->mu_in * 20)][5];
-    // Refer to Multi-function_values.txt to clear confusion
+    A->H2_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][5];
+    // H2 function values are in column 5 of Multifunctionvalues
 
     if (A->mu_in == 0 && A->mu_out == 0)
         A->intensity_element = 0;
@@ -294,14 +294,14 @@ void conductRayleigh (Variables *A) {
     else {
         A->intensity_element = ( A->mu_in / (A->mu_in + A->mu_out) *
 
-        ( (A->psi_muout + A->chi_muout)*(A->psi_muin + A->chi_muin) +
+		( (A->psi_muin + A->chi_muin)*(A->psi_muout + A->chi_muout) +
 
-        2*(A->phi_muout + A->zeta_muout)*(A->phi_muin + A->zeta_muin) -
+		 2*(A->phi_muin + A->zeta_muin)*(A->phi_muout + A->zeta_muout) -
 
-        4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
-        A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
+		 4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
+		 A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
 
-    (1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
-     cos(2*(A->azimuthal_in - A->azimuthal_out)) ) ) ;
+		 (1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
+		 cos(2*(A->azimuthal_in - A->azimuthal_out)) ) );
     }
 } // Gets intensity due to Rayleigh scattering incident on an area element
