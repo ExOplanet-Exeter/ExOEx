@@ -18,16 +18,19 @@
 
 
 //── DEFINES ──────────────────────────────────────────────────┤
-#define NPHOT 10000000
+#define NPHOT 100000000
 
 
 //── FUNCTION PROTOTYPES ──────────────────────────────────────┤
 bool randomTest();
 bool isotropicTest();
 bool rayleighTest();
+bool polTest();
 
 void isotropic(Particle*);
 void rayleigh(Particle*);
+void initialisePhoton(Particle*);
+void observerPol(Particle*);
 
 
 //── TESTING ──────────────────────────────────────────────────┤
@@ -47,11 +50,88 @@ void testing(){
 	pass = rayleighTest();
 	printOutcome("rayleigh",pass);
 	
+	pass = polTest();
+	printOutcome("polarisation",pass);
+	
 	return;
 }
 
 
 //─── COMPLETED FUNCTIONS ─────────────────────────────────────┤
+// Test the polarisation matrix
+bool polTest(){
+	
+	FILE *file;
+	file = fopen(outputPath "polTest.dat","w");
+	
+	Particle photon = {0.0};
+	Datasystem data = {0};
+	int bin;
+	
+	for (int i=0; i<NPHOT; i++){		
+		initialisePhoton(&photon);
+
+		photon.dirVec[Z] = 1.0;
+		
+		rayleigh(&photon);
+		
+		photon.alpha = acos(photon.dirVec[Z]);
+		
+		bin = photon.alpha * (180.0/PI);
+		
+		data.nDead++;
+		data.lightcurve[bin]++;
+		data.IPol[bin] += photon.pol[I];
+		data.QPol[bin] += photon.pol[Q];
+		data.UPol[bin] += photon.pol[U];
+		data.VPol[bin] += photon.pol[V];
+		
+		//observerPol(&photon);
+	}
+	
+	double maxF = 0.0, maxI = 0.0, maxQ = 0.0, maxU = 0.0, maxV = 0.0;
+	for (int i=0; i<180; i++){
+		data.fittedCurve[i] = data.lightcurve[i] / sin((i+0.5)*(PI/180.0));
+		data.IPol[i] = data.IPol[i] / sin((i+0.5)*(PI/180.0));
+		data.QPol[i] = data.QPol[i] / sin((i+0.5)*(PI/180.0));
+		data.UPol[i] = data.UPol[i] / sin((i+0.5)*(PI/180.0));
+		data.VPol[i] = data.VPol[i] / sin((i+0.5)*(PI/180.0));
+	
+		if (data.fittedCurve[i] > maxF){
+			maxF = data.fittedCurve[i];
+		}
+		if (data.IPol[i] > maxI){
+			maxI = data.IPol[i];
+		}
+		if (data.QPol[i] > maxQ){
+			maxQ = data.QPol[i];
+		}
+		if (data.UPol[i] > maxU){
+			maxU = data.UPol[i];
+		}
+		if (data.VPol[i] > maxV){
+			maxV = data.VPol[i];
+		}
+	}
+	
+	for (int i=0; i<180; i++){
+		data.fittedCurve[i] = data.fittedCurve[i]/maxF;
+		data.IPol[i] = data.IPol[i]/maxI;
+		data.QPol[i] = data.QPol[i]/maxQ;
+		data.UPol[i] = data.UPol[i]/maxU;
+		data.VPol[i] = data.VPol[i]/maxV;
+	}
+	
+	for (int i=0; i<180; i++){
+		fprintf(file,"%i %lf %lf %lf %lf %lf\n",i,data.fittedCurve[i],data.IPol[i],data.QPol[i],data.UPol[i],data.VPol[i]);
+	}
+	
+	fclose(file);
+	
+	return false;
+}
+
+
 // Tests to see if the isotropic function is performing correctly.
 bool rayleighTest(){
 

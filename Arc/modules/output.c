@@ -40,6 +40,10 @@ void output(Datasystem *totalData){
       double fittedMax = 0.0, iMax = 0.0, qMax = 0.0, uMax = 0.0, vMax = 0.0;
       for (int i=0; i<179; i++){
             totalData->fittedCurve[i] = totalData->lightcurve[i] / sin((i+0.5)*(PI/180.0));
+            totalData->IPol[i] = totalData->IPol[i] / sin((i+0.5)*(PI/180.0));
+            totalData->QPol[i] = totalData->QPol[i] / sin((i+0.5)*(PI/180.0));
+            totalData->UPol[i] = totalData->UPol[i] / sin((i+0.5)*(PI/180.0));
+            totalData->VPol[i] = totalData->VPol[i] / sin((i+0.5)*(PI/180.0));
             if (totalData->fittedCurve[i] > fittedMax){
                   fittedMax = totalData->fittedCurve[i];
             }
