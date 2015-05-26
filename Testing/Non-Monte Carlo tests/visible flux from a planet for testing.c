@@ -34,7 +34,7 @@ typedef struct variables {
 										 element */
 	double element_y;					/* y-component of position of area
 										 element */
-	double mu_in;						/* Cosine of the(incident)angle between
+	double mu_in;						/* Cosine of the[incident]angle between
 										 the star and normal to area element */
     double azimuthal_in;                // Azimuthal angle fr incoming rdiation
 	double H_muin;						// H-function value for mu_in
@@ -44,7 +44,7 @@ typedef struct variables {
 	double zeta_muin;                   // zeta-function value for mu_in
 	double H1_muin;                     // H1-function value for mu_in
 	double H2_muin;                     // H2-function value for mu_in
-	double mu_out;						/* Cosine of the (outgoing/scattering)
+	double mu_out;						/* Cosine of the [outgoing/scattering]
 										 angle between the normal to area
 										 element and observer */
     double azimuthal_out;               // Azimuthal angle fr outgoing rdiation
@@ -170,6 +170,7 @@ void makearrays(Variables *A, int choice) {
             }
         } /* Maps the table in Multi-function_tables.txt and stores the
 		   information in a 2D array */
+        fclose(readfile);
     }
 }
 
@@ -245,7 +246,7 @@ void conductLambert (Variables *A) {
 	A->intensity_element = A->mu_in;
 	/* Should also multiply by incident flux and albedo but they're just scaling
 	 factors */
-} // Gets intensity due to Lambertian scattering incident on an area element
+} // Gets intensity from an area element due to Lambertian scattering
 
 void conductIso (Variables *A) {
 	A->albedo = round(A->albedo * 10.0) / 10.0;
@@ -254,7 +255,7 @@ void conductIso (Variables *A) {
 	A->H_muin = A->Hvalues[(long) (A->mu_in * 20)][(long) (A->albedo * 10)];
 	A->H_muout = A->Hvalues[(long) (A->mu_out* 20)][(long) (A->albedo * 10)];
 
-    if (A->mu_in == 0 && A->mu_out == 0)
+    if (A->mu_in + A->mu_out == 0)
         A->intensity_element = 0;
     // Otherwise there's a division by zero when calculating intensity_element
     else {
@@ -262,12 +263,13 @@ void conductIso (Variables *A) {
 		A->H_muin * A->H_muout;
 		// Should multiply by albedo * flux / 4, but they're scaling factors
     }
-} // Gets intensity due to isotropic scattering incident on an area element
+} // Gets intensity from an area element due to isotropic scattering
 
 void conductRayleigh (Variables *A) {
-    A->azimuthal_in = 0;    // SET FOR THE TIME BEING
-    A->azimuthal_out = acos( (A->mu_in*A->mu_out - cos(A->obsPhaseangle)) /
-							sin(acos(A->mu_in))*sin(acos(A->mu_out)) );
+    A->azimuthal_in = atan( tan(A->phi) / cos(A->theta) );
+    A->azimuthal_out = acos( ( A->mu_in*A->mu_out - cos(A->obsPhaseangle) ) /
+							( sin(acos(A->mu_in))*sin(acos(A->mu_out)) ) );
+    // ARGUMENT SHOULD BE < 1, SO FIX THIS
 
     A->psi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
     A->psi_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][0];
@@ -288,20 +290,20 @@ void conductRayleigh (Variables *A) {
     A->H2_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][5];
     // H2 function values are in column 5 of Multifunctionvalues
 
-    if (A->mu_in == 0 && A->mu_out == 0)
+    if (A->mu_in + A->mu_out == 0)
         A->intensity_element = 0;
     // Otherwise there's a division by zero when calculating intensity_element
     else {
-        A->intensity_element = ( A->mu_in / (A->mu_in + A->mu_out) *
+        A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) * (
 
-		( (A->psi_muin + A->chi_muin)*(A->psi_muout + A->chi_muout) +
+		(A->psi_muin + A->chi_muin)*(A->psi_muout + A->chi_muout) +
 
-		 2*(A->phi_muin + A->zeta_muin)*(A->phi_muout + A->zeta_muout) -
+		2*(A->phi_muin + A->zeta_muin)*(A->phi_muout + A->zeta_muout) -
 
-		 4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
-		 A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
+		4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
+		A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
 
-		 (1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
-		 cos(2*(A->azimuthal_in - A->azimuthal_out)) ) );
+		(1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
+		cos( 2*(A->azimuthal_in - A->azimuthal_out) ) );
     }
-} // Gets intensity due to Rayleigh scattering incident on an area element
+} // Gets intensity from an area element due to Rayleigh scattering
