@@ -15,17 +15,15 @@ typedef struct variables {
     double areaGrid[N_ROWS][N_COLS];    /* Array containing surface area
 										 elements of planet */
 	double albedo;						// Single scattering albedo
-    double obsPhaseangle;               /* Angle between observer and planet
+    double phaseAngle;                  /* Angle between observer and planet
 										 relative to star set so maximum flux
 										 is at a phase angle of zero */
-    double obsDistance;                 // Distance from observer to planet
-    double obsDistance_x;               // x-coordinate of observer's position
-    double obsDistance_y;               // y-coordinate of observer's position
     int i;                              // 'i' is a theta designation
     int j;	                            // 'j' is a phi designation
-    double theta;                       /* theta increases with row value in
-										 areaGrid */
-    double phi;                         // phi with column value in areaGrid
+    double theta;                       /* zenith angle of surface element,
+                                        increases with row value in areaGrid */
+    double phi;                         /* azimuthal angle of surface element,
+                                        increases w/ column value in areaGrid*/
     double delta_theta;                 /* theta increment between successive
 										 cells */
     double delta_phi;                   /* phi increment between successive
@@ -36,7 +34,7 @@ typedef struct variables {
 										 element */
 	double mu_in;						/* Cosine of the[incident]angle between
 										 the star and normal to area element */
-    double azimuthal_in;                // Azimuthal angle fr incoming rdiation
+    double azimuthal_in;                // Azimuthal angle for incident light
 	double H_muin;						// H-function value for mu_in
 	double psi_muin;                    // psi-function value for mu_in
 	double phi_muin;                    // phi-function value for mu_in
@@ -45,9 +43,9 @@ typedef struct variables {
 	double H1_muin;                     // H1-function value for mu_in
 	double H2_muin;                     // H2-function value for mu_in
 	double mu_out;						/* Cosine of the [outgoing/scattering]
-										 angle between the normal to area
+										 angle between the normal to the area
 										 element and observer */
-    double azimuthal_out;               // Azimuthal angle fr outgoing rdiation
+    double azimuthal_out;               // Azimuthal angle for scattered light
 	double H_muout;						// H-function value for mu_out
     double psi_muout;                   // psi-function value for mu_out
 	double phi_muout;                   // phi-function value for mu_out
@@ -83,8 +81,6 @@ int main () {
 
 	Variables *A = newvariables(); // Initializes structure
 
-	A->obsDistance = 2 * RADIUS_PLANET;
-	// Arbitrary observation distance, makes no difference to result
     printf("For Lambert scattering, enter '1'.\n"
 		   "For isotropic scattering, enter '2'.\n"
 		   "For Rayleigh scattering, enter '3'.\n");
@@ -94,7 +90,6 @@ int main () {
 		printf("Number is invalid, please choose again.\n");
 		main();
 	}
-
 	else if (choice == 2 || choice == 3) {
         printf("Enter an albedo between 0.05 and 1.\n");
         /* An albedo of < 0.05 rounds down to 0 in later calculations, yielding
@@ -115,21 +110,17 @@ int main () {
 
     for (G = 0 ; G <= 180 ; ++G) {
         printf("Phase angle = %i\n", G); // Just used to track progress
-        A->obsPhaseangle = (180 - G) * PI / 180;
+        A->phaseAngle = (180 - G) * PI / 180;
         // Sets phase angle and converts from degrees to radians
-        A->obsDistance_x = A->obsDistance * cos(A->obsPhaseangle);
-        A->obsDistance_y = A->obsDistance * sin(A->obsPhaseangle);
         gridcalculations(A, choice);
 
         double normalizer;
         if (G == 0)
             normalizer = A->flux_received;
         // gets the flux at zero phase angle to normalize phase curve
-
         fprintf(outfile, "%i %g\n", G, A->flux_received / normalizer);
     }
     fclose(outfile);
-
 	return 0;
 }
 
@@ -155,7 +146,6 @@ void makearrays(Variables *A, int choice) {
 		 array that can be called repeatedly, rather than having to open the
 		 .txt file each time in order to read-in specific values. */
     }
-
     else if (choice == 3) {
         FILE *readfile;
         readfile = fopen("Multi-function_values.txt","r");
@@ -170,7 +160,6 @@ void makearrays(Variables *A, int choice) {
             }
         } /* Maps the table in Multi-function_tables.txt and stores the
 		   information in a 2D array */
-        fclose(readfile);
     }
 }
 
@@ -222,11 +211,10 @@ void getMus (Variables *A, int choice) {
     /* acos(mu_in) is the incident angle, which is the angle between the
 	 star and the normal to the surface element. This forces the star to lie
 	 on the -x-axis. */
-    A->mu_out = (A->element_x*A->obsDistance_x + A->element_y*A->obsDistance_y)
-	/ (RADIUS_PLANET * A->obsDistance);
+    A->mu_out = ( A->element_x*cos(A->phaseAngle) +
+                  A->element_y*sin(A->phaseAngle) ) / (RADIUS_PLANET);
     /* acos(mu_out) is the angle between the normal to the surface element
 	 and the observer */
-
     if (choice == 2 || choice == 3) {
         A->mu_in = round(A->mu_in * 20.0) / 20.0;
         A->mu_out = round(A->mu_out * 20.0) / 20.0;
@@ -244,8 +232,8 @@ void getReceivedFlux (Variables *A) {
 
 void conductLambert (Variables *A) {
 	A->intensity_element = A->mu_in;
-	/* Should also multiply by incident flux and albedo but they're just scaling
-	 factors */
+	/* Should also multiply by incident flux and albedo but they're just
+	scaling factors */
 } // Gets intensity from an area element due to Lambertian scattering
 
 void conductIso (Variables *A) {
@@ -255,21 +243,16 @@ void conductIso (Variables *A) {
 	A->H_muin = A->Hvalues[(long) (A->mu_in * 20)][(long) (A->albedo * 10)];
 	A->H_muout = A->Hvalues[(long) (A->mu_out* 20)][(long) (A->albedo * 10)];
 
-    if (A->mu_in + A->mu_out == 0)
-        A->intensity_element = 0;
-    // Otherwise there's a division by zero when calculating intensity_element
-    else {
-        A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) *
-		A->H_muin * A->H_muout;
-		// Should multiply by albedo * flux / 4, but they're scaling factors
-    }
+    A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) *
+                           A->H_muin * A->H_muout;
+    // Should multiply by albedo * flux / 4, but they're scaling factors
+
 } // Gets intensity from an area element due to isotropic scattering
 
 void conductRayleigh (Variables *A) {
     A->azimuthal_in = atan( tan(A->phi) / cos(A->theta) );
-    A->azimuthal_out = acos( ( A->mu_in*A->mu_out - cos(A->obsPhaseangle) ) /
-							( sin(acos(A->mu_in))*sin(acos(A->mu_out)) ) );
-    // ARGUMENT SHOULD BE < 1, SO FIX THIS
+    A->azimuthal_out = atan( sin(A->phaseAngle) * cos(A->theta) /
+							( A->mu_in*A->mu_out - cos(A->phaseAngle) ) );
 
     A->psi_muin = A->Multifunctionvalues[(long) (A->mu_in * 20)][0];
     A->psi_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][0];
@@ -290,20 +273,15 @@ void conductRayleigh (Variables *A) {
     A->H2_muout = A->Multifunctionvalues[(long) (A->mu_out * 20)][5];
     // H2 function values are in column 5 of Multifunctionvalues
 
-    if (A->mu_in + A->mu_out == 0)
-        A->intensity_element = 0;
-    // Otherwise there's a division by zero when calculating intensity_element
-    else {
-        A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) * (
+    A->intensity_element = (A->mu_in / (A->mu_in + A->mu_out)) * (
 
-		(A->psi_muin + A->chi_muin)*(A->psi_muout + A->chi_muout) +
+    (A->psi_muin + A->chi_muin)*(A->psi_muout + A->chi_muout) +
 
-		2*(A->phi_muin + A->zeta_muin)*(A->phi_muout + A->zeta_muout) -
+    2*(A->phi_muin + A->zeta_muin)*(A->phi_muout + A->zeta_muout) -
 
-		4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
-		A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
+    4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
+    A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) +
 
-		(1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
-		cos( 2*(A->azimuthal_in - A->azimuthal_out) ) );
-    }
+    (1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
+    cos( 2*(A->azimuthal_in - A->azimuthal_out) ) );
 } // Gets intensity from an area element due to Rayleigh scattering
