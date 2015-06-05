@@ -8,9 +8,6 @@
 #define RADIUS_PLANET 1
 #define DIST_STAR 10    // Distance from planet to star
 
-/* SORT OUT azimuthal_in AND CHECK RAYLEIGH EQUATIONS TO SEE IF
- THEY ARE CORRECT. */
-
 typedef struct variables {
     double areaGrid[N_ROWS][N_COLS];    /* Array containing surface area
 										 elements of planet */
@@ -246,7 +243,6 @@ void conductIso (Variables *A) {
     A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) *
                            A->H_muin * A->H_muout;
     // Should multiply by albedo * flux / 4, but they're scaling factors
-
 } // Gets intensity from an area element due to isotropic scattering
 
 void conductRayleigh (Variables *A) {
