@@ -133,7 +133,7 @@ void makearrays(Variables *A, int choice) {
             exit(1);
         }
         for (m = 0 ; m < 21 ; ++m) {
-            for (n = 0 ; n < 10; ++n) {
+            for (n = 0 ; n < 10 ; ++n) {
                 fscanf(readfile, "%lg", &A->Hvalues[m][n]);
             }
         } /* Maps the table in H-function_values_reduced.txt and stores the
@@ -237,8 +237,8 @@ void conductIso (Variables *A) {
 	A->albedo = round(A->albedo * 10.0) / 10.0;
 	// Rounds albedo to the nearest 0.1 to seek correct values in Hvalues array
 
-	A->H_muin = A->Hvalues[(long) (A->mu_in * 20)][(long) (A->albedo * 10)];
-	A->H_muout = A->Hvalues[(long) (A->mu_out* 20)][(long) (A->albedo * 10)];
+	A->H_muin = A->Hvalues[(long) (A->mu_in * 20)][(long) (A->albedo * 10) - 1];
+	A->H_muout = A->Hvalues[(long) (A->mu_out* 20)][(long) (A->albedo * 10) - 1];
 
     A->intensity_element = A->mu_in / (A->mu_in + A->mu_out) *
                            A->H_muin * A->H_muout;
