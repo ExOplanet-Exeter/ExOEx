@@ -6,7 +6,6 @@
 #define N_ROWS 500
 #define N_COLS 500
 #define RADIUS_PLANET 1
-#define DIST_STAR 10    // Distance from planet to star
 
 typedef struct variables {
     double areaGrid[N_ROWS][N_COLS];    /* Array containing surface area
@@ -56,6 +55,10 @@ typedef struct variables {
     double intensity_element;           /* Intensity of radiation received by a
 										 surface area element */
     double flux_received;               // Total flux received by the observer
+    double stokes_Q;
+    double total_Q;                     // Total Q-related polarization
+    double stokes_U;
+    double total_U;                     // Total U-related polarization
 } Variables;
 
 Variables *newvariables(void) {
@@ -68,7 +71,7 @@ void gridcalculations (Variables *, int);
 void getAngles (Variables *);
 void getCartesianPosition (Variables *);
 void getMus (Variables *, int);
-void getReceivedFlux (Variables *);
+void getReceivedParameters (Variables *);
 void conductLambert (Variables *);
 void conductIso (Variables *);
 void conductRayleigh (Variables *);
@@ -115,7 +118,9 @@ int main () {
         if (G == 0)
             normalizer = A->flux_received;
         // gets the flux at zero phase angle to normalize phase curve
-        fprintf(outfile, "%i %g\n", G, A->flux_received / normalizer);
+        fprintf(outfile, "%i %g %g %g\n", G, A->flux_received / normalizer,
+                                          A->total_Q, A->total_U);
+        // NEED TO NORMALIZE Q AND U SOMEHOW AS WELL
     }
     fclose(outfile);
 	return 0;
@@ -165,6 +170,8 @@ void gridcalculations (Variables *A, int choice) {
 	A->delta_phi = 2 * PI / N_COLS;
 
 	A->flux_received = 0;   // Initializes total flux to zero
+	A->total_Q = 0;         // Initializes total Q to zero
+	A->total_U = 0;         // Initializes total U to zero
 
 	for (A->i = 0; A->i < N_ROWS; ++A->i) {
 		for (A->j = 0; A->j < N_COLS; ++A->j) {
@@ -187,7 +194,7 @@ void gridcalculations (Variables *A, int choice) {
 				else if (choice == 3)
 					conductRayleigh(A);
 
-				getReceivedFlux(A);
+				getReceivedParameters(A);
 			}
 		}
 	}
@@ -220,11 +227,13 @@ void getMus (Variables *A, int choice) {
     }
 }
 
-void getReceivedFlux (Variables *A) {
+void getReceivedParameters (Variables *A) {
 	A->flux_received = A->flux_received + (A->intensity_element * A->mu_out *
                                            A->areaGrid[A->i][A->j]);
 	/* Should divide by the square of the observer's distance, but it's just a
 	 scaling factor */
+    A->total_Q = A->total_Q + A->stokes_Q;
+    A->total_U = A->total_U + A->stokes_U;
 }
 
 void conductLambert (Variables *A) {
@@ -280,4 +289,28 @@ void conductRayleigh (Variables *A) {
 
     (1 - pow(A->mu_in,2))*(1 - pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
     cos( 2*(A->azimuthal_in - A->azimuthal_out) ) );
-} // Gets intensity from an area element due to Rayleigh scattering
+    // Finds intensity received from the area element
+
+    A->stokes_Q = (A->mu_in / (A->mu_in + A->mu_out)) * (
+
+    (A->psi_muin + A->chi_muin)*(A->psi_muout - A->chi_muout) +
+
+    2*(A->phi_muin + A->zeta_muin)*(A->phi_muout - A->zeta_muout) -
+
+    4*A->mu_in*A->mu_out*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*
+    A->H1_muin*A->H1_muout*cos(A->azimuthal_in - A->azimuthal_out) -
+
+    (1 - pow(A->mu_in,2))*(1 + pow(A->mu_out,2))*A->H2_muin*A->H2_muout*
+    cos( 2*(A->azimuthal_in - A->azimuthal_out) ) );
+    // Finds Stokes Q received from the area element
+
+    A->stokes_U = (A->mu_in / (A->mu_in + A->mu_out)) * (
+
+    2*A->mu_in*sqrt( (1-pow(A->mu_in,2))*(1-pow(A->mu_out,2)) )*A->H1_muin
+    *A->H1_muout*sin(A->azimuthal_in - A->azimuthal_out) +
+
+    A->mu_out*(1-pow(A->mu_in,2))*A->H2_muin*A->H2_muout*
+    sin( 2*(A->azimuthal_in - A->azimuthal_out) ) );
+    // Finds Stokes U received from the area element
+} /* Gets intensity, as well as Stokes Q and U, from an area element due to
+  Rayleigh scattering */
