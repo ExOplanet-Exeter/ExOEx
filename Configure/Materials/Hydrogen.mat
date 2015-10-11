@@ -1,4 +1,4 @@
 kappa 10
-albedo 1
+albedo 0.5
 scatterType RAY
 END

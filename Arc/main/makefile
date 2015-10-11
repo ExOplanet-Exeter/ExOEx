@@ -1,5 +1,6 @@
 # Use the GNU C compiler.
-CC = gcc-4.9.2
+CC = gcc
+#edited from gcc-4.9.2 to gcc
 
 # Flags.
 CFLAGS = -std=c11 -g -fopenmp
